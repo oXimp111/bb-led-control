@@ -23,13 +23,18 @@ header h1{font-size:16px;margin:0 12px 0 0}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:none;border-radius:0;background:none}
 .seg button.on{background:var(--acc);color:#071322;font-weight:600}
-main{display:flex;gap:0;min-height:calc(100vh - 54px)}
-.page{flex:1;min-width:0;padding:14px 16px;display:none}
+body{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+main{display:flex;gap:0;flex:1;min-height:0;overflow:hidden}
+.page{flex:1;min-width:0;padding:10px 14px;display:none;overflow:auto}
+#page-control.on{display:flex;flex-direction:column;overflow:hidden}
 .page.on{display:block}
-.layout{display:flex;gap:16px;flex-wrap:wrap}
-.roomwrap{flex:1 1 560px;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
+.layout{display:flex;gap:12px;flex:1;min-height:0}
+.roomwrap{flex:1 1 auto;min-width:0;display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
 .roomwrap svg{width:100%;height:auto;display:block}
-.side{flex:0 1 260px;min-width:220px}
+.side{flex:0 0 230px;overflow:auto}
+#roomSvg{width:100%;height:100%}
+#simSvg{width:100%;height:auto}
+@media (max-width:1700px){main.simOpen .side{display:none}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
 .card h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
 .nodeRow{display:flex;align-items:center;gap:8px;padding:6px 4px;border-radius:6px;cursor:pointer}
@@ -67,12 +72,9 @@ main{display:flex;gap:0;min-height:calc(100vh - 54px)}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--mute);border-top-color:var(--acc);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
 /* sim drawer */
-#sim{width:440px;max-width:100%;flex:none;background:#0f1117;border-left:1px solid var(--line);padding:12px;display:none;overflow:auto;max-height:calc(100vh - 54px);position:sticky;top:54px}
+#sim{width:46vw;max-width:100%;flex:none;background:#0f1117;border-left:1px solid var(--line);padding:12px;display:none;overflow:auto}
 #sim.on{display:block}
 #sim h2{font-size:15px;margin:0 0 4px}
-.vnode{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0}
-.vnode .row{margin:4px 0}
-.vnode button{padding:3px 8px;font-size:12px}
 /* log */
 #log{position:fixed;left:0;right:0;bottom:0;height:180px;background:#0b0c10;border-top:1px solid var(--line);font:12px/1.35 ui-monospace,Consolas,monospace;overflow:auto;padding:6px 10px;display:none;z-index:6}
 #log.on{display:block}
@@ -99,14 +101,17 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 <main>
   <section class="page on" id="page-control">
     <div class="toolbar" id="runBar" style="display:none">
-      <button class="pri" id="btnPlayAll">▶ Play all</button>
+      <select id="showSel" title="Show"></select>
+      <button class="pri" id="btnPlayShow">▶ Play show</button>
+      <span style="width:1px;height:24px;background:var(--line)"></span>
+      <button id="btnPlayAll">▶ Play all frames</button>
       <button id="btnStopAll">■ Stop all</button>
       <button id="btnAllOff">All off</button>
-      <span class="modeHint">Run mode: click a frame to start its program.</span>
+      <span class="modeHint">Click a frame to play its own program (overrides the show for that frame).</span>
     </div>
     <div class="toolbar" id="editBar">
       <span class="modeHint">Edit mode: click a frame to assign a program. Frame numbers = channel numbers, counted left→right while facing the wall.</span>
-      <span class="spacer"></span><button id="btnRot">Rotate view ⟳</button>
+      <span class="spacer"></span><button id="btnRot">Flip view 180°</button>
       <select id="cornerSel" title="Control center corner"><option value="">Control corner: unknown</option><option value="W1|W2">Control: W1/W2 corner</option><option value="W2|W3">Control: W2/W3 corner</option><option value="W3|W4">Control: W3/W4 corner</option><option value="W4|W1">Control: W4/W1 corner</option></select>
     </div>
     <div class="layout">
@@ -133,11 +138,10 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 
   <aside id="sim">
     <h2>Simulator</h2>
-    <div class="small">Physical light output of virtual nodes (what the room would look like).</div>
+    <div class="small">All 24 frames, always connected. Click a frame on the left (Run mode) and watch it here.</div>
     <div class="roomwrap" style="margin:8px 0"><svg id="simSvg"></svg></div>
-    <div class="row"><label style="width:auto">Packet loss</label><input type="range" id="lossIn" min="0" max="60" value="5" style="flex:1"><span id="lossLbl">5%</span></div>
-    <div class="row"><button id="btnAddV">+ Add virtual node</button><button id="btnResetAll" class="danger">Reset everything</button></div>
-    <div id="vnodeList"></div>
+    <div class="row"><label style="width:auto">Packet loss</label><input type="range" id="lossIn" min="0" max="60" value="0" style="flex:1"><span id="lossLbl">0%</span></div>
+    <div class="small">Packet loss drops that share of radio packets. The control center retries up to 5 times; a frame shows <b style="color:var(--bad)">!</b> only if all tries fail.</div>
   </aside>
 </main>
 
@@ -172,6 +176,61 @@ for (const c of Object.values(WALLS)) {      // channel order = left→right as 
   c.frames = c.boxes.length;
 }
 const WALL_ORDER = ['W1', 'W2', 'W3', 'W4'];   // clockwise
+const MAX_STEPS = 24;   // NOTE: node firmware is still 10 (LF_MAX_STEPS); raise to 24 before shows run on hardware
+
+/* ---- Shows: whole-room programs. Compiled into one program per frame (slot n = channel n). ----
+   track: { frames: [ids] | 'W1' | 'all', stagger_ms, clips: [{ t, fx:'H'|'F'|'B', a, b, per, dur }] }
+   stagger_ms shifts each next frame of the track later by that amount (chase).            */
+const ROOM_ORDER = () => WALL_ORDER.flatMap(w => frameIds(w));
+const SHOWS = [
+  { name: 'Wave around the room', loop: false, tracks: [
+    { frames: 'all', stagger_ms: 300, clips: [{ t: 0, fx: 'F', a: 0, b: 100, dur: 1000 }, { t: 1000, fx: 'H', a: 100, dur: 3000 }, { t: 4000, fx: 'F', a: 100, b: 0, dur: 1000 }] }] },
+  { name: 'Wall by wall, blink, fade out', loop: false, tracks: [
+    { frames: 'W1', clips: [{ t: 0, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 2000, fx: 'H', a: 100, dur: 10000 }] },
+    { frames: 'W2', clips: [{ t: 3000, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 5000, fx: 'H', a: 100, dur: 7000 }] },
+    { frames: 'W3', clips: [{ t: 6000, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 8000, fx: 'H', a: 100, dur: 4000 }] },
+    { frames: 'W4', clips: [{ t: 9000, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 11000, fx: 'H', a: 100, dur: 1000 }] },
+    { frames: 'all', clips: [{ t: 12000, fx: 'B', a: 0, b: 100, per: 800, dur: 6400 }, { t: 18400, fx: 'F', a: 100, b: 0, dur: 2000 }] }] },
+  { name: 'Alternating breath (loop)', loop: true, length_ms: 8000, tracks: [
+    { frames: 'odd', clips: [{ t: 0, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 2000, fx: 'F', a: 100, b: 0, dur: 2000 }] },
+    { frames: 'even', clips: [{ t: 4000, fx: 'F', a: 0, b: 100, dur: 2000 }, { t: 6000, fx: 'F', a: 100, b: 0, dur: 2000 }] }] },
+];
+function trackFrames(f) {
+  const all = ROOM_ORDER();
+  if (Array.isArray(f)) return f;
+  if (f === 'all') return all;
+  if (f === 'odd') return all.filter((_, i) => i % 2 === 0);
+  if (f === 'even') return all.filter((_, i) => i % 2 === 1);
+  return frameIds(f);
+}
+function stepText(c, dur) {
+  const d = Math.max(0, Math.round(dur)) + 'ms';
+  if (c.fx === 'H') return `H${c.a}:${d}`;
+  if (c.fx === 'F') return `F${c.a}-${c.b}:${d}`;
+  return `B${c.a}-${c.b}/${c.per}ms:${d}`;
+}
+function compileShow(show) {      // -> { frameId: programText }
+  const per = {};
+  for (const tr of show.tracks) trackFrames(tr.frames).forEach((id, i) => {
+    for (const c of tr.clips) (per[id] = per[id] || []).push({ ...c, t: c.t + i * (tr.stagger_ms || 0) });
+  });
+  const out = {};
+  for (const id of ROOM_ORDER()) {
+    const clips = (per[id] || []).sort((x, y) => x.t - y.t), steps = [];
+    let now = 0;
+    for (const c of clips) {
+      if (c.t > now) steps.push(`H0:${c.t - now}ms`);            // gap = off
+      const start = Math.max(c.t, now), dur = c.t + c.dur - start; // overlap: later clip is trimmed
+      if (dur > 0) { steps.push(stepText(c, dur)); now = start + dur; }
+    }
+    if (show.loop && show.length_ms > now) steps.push(`H0:${show.length_ms - now}ms`);
+    if (!steps.length) steps.push('H0:0');
+    if (steps.length > MAX_STEPS) throw Error(`${id} needs ${steps.length} steps (max ${MAX_STEPS})`);
+    out[id] = (show.loop ? 'loop ' : '') + steps.join(' ');
+  }
+  return out;
+}
+
 const PRESETS = [
   { name: 'Full on',      text: 'H100:0' },
   { name: 'Off',          text: 'H0:0' },
@@ -189,7 +248,7 @@ const Engine = {
     const p = { loop: false, steps: [] };
     for (const t of (text || '').trim().split(/[\s,]+/).filter(Boolean)) {
       if (t === 'loop') { p.loop = true; continue; }
-      if (p.steps.length >= 10) throw Error('max 10 steps');
+      if (p.steps.length >= MAX_STEPS) throw Error('max ' + MAX_STEPS + ' steps');
       let m, s;
       if ((m = t.match(/^H(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'H', a: +m[1], b: 0, per: 0, dur: this.dur(m[2], m[3]) };
       else if ((m = t.match(/^F(\d+)-(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'F', a: +m[1], b: +m[2], per: 0, dur: this.dur(m[3], m[4]) };
@@ -234,6 +293,7 @@ class Channel {            // same behavior as lf::Channel in firmware
 }
 
 /* ============================ STORAGE (best effort) ============================ */
+function storageOk() { try { localStorage.setItem('lf-t', '1'); localStorage.removeItem('lf-t'); return true; } catch { return false; } }
 const Store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } },
@@ -245,77 +305,35 @@ const Store = {
    the SAME JSON lines it will send over USB to the real control ESP32.     */
 const tri = (now, per = 1000) => { const ph = (now % per) / per; return ph < .5 ? 2 * ph : 2 - 2 * ph; };
 const Radio = {
-  loss: 0.05,
+  loss: 0,
   send(fn) { if (Math.random() < this.loss) return; setTimeout(fn, 8 + Math.random() * 25); },
 };
 const CTRL_MAC = 'C0:11:00:00:00:01';
 
-class VNode {
-  constructor(d) {
-    this.mac = d.mac; this.physWall = d.physWall; this.powered = d.powered ?? true;
-    this.ctrl = d.ctrl || null; this.progText = d.progText || Array(8).fill('');
-    this.assign = d.assign || Array(8).fill(null); this.manual = d.manual || Array(8).fill(0);
-    this.playingMask = d.playingMask || 0;
-    this.pairUntil = 0; this.identUntil = Array(8).fill(0); this.lastSeq = null; this.lastStatus = null;
-    this.nextHb = 0; this.nextPair = 0;
-    this.boot();
+class VNode {             // one simulated wall node: always powered, always paired
+  constructor(mac, wall) {
+    this.mac = mac; this.physWall = wall;
+    this.progs = Array(8).fill(null); this.assign = Array(8).fill(null);
+    this.identUntil = Array(8).fill(0); this.lastSeq = null; this.lastStatus = null; this.nextHb = 0;
+    this.ch = Array.from({ length: 8 }, () => new Channel());
   }
-  boot() {                  // restore from "flash", playing channels restart at t=0
-    const now = performance.now();
-    this.progs = this.progText.map(t => { try { return t ? Engine.parse(t) : null; } catch { return null; } });
-    this.ch = Array.from({ length: 8 }, (_, i) => {
-      const c = new Channel(); const s = this.assign[i];
-      if ((this.playingMask >> i & 1) && s != null && this.progs[s]) c.play(this.progs[s], now);
-      else c.setManual(this.manual[i] / 100, 0, now);
-      return c;
-    });
-    this.pairUntil = 0; this.lastSeq = null;
-  }
-  save() {
-    this.manual = this.ch.map(c => Math.round((c.mode === 'manual' ? c.to : c.cur) * 100));
-    this.playingMask = this.ch.reduce((m, c, i) => m | (c.mode === 'program' ? 1 << i : 0), 0);
-    Sim.persist();
-  }
-  serialize() { return { mac: this.mac, physWall: this.physWall, powered: this.powered, ctrl: this.ctrl, progText: this.progText, assign: this.assign, manual: this.manual, playingMask: this.playingMask }; }
-  get pairing() { return performance.now() < this.pairUntil; }
-  holdBoot() { this.pairUntil = performance.now() + 60000; this.nextPair = 0; }
-  factoryReset() { Object.assign(this, { ctrl: null, progText: Array(8).fill(''), assign: Array(8).fill(null), manual: Array(8).fill(0), playingMask: 0 }); this.boot(); Sim.persist(); }
-  setPower(on) { this.powered = on; if (on) this.boot(); }
-  output(i, now) {          // what the strip on channel i physically shows
-    if (!this.powered) return 0;
-    let lv = this.ch[i].update(now);
-    if (this.pairing) lv = 0.3 * tri(now);
-    else if (now < this.identUntil[i]) lv = tri(now);
-    return lv;
-  }
+  output(i, now) { return now < this.identUntil[i] ? tri(now) : this.ch[i].update(now); }
   tick(now) {
-    if (!this.powered) return;
-    if (this.pairing && now >= this.nextPair) {
-      this.nextPair = now + 500;
-      Radio.send(() => SimControl.onPairReq(this.mac, 8));
-    }
-    if (this.ctrl && now >= this.nextHb) {
-      this.nextHb = now + 450 + Math.random() * 100;
-      const hb = { level: this.ch.map(c => Math.round(c.update(now) * 100)), playing: this.ch.reduce((m, c, i) => m | (c.mode === 'program' ? 1 << i : 0), 0), assign: [...this.assign] };
-      Radio.send(() => SimControl.onHeartbeat(this.mac, hb));
-    }
+    if (now < this.nextHb) return;
+    this.nextHb = now + 450 + Math.random() * 100;
+    const hb = { level: this.ch.map(c => Math.round(c.update(now) * 100)), playing: this.ch.reduce((m, c, i) => m | (c.mode === 'program' ? 1 << i : 0), 0), assign: [...this.assign] };
+    Radio.send(() => SimControl.onHeartbeat(this.mac, hb));
   }
-  receive(pkt, from) {      // radio packet from a controller
-    if (!this.powered) return;
-    if (pkt.type === 'pair_ack') {
-      if (this.pairing) { this.ctrl = from; this.pairUntil = 0; this.lastSeq = null; this.save(); }
-      return;
-    }
-    if (from !== this.ctrl) return;
+  receive(pkt) {
     const ack = st => Radio.send(() => SimControl.onAck(this.mac, pkt.seq, st));
     if (pkt.seq === this.lastSeq) return ack(this.lastStatus);   // retry: re-ACK, do not re-apply
     const now = performance.now(), M = pkt.mask; let st = 'ok';
     const each = f => { for (let i = 0; i < 8; i++) if (M >> i & 1) f(i); };
     switch (pkt.type) {
-      case 'set': if (pkt.level > 100) st = 'bad_arg'; else each(i => this.ch[i].setManual(pkt.level / 100, pkt.fade_ms || 0, now)); break;
+      case 'set': each(i => this.ch[i].setManual(pkt.level / 100, pkt.fade_ms || 0, now)); break;
       case 'prog': {
         let p; try { p = Engine.parse(pkt.text); } catch { st = 'bad_arg'; break; }
-        this.progText[pkt.slot] = pkt.text; this.progs[pkt.slot] = p;
+        this.progs[pkt.slot] = p;
         this.ch.forEach((c, i) => { if (c.mode === 'program' && this.assign[i] === pkt.slot) c.play(p, now); });
         break;
       }
@@ -323,11 +341,9 @@ class VNode {
       case 'play': each(i => { const s = this.assign[i]; if (s != null && this.progs[s]) this.ch[i].play(this.progs[s], now); }); break;
       case 'stop': each(i => this.ch[i].stop(now)); break;
       case 'identify': each(i => this.identUntil[i] = now + pkt.seconds * 1000); break;
-      case 'unpair': this.ctrl = null; break;
       default: st = 'bad_arg';
     }
-    this.lastSeq = pkt.seq; this.lastStatus = st;
-    this.save(); ack(st);
+    this.lastSeq = pkt.seq; this.lastStatus = st; ack(st);
   }
 }
 
@@ -338,7 +354,7 @@ const SimControl = {
   acks: {},             // `${mac}:${seq}` -> resolve
   emit(evt) { if (this.listener) setTimeout(() => this.listener(evt), 0); },
   vnode(mac) { return Sim.nodes.find(n => n.mac === mac); },
-  radioTo(mac, pkt) { const n = this.vnode(mac); Radio.send(() => n && n.receive(pkt, CTRL_MAC)); },
+  radioTo(mac, pkt) { const n = this.vnode(mac); Radio.send(() => n && n.receive(pkt)); },
   async reliable(mac, pkt) {               // retry until ACK, like the real controller
     pkt.seq = this.seq = (this.seq + 1) & 0xffff;
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -357,7 +373,6 @@ const SimControl = {
     if (!this.peers[mac]) return;
     const p = this.peers[mac], was = p.online; p.lastHb = performance.now(); p.online = true;
     this.emit({ evt: 'status', node: mac, online: true, rssi: -50 - Math.round(Math.random() * 15), level: hb.level, playing: hb.playing, assign: hb.assign.map(s => s == null ? null : s + 1) });
-    if (!was) Sim.persist();
   },
   tick(now) {
     for (const [mac, p] of Object.entries(this.peers))
@@ -370,17 +385,10 @@ const SimControl = {
     if (cmd === 'scan') { this.scanning = !!obj.on; return done(true); }
     if (cmd === 'hello') return this.emit({ evt: 'hello', id, fw: 1, mac: CTRL_MAC, peers: Object.keys(this.peers) });
     if (!node || !/^[0-9A-F:]{17}$/.test(node)) return done(false, 'bad_node');
-    if (cmd === 'pair') {
-      this.peers[node] = { lastHb: 0, online: false }; Sim.persist();
-      for (let i = 0; i < 10; i++) { this.radioTo(node, { type: 'pair_ack' }); await sleep(100); if (this.peers[node].online) return done(true); }
-      await sleep(800);
-      if (this.peers[node].online) return done(true);
-      delete this.peers[node]; Sim.persist(); return done(false, 'node_not_pairing');
-    }
+    if (cmd === 'pair' || cmd === 'unpair') return done(true);   // simulator: nodes are permanently paired
     if (!this.peers[node]) return done(false, 'not_paired');
     let pkt;
     switch (cmd) {
-      case 'unpair': pkt = { type: 'unpair' }; break;
       case 'prog': try { Engine.parse(obj.text); } catch (e) { return done(false, 'bad_program: ' + e.message); }
         pkt = { type: 'prog', slot: obj.slot - 1, text: obj.text }; break;
       case 'assign': pkt = { type: 'assign', mask: this.maskOf(obj.ch), slot: obj.slot == null ? null : obj.slot - 1 }; break;
@@ -390,28 +398,17 @@ const SimControl = {
       default: return done(false, 'unknown_cmd');
     }
     const st = await this.reliable(node, pkt);
-    if (cmd === 'unpair' && st === 'ok') { delete this.peers[node]; Sim.persist(); }
     done(st === 'ok', st === 'ok' ? null : st);
   },
 };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+const SIM_MACS = { W1: '5A:00:00:00:00:01', W2: '5A:00:00:00:00:02', W3: '5A:00:00:00:00:03', W4: '5A:00:00:00:00:04' };
 const Sim = {
-  nodes: [],
-  load() {
-    const d = Store.get('lf-sim-v2', null);
-    if (d) {
-      this.nodes = d.nodes.map(n => new VNode(n));
-      for (const m of d.peers || []) SimControl.peers[m] = { lastHb: performance.now(), online: false };
-      Radio.loss = d.loss ?? 0.05;
-    } else {
-      this.nodes = WALL_ORDER.map(w => new VNode({ mac: randMac(), physWall: w }));
-    }
-  },
-  persist() { Store.set('lf-sim-v2', { nodes: this.nodes.map(n => n.serialize()), peers: Object.keys(SimControl.peers), loss: Radio.loss }); },
+  nodes: WALL_ORDER.map(w => new VNode(SIM_MACS[w], w)),
   tick() { const now = performance.now(); this.nodes.forEach(n => n.tick(now)); SimControl.tick(now); },
 };
-function randMac() { return '24:6F:28:' + [0, 0, 0].map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0').toUpperCase()).join(':'); }
+for (const m of Object.values(SIM_MACS)) SimControl.peers[m] = { lastHb: 0, online: false };
 
 /* ============================ TRANSPORTS ============================ */
 const SimTransport = {
@@ -452,10 +449,11 @@ const SerialTransport = {                    // real control ESP32 over USB (Chr
 /* ============================ UI STATE ============================ */
 const S = Store.get('lf-ui-v2', null) || {
   nodes: {},              // mac -> {name, wall}
-  frames: {},             // 'N3' -> {program: idx|null, synced: bool}
+  frames: {},             // 'W1-3' -> {program: idx|null}  (saved on every change)
   programs: PRESETS,
 };
-S.view = S.view || { rot: 0, corner: null };
+S.view = S.view || { rot: 1, corner: null };
+if (S.view.rot % 2 === 0) S.view.rot = 1;   // keep the 15 m walls horizontal (fits 16:9)
 const live = { nodes: {}, frame: {} };   // runtime only: node status, frame send status
 let mode = 'edit', transport = SimTransport, reqId = 0;
 const pending = {};
@@ -463,8 +461,10 @@ const save = () => Store.set('lf-ui-v2', S);
 
 function frameIds(w) { return Array.from({ length: WALLS[w].frames }, (_, i) => w + '-' + (i + 1)); }
 const pid = id => { const [w, n] = id.split('-'); return [w, +n]; };
-function frameState(id) { return S.frames[id] || (S.frames[id] = { program: null, synced: true }); }
-function nodeForWall(w) { return Object.keys(S.nodes).find(m => S.nodes[m].wall === w) || null; }
+function frameState(id) { return S.frames[id] || (S.frames[id] = { program: null }); }
+const isSim = () => transport === SimTransport;
+function nodeForWall(w) { return isSim() ? SIM_MACS[w] : (Object.keys(S.nodes).find(m => S.nodes[m].wall === w) || null); }
+function allMacs() { return isSim() ? Object.values(SIM_MACS) : Object.keys(S.nodes).filter(m => S.nodes[m].wall); }
 const short = mac => mac.slice(-5).replace(':', '');
 
 function request(obj) {
@@ -485,34 +485,62 @@ function onEvent(e) {
 /* ============================ FRAME ACTIONS ============================ */
 function setFrameStatus(id, s) { live.frame[id] = s; renderControl(); }
 
-async function syncFrame(id) {        // push program + assignment for one frame to its node
+async function syncFrame(id, quiet) {   // push program + assignment for one frame to its node
   const [w, ch] = pid(id), mac = nodeForWall(w), fs = frameState(id);
   if (!mac) { setFrameStatus(id, 'nonode'); return false; }
   setFrameStatus(id, 'sending');
-  let r = { ok: true };
+  let r;
   if (fs.program != null) {
-    const p = S.programs[fs.program];
-    r = await request({ cmd: 'prog', node: mac, slot: fs.program + 1, text: p.text });
-    if (r.ok) r = await request({ cmd: 'assign', node: mac, ch, slot: fs.program + 1 });
+    r = await request({ cmd: 'prog', node: mac, slot: ch, text: S.programs[fs.program].text });   // slot n = channel n
+    if (r.ok) r = await request({ cmd: 'assign', node: mac, ch, slot: ch });
   } else r = await request({ cmd: 'assign', node: mac, ch, slot: null });
-  fs.synced = r.ok; save();
   setFrameStatus(id, r.ok ? 'ok' : 'fail');
-  if (!r.ok) toast(`${WALLS[w].name} ${ch}: ${r.err}`);
+  if (!r.ok && !quiet) toast(`${WALLS[w].name} frame ${ch}: ${r.err}`);
   return r.ok;
 }
-async function runFrame(id) {
+async function runFrame(id) {     // always resend program + assignment, then play
   const fs = frameState(id), [w, ch] = pid(id);
   if (fs.program == null) return toast('No program assigned. Switch to Edit mode to assign one.');
   const mac = nodeForWall(w);
   if (!mac) { setFrameStatus(id, 'nonode'); return toast('No node on this wall yet.'); }
-  if (!fs.synced && !(await syncFrame(id))) return;
+  if (!(await syncFrame(id))) return;
+  if (showState) showState.override.add(id);   // frame leaves the show; stays on its own program
   setFrameStatus(id, 'sending');
   const r = await request({ cmd: 'play', node: mac, ch });
   setFrameStatus(id, r.ok ? 'ok' : 'fail');
-  if (!r.ok) toast(`${WALLS[w].name} ${ch}: ${r.err}`);
+  if (!r.ok) toast(`${WALLS[w].name} frame ${ch}: ${r.err}`);
+}
+async function playAll() {
+  const ids = ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
+  if (!ids.some(id => frameState(id).program != null)) return toast('No frames have programs yet.');
+  showState = null;
+  await Promise.all(ids.map(id => syncFrame(id, true)));
+  allNodes({ cmd: 'play' }, 'Play all frames');
+}
+let showState = null;   // { idx, name, override: Set of frame ids }
+async function playShow() {
+  const idx = +document.getElementById('showSel').value, show = SHOWS[idx];
+  let prog; try { prog = compileShow(show); } catch (e) { return toast('Show error: ' + e.message); }
+  const ids = ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
+  if (!ids.length) return toast('No nodes yet.');
+  // 1) upload every frame's program into its own slot, 2) start all nodes together
+  const ok = await Promise.all(ids.map(async id => {
+    const [w, ch] = pid(id), mac = nodeForWall(w);
+    setFrameStatus(id, 'sending');
+    let r = await request({ cmd: 'prog', node: mac, slot: ch, text: prog[id] });
+    if (r.ok) r = await request({ cmd: 'assign', node: mac, ch, slot: ch });
+    setFrameStatus(id, r.ok ? 'ok' : 'fail');
+    return r.ok;
+  }));
+  showState = { idx, name: show.name, override: new Set() };
+  const macs = [...new Set(ids.map(id => nodeForWall(pid(id)[0])))];
+  const rs = await Promise.all(macs.map(m => request({ cmd: 'play', node: m, ch: 'all' })));
+  const bad = ok.filter(x => !x).length + rs.filter(r => !r.ok).length;
+  toast(bad ? `Show started, ${bad} send(s) failed` : `Playing: ${show.name}`);
+  renderControl();
 }
 async function allNodes(cmdObj, label) {
-  const macs = Object.keys(S.nodes);
+  const macs = allMacs();
   if (!macs.length) return toast('No nodes paired yet.');
   const rs = await Promise.all(macs.map(m => request({ ...cmdObj, node: m, ch: 'all' })));
   const bad = rs.filter(r => !r.ok).length;
@@ -522,7 +550,9 @@ async function allNodes(cmdObj, label) {
 /* ============================ ROOM DRAWING ============================ */
 // Plan view rotates in 90° steps (S.view.rot) so any wall can be on top.
 // Each wall gets an elevation panel outside the room, drawn as seen facing the wall.
-const PX = 34, GAP = 40, PW = 300, PH = 170;
+const PX = 34, GAP = 34;
+// panel size per side: top/bottom panels are wide, left/right panels sit beside the short walls
+const PANEL = { top: [500, 190], bottom: [500, 190], left: [330, 260], right: [330, 260] };
 const SIDES = ['top', 'right', 'bottom', 'left'];
 function sideOf(w) { return SIDES[(WALL_ORDER.indexOf(w) + S.view.rot) % 4]; }
 function planSize() {   // px; width = length of the wall on top
@@ -537,7 +567,7 @@ function wallPoint(side, u, W, D) {
   return [0, (1 - u) * D];
 }
 function drawRoom(svg, interactive) {
-  const [W, D] = planSize(), M = GAP + PH + 30, MX = GAP + PW + 20;
+  const [W, D] = planSize(), M = GAP + PANEL.top[1] + 6, MX = GAP + PANEL.left[0] + 6;
   svg.setAttribute('viewBox', `${-MX} ${-M} ${W + 2 * MX} ${D + 2 * M}`);
   let h = `<defs><marker id="ah${interactive ? 1 : 0}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#59607a"/></marker></defs>`;
   h += `<rect x="0" y="0" width="${W}" height="${D}" fill="#151820" class="wallLine"/>`;
@@ -546,6 +576,7 @@ function drawRoom(svg, interactive) {
     const c = WALLS[w], side = sideOf(w);
     // panel position
     let px, py;
+    const [PW, PH] = PANEL[side];
     if (side === 'top') { px = W / 2 - PW / 2; py = -GAP - PH; }
     if (side === 'bottom') { px = W / 2 - PW / 2; py = D + GAP; }
     if (side === 'left') { px = -GAP - PW; py = D / 2 - PH / 2; }
@@ -606,7 +637,8 @@ function renderControl() {
     lightStyle(el, lv, mac && !online);
     const pname = fs.program != null ? (S.programs[fs.program].name || 'slot ' + (fs.program + 1)) : (mode === 'edit' ? '— none —' : '');
     const playing = online && (ln.playing >> (ch - 1) & 1);
-    el.pn.textContent = (playing ? '▶ ' : '') + pname + (fs.program != null && !fs.synced ? ' *' : '');
+    const inShow = showState && !showState.override.has(id);
+    el.pn.textContent = inShow ? (playing ? '▶ show' : 'show') : (playing ? '▶ ' : '') + pname;
     const st = live.frame[id] || (mac ? null : (fs.program != null ? 'nonode' : null));
     const b = BADGE[st];
     el.badge.innerHTML = b ? `<circle r="8" fill="${b[0]}" class="${st === 'sending' ? 'sending' : ''}"/><text y="3.5" text-anchor="middle">${b[1]}</text>` : '';
@@ -614,6 +646,13 @@ function renderControl() {
 }
 function renderNodes() {
   const box = document.getElementById('nodeList'); let h = '';
+  if (isSim()) {
+    for (const w of WALL_ORDER) {
+      const ln = live.nodes[SIM_MACS[w]];
+      h += `<div class="nodeRow"><span class="dot ${ln && ln.online ? 'on' : ''}"></span><div><b>Sim node ${w}</b><br><span class="small">${ln && ln.online ? 'online ' + ln.rssi + ' dBm' : 'starting…'}</span></div></div>`;
+    }
+    box.innerHTML = h; return;
+  }
   for (const [w, c] of Object.entries(WALLS)) {
     const mac = nodeForWall(w);
     if (!mac) { h += `<div class="nodeRow small"><span class="dot"></span>${c.name} — <i>no node</i></div>`; continue; }
@@ -634,32 +673,6 @@ function renderSim() {
     frameIds(n.physWall).forEach((id, i) => simEls[id] && lightStyle(simEls[id], n.output(i, now)));
   }
 }
-function renderVNodes() {
-  const box = document.getElementById('vnodeList');
-  box.innerHTML = Sim.nodes.map((n, k) => {
-    const state = !n.powered ? 'powered off' : n.pairing ? `<span style="color:var(--warn)">pairing ${Math.ceil((n.pairUntil - performance.now()) / 1000)} s</span>` : n.ctrl ? '<span style="color:var(--ok)">paired</span>' : 'unpaired (LED fast blink)';
-    return `<div class="vnode"><div><b>Virtual node …${short(n.mac)}</b> <span class="small">${n.mac}</span></div>
-      <div class="row"><span class="small" style="flex:1">${state}</span>
-        <label class="small" style="width:auto">installed on</label>
-        <select data-k="${k}" data-act="wall">${Object.entries(WALLS).map(([w, c]) => `<option value="${w}" ${w === n.physWall ? 'selected' : ''}>${c.name}</option>`).join('')}</select></div>
-      <div class="row"><button data-k="${k}" data-act="boot">Hold BOOT 3 s</button>
-        <button data-k="${k}" data-act="power">${n.powered ? 'Power off' : 'Power on'}</button>
-        <button data-k="${k}" data-act="reset" class="danger">Hold BOOT 10 s</button>
-        <button data-k="${k}" data-act="del" title="remove virtual node">✕</button></div></div>`;
-  }).join('');
-}
-document.getElementById('vnodeList').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  const n = Sim.nodes[+b.dataset.k];
-  if (b.dataset.act === 'boot') n.holdBoot();
-  if (b.dataset.act === 'power') n.setPower(!n.powered);
-  if (b.dataset.act === 'reset') n.factoryReset();
-  if (b.dataset.act === 'del') { Sim.nodes.splice(+b.dataset.k, 1); }
-  Sim.persist(); renderVNodes();
-});
-document.getElementById('vnodeList').addEventListener('change', e => {
-  if (e.target.dataset.act === 'wall') { Sim.nodes[+e.target.dataset.k].physWall = e.target.value; Sim.persist(); }
-});
 
 /* ============================ MODALS ============================ */
 const modalBg = document.getElementById('modalBg'), modalEl = document.getElementById('modal');
@@ -674,25 +687,25 @@ function frameModal(id) {
   const [w, ch] = pid(id), fs = frameState(id), mac = nodeForWall(w);
   const opts = S.programs.map((p, i) => p.text ? `<option value="${i}" ${fs.program === i ? 'selected' : ''}>${i + 1}. ${esc(p.name || 'Untitled')} — ${esc(p.text)}</option>` : '').join('');
   openModal(`<h2>${WALLS[w].name} · frame ${ch}</h2>
-    <div class="small">${mac ? `Node <b>${esc(S.nodes[mac].name)}</b> (…${short(mac)}), channel ${ch}` : 'No node on this wall yet. The choice is saved and sent once a node is added.'}</div>
+    <div class="small">${mac ? `Node ${isSim() ? 'Sim ' + w : '<b>' + esc(S.nodes[mac].name) + '</b>'}, channel ${ch}` : 'No node on this wall yet. The choice is saved and sent once a node is added.'}</div>
     <div class="row"><label>Program</label><select id="fProg"><option value="">— none —</option>${opts}</select></div>
-    <div class="row" style="justify-content:flex-end"><button id="fClose">Close</button><button class="pri" id="fSave">Save</button></div>
-    <div class="small" id="fMsg"></div>`);
+    <div class="row" style="justify-content:flex-end"><span class="small" id="fMsg" style="flex:1">Changes save automatically.</span><button class="pri" id="fClose">Done</button></div>`);
   document.getElementById('fClose').onclick = closeModal;
-  document.getElementById('fSave').onclick = async () => {
-    const v = document.getElementById('fProg').value;
-    fs.program = v === '' ? null : +v; fs.synced = false; save(); renderControl();
+  document.getElementById('fProg').onchange = async e => {
+    const v = e.target.value;
+    fs.program = v === '' ? null : +v; save(); renderControl();
     const msg = document.getElementById('fMsg');
-    if (!mac) { msg.textContent = 'Saved. Will be sent when a node is added to this wall.'; return; }
-    msg.innerHTML = '<span class="spin"></span> sending to node…';
-    const ok = await syncFrame(id);
-    msg.innerHTML = ok ? '<span style="color:var(--ok)">✓ Saved and confirmed by node.</span>' : '<span style="color:var(--bad)">Node did not confirm. Saved here; it will retry when you run this frame.</span>';
+    msg.innerHTML = '<span style="color:var(--ok)">✓ Saved.</span>' + (mac ? ' <span class="spin"></span> sending to node…' : '');
+    if (!mac) return;
+    const ok = await syncFrame(id, true);
+    if (document.getElementById('fMsg') === msg) msg.innerHTML = ok ? '<span style="color:var(--ok)">✓ Saved · node confirmed.</span>' : '<span style="color:var(--warn)">✓ Saved here. Node did not confirm; it will be resent when you run the frame.</span>';
   };
 }
 
 const Find = {
   found: {}, open: false,
   start() {
+    if (isSim()) return toast('Simulator: all 4 nodes (24 frames) are always connected. Nothing to pair.');
     this.found = {}; this.open = true;
     openModal(`<h2>Find nodes</h2>
       <div class="small">On the node: hold the BOOT button 3 s and release. Its lights pulse while it waits.</div>
@@ -726,7 +739,7 @@ function assignNode(mac, name, wall) {
   const prev = nodeForWall(wall);
   if (prev && prev !== mac) S.nodes[prev].wall = null;     // wall takes the new node; old one becomes unassigned
   S.nodes[mac] = { name, wall }; save(); renderNodes(); renderControl();
-  frameIds(wall).forEach(id => { frameState(id).synced = false; if (frameState(id).program != null) syncFrame(id); });
+  frameIds(wall).forEach(id => { if (frameState(id).program != null) syncFrame(id, true); });
 }
 function nodeModal(mac) {
   const n = S.nodes[mac], ln = live.nodes[mac];
@@ -786,52 +799,56 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + b.dataset.tab));
   if (b.dataset.tab === 'programs') renderPrograms();
 });
-document.querySelectorAll('#modeSeg button').forEach(b => b.onclick = () => {
-  mode = b.dataset.mode;
-  document.querySelectorAll('#modeSeg button').forEach(x => x.classList.toggle('on', x === b));
-  document.getElementById('runBar').style.display = mode === 'run' ? 'flex' : 'none';
-  document.getElementById('editBar').style.display = mode === 'edit' ? 'flex' : 'none';
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('#modeSeg button').forEach(x => x.classList.toggle('on', x.dataset.mode === m));
+  document.getElementById('runBar').style.display = m === 'run' ? 'flex' : 'none';
+  document.getElementById('editBar').style.display = m === 'edit' ? 'flex' : 'none';
+  if (m === 'edit') showSim(false);          // simulator is only for running
   renderControl();
-});
+}
+function showSim(on) {
+  document.getElementById('sim').classList.toggle('on', on);
+  document.querySelector('main').classList.toggle('simOpen', on);
+  document.getElementById('btnSim').classList.toggle('pri', on);
+  if (on) { save(); if (mode !== 'run') setMode('run'); }
+}
+document.querySelectorAll('#modeSeg button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
 document.getElementById('btnFind').onclick = () => Find.start();
-document.getElementById('btnSim').onclick = () => document.getElementById('sim').classList.toggle('on');
+document.getElementById('btnSim').onclick = () => showSim(!document.getElementById('sim').classList.contains('on'));
 document.getElementById('btnLog').onclick = () => logEl.classList.toggle('on');
 logEl.ondblclick = () => { logEl.dataset.verbose = logEl.dataset.verbose ? '' : '1'; toast(logEl.dataset.verbose ? 'Log: showing heartbeats' : 'Log: hiding heartbeats'); };
-document.getElementById('btnPlayAll').onclick = async () => {
-  for (const id of Object.keys(ctrlEls)) { const fs = frameState(id); if (fs.program != null && !fs.synced && nodeForWall(pid(id)[0])) await syncFrame(id); }
-  allNodes({ cmd: 'play' }, 'Play all');
-};
-document.getElementById('btnStopAll').onclick = () => allNodes({ cmd: 'stop' }, 'Stop all');
-document.getElementById('btnAllOff').onclick = () => allNodes({ cmd: 'set', level: 0, fade_ms: 1000 }, 'All off');
+document.getElementById('btnPlayAll').onclick = playAll;
+document.getElementById('btnStopAll').onclick = () => { showState = null; allNodes({ cmd: 'stop' }, 'Stop all'); renderControl(); };
+document.getElementById('btnAllOff').onclick = () => { showState = null; allNodes({ cmd: 'set', level: 0, fade_ms: 1000 }, 'All off'); renderControl(); };
+document.getElementById('btnPlayShow').onclick = playShow;
+document.getElementById('showSel').innerHTML = SHOWS.map((sh, i) => `<option value="${i}">${esc(sh.name)}</option>`).join('');
 document.getElementById('roomSvg').addEventListener('click', e => {
   const f = e.target.closest('.frame'); if (!f) return;
   mode === 'edit' ? frameModal(f.dataset.id) : runFrame(f.dataset.id);
 });
 const lossIn = document.getElementById('lossIn');
-lossIn.oninput = () => { Radio.loss = lossIn.value / 100; document.getElementById('lossLbl').textContent = lossIn.value + '%'; Sim.persist(); };
-document.getElementById('btnAddV').onclick = () => { Sim.nodes.push(new VNode({ mac: randMac(), physWall: 'W1' })); Sim.persist(); renderVNodes(); };
-document.getElementById('btnResetAll').onclick = () => { Store.del('lf-sim-v2'); Store.del('lf-ui-v2'); location.reload(); };
+lossIn.oninput = () => { Radio.loss = lossIn.value / 100; document.getElementById('lossLbl').textContent = lossIn.value + '%'; };
 document.getElementById('transportSel').onchange = async e => {
   transport.close();
   transport = e.target.value === 'serial' ? SerialTransport : SimTransport;
   if (!(await transport.open(onEvent))) { e.target.value = 'sim'; transport = SimTransport; await transport.open(onEvent); }
-  else { live.nodes = {}; request({ cmd: 'hello' }); renderNodes(); }
+  else { live.nodes = {}; request({ cmd: 'hello' }); }
+  renderNodes(); renderControl();
 };
 
 function redraw() { ctrlEls = drawRoom(document.getElementById('roomSvg'), true); simEls = drawRoom(document.getElementById('simSvg'), false); renderControl(); }
-document.getElementById('btnRot').onclick = () => { S.view.rot = (S.view.rot + 1) % 4; save(); redraw(); };
+document.getElementById('btnRot').onclick = () => { S.view.rot = (S.view.rot + 2) % 4; save(); redraw(); };
 const cornerSel = document.getElementById('cornerSel');
 cornerSel.onchange = () => { S.view.corner = cornerSel.value || null; save(); redraw(); };
 /* ============================ START ============================ */
-Sim.load();
-lossIn.value = Math.round(Radio.loss * 100); document.getElementById('lossLbl').textContent = lossIn.value + '%';
 cornerSel.value = S.view.corner || '';
 ctrlEls = drawRoom(document.getElementById('roomSvg'), true);
 simEls = drawRoom(document.getElementById('simSvg'), false);
 SimTransport.open(onEvent);
-renderNodes(); renderControl(); renderVNodes();
+renderNodes(); renderControl();
+if (!storageOk()) toast('This viewer blocks saving. Open control.html in Chrome, Edge or Safari so assignments persist.');
 setInterval(() => Sim.tick(), 50);
-setInterval(renderVNodes, 1000);
 (function loop() { renderSim(); requestAnimationFrame(loop); })();
 
 /* =====================================================================
