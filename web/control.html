@@ -84,6 +84,20 @@ table{border-collapse:collapse;width:100%}
 td,th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:middle}
 code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 @media (max-width:900px){#sim{position:fixed;inset:54px 0 0 0;width:auto;z-index:8}}
+/* single-frame editor */
+#spView{display:none;gap:10px;flex:1;min-height:0}
+.spCenter{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+.spTblWrap{flex:1;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.spTbl td,.spTbl th{padding:4px 6px}
+.spTbl th{position:sticky;top:0;background:var(--panel2);font-size:11px;color:var(--mute);text-transform:uppercase;z-index:1}
+.spTbl input{width:76px} .spTbl select{width:84px}
+.spTbl input.bad{border-color:var(--bad)}
+.spTbl td.na{color:var(--mute);text-align:center}
+.spTbl button{padding:2px 7px;font-size:12px}
+.spRight{flex:0 0 380px;min-height:0;overflow:auto}
+.spPrev{display:flex;gap:18px;align-items:center}
+#spSwatch{width:110px;height:110px;border-radius:10px;background:#0d0f14;border:5px solid #3a3f4b;flex:none}
+.shItem small{display:block;color:var(--mute);font-size:11px}
 /* show editor */
 #page-programs.on{display:flex;flex-direction:column;overflow:hidden}
 #edView{display:flex;gap:10px;flex:1;min-height:0}
@@ -178,15 +192,8 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 
   <section class="page" id="page-programs">
     <div class="toolbar" style="margin-bottom:8px">
-      <div class="seg" id="progSeg"><button data-v="ed" class="on">Show editor</button><button data-v="lib">Program library</button></div>
-      <span class="small">Whole-room timeline. Every change saves automatically.</span>
-    </div>
-    <div id="libView" style="display:none;overflow:auto;flex:1;min-height:0">
-      <div class="card">
-        <h3>Program library (8 slots)</h3>
-        <p class="small">Program editor is on hold. These presets are what frames can be assigned. Format: <code>H&lt;lvl&gt;:&lt;dur&gt;</code> hold · <code>F&lt;a&gt;-&lt;b&gt;:&lt;dur&gt;</code> fade · <code>B&lt;a&gt;-&lt;b&gt;/&lt;period&gt;:&lt;dur&gt;</code> blink · optional <code>loop</code>.</p>
-        <table id="progTable"></table>
-      </div>
+      <div class="seg" id="progSeg"><button data-v="ed" class="on">Entire set</button><button data-v="sp">Single frame</button></div>
+      <span class="small" id="progHint">Whole-room timeline. Every change saves automatically.</span>
     </div>
     <div id="edView">
       <aside class="edLeft card">
@@ -233,6 +240,39 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
           <b>Keys</b>: Del delete · Ctrl+C / Ctrl+V copy / paste at playhead · Ctrl+D duplicate right after the selected clip(s) (repeat to build a sequence; with one clip selected, rows you selected get the copy too) · Ctrl+Z / Ctrl+Y undo / redo · Space play / pause.<br>
           <b>Stagger</b>: select rows (or clips) that have a clip at the playhead; the first keeps its time, each next frame starts <i>offset</i> later.<br>
           Each frame can hold at most 24 steps (gaps count). Rows over the limit turn red; Run mode will not play that show.
+        </div>
+      </aside>
+    </div>
+    <div id="spView">
+      <aside class="edLeft card">
+        <h3>Frame programs</h3>
+        <div class="shList" id="spList"></div>
+        <div class="shBtns">
+          <button id="spNew">New</button><button id="spDup">Duplicate</button>
+          <button id="spRen">Rename</button><button id="spDel" class="danger">Delete</button>
+        </div>
+      </aside>
+      <div class="spCenter">
+        <div class="edBar">
+          <b id="spName"></b>
+          <label class="small"><input type="checkbox" id="spLoop"> Loop</label>
+          <span class="spacer"></span>
+          <span class="small" id="spCount"></span>
+          <button id="spAdd">+ Add step</button>
+        </div>
+        <div class="spTblWrap"><table class="spTbl"><thead><tr><th>#</th><th>Type</th><th>Level (%)</th><th>To level (%)</th><th>Blink period (s / ms)</th><th>Duration (s / ms)</th><th></th></tr></thead><tbody id="spRows"></tbody></table></div>
+        <div class="small" style="margin:8px 0 3px">Program text <span style="opacity:.7">(H100:10s hold · F0-100:2s fade · B0-100/1s:5s blink · loop)</span></div>
+        <input id="spText" spellcheck="false" style="width:100%;font-family:ui-monospace,Consolas,monospace" aria-label="Program text">
+        <div id="spErr" class="warn" style="min-height:18px;margin-top:3px"></div>
+      </div>
+      <aside class="spRight">
+        <div class="card" style="margin-bottom:10px"><h3>Level vs time</h3><svg id="spGraph" viewBox="0 0 600 300" style="width:100%;height:auto;display:block"></svg></div>
+        <div class="card spPrev">
+          <div id="spSwatch" title="Preview"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+            <div class="row" style="margin:0"><button class="pri" id="spPlay">▶ Play</button><button id="spStop">■ Stop</button></div>
+            <b id="spTime" class="mono">0.0s</b><span class="small" id="spLvl">0%</span>
+          </div>
         </div>
       </aside>
     </div>
@@ -372,6 +412,13 @@ const Engine = {
       p.steps.push(s);
     }
     return p;
+  },
+  fmtDur(ms) { return ms === 0 ? '0' : ms % 100 === 0 && ms >= 1000 ? ms / 1000 + 's' : ms + 'ms'; },   // 10s, 1.5s, 250ms
+  format(p) {    // inverse of parse(): parse(format(p)) deep-equals p
+    const out = p.loop ? ['loop'] : [];
+    for (const s of p.steps) out.push(s.type === 'H' ? `H${s.a}:${this.fmtDur(s.dur)}` : s.type === 'F' ? `F${s.a}-${s.b}:${this.fmtDur(s.dur)}`
+      : `B${s.a}-${s.b}/${this.fmtDur(s.per)}:${this.fmtDur(s.dur)}`);
+    return out.join(' ');
   },
   total(p) { return p.steps.reduce((a, s) => a + s.dur, 0); },
   endLevel(s) { return (s.type === 'F' ? s.b : s.a) / 100; },
@@ -565,6 +612,24 @@ const S = Store.get('lf-ui-v2', null) || {
   frames: {},             // 'W1-3' -> {program: idx|null}  (saved on every change)
   programs: PRESETS,
 };
+function newId(prefix) {
+  const taken = new Set([...(S.programs || []), ...(S.shows || [])].map(x => x && x.id));
+  for (;;) { const id = prefix + '_' + Math.random().toString(36).slice(2, 8); if (!taken.has(id)) return id; }
+}
+function migratePrograms() {   // programs get stable ids; frames keep pointing at them by id (old saves used array index)
+  const old = Array.isArray(S.programs) ? S.programs : [], legacy = !Array.isArray(S.programs) || old.some(p => p && !p.id);
+  const map = [], seen = new Set(); S.programs = [];
+  old.forEach((p, i) => {
+    if (!p || (legacy && !String(p.text || '').trim())) { map[i] = null; return; }   // old empty preset slots are dropped
+    let id = p.id; if (!id || seen.has(id)) id = newId('p');
+    seen.add(id); map[i] = id; S.programs.push({ id, name: String(p.name || 'Untitled'), text: String(p.text || '').trim() });
+  });
+  for (const fs of Object.values(S.frames || {})) {
+    if (typeof fs.program === 'number') fs.program = map[fs.program] || null;
+    else if (fs.program != null && !seen.has(fs.program)) fs.program = null;
+  }
+  save();
+}
 S.view = S.view || { rot: 1, corner: null };
 if (S.view.rot % 2 === 0) S.view.rot = 1;   // keep the 15 m walls horizontal (fits 16:9)
 const live = { nodes: {}, frame: {} };   // runtime only: node status, frame send status
@@ -575,6 +640,8 @@ const save = () => Store.set('lf-ui-v2', S);
 function frameIds(w) { return Array.from({ length: WALLS[w].frames }, (_, i) => w + '-' + (i + 1)); }
 const pid = id => { const [w, n] = id.split('-'); return [w, +n]; };
 function frameState(id) { return S.frames[id] || (S.frames[id] = { program: null }); }
+const progById = pidv => (pidv != null && S.programs.find(p => p.id === pidv)) || null;
+const frameProg = id => progById(frameState(id).program);     // the program a frame uses, or null
 const isSim = () => transport === SimTransport;
 function nodeForWall(w) { return isSim() ? SIM_MACS[w] : (Object.keys(S.nodes).find(m => S.nodes[m].wall === w) || null); }
 function allMacs() { return isSim() ? Object.values(SIM_MACS) : Object.keys(S.nodes).filter(m => S.nodes[m].wall); }
@@ -603,8 +670,9 @@ async function syncFrame(id, quiet) {   // push program + assignment for one fra
   if (!mac) { setFrameStatus(id, 'nonode'); return false; }
   setFrameStatus(id, 'sending');
   let r;
-  if (fs.program != null) {
-    r = await request({ cmd: 'prog', node: mac, slot: ch, text: S.programs[fs.program].text });   // slot n = channel n
+  const fp = progById(fs.program);
+  if (fp && fp.text) {
+    r = await request({ cmd: 'prog', node: mac, slot: ch, text: fp.text });   // slot n = channel n
     if (r.ok) r = await request({ cmd: 'assign', node: mac, ch, slot: ch });
   } else r = await request({ cmd: 'assign', node: mac, ch, slot: null });
   setFrameStatus(id, r.ok ? 'ok' : 'fail');
@@ -613,7 +681,7 @@ async function syncFrame(id, quiet) {   // push program + assignment for one fra
 }
 async function runFrame(id) {     // always resend program + assignment, then play
   const fs = frameState(id), [w, ch] = pid(id);
-  if (fs.program == null) return toast('No program assigned. Switch to Edit mode to assign one.');
+  if (!progById(fs.program)) return toast('No program assigned. Switch to Edit mode to assign one.');
   const mac = nodeForWall(w);
   if (!mac) { setFrameStatus(id, 'nonode'); return toast('No node on this wall yet.'); }
   if (!(await syncFrame(id))) return;
@@ -625,14 +693,14 @@ async function runFrame(id) {     // always resend program + assignment, then pl
 }
 async function playAll() {
   const ids = ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
-  if (!ids.some(id => frameState(id).program != null)) return toast('No frames have programs yet.');
+  if (!ids.some(id => frameProg(id))) return toast('No frames have programs yet.');
   showState = null;
   await Promise.all(ids.map(id => syncFrame(id, true)));
   allNodes({ cmd: 'play' }, 'Play all frames');
 }
-let showState = null;   // { idx, name, override: Set of frame ids }
+let showState = null;   // { id (show id), name, override: Set of frame ids }
 async function playShow() {
-  const idx = +document.getElementById('showSel').value, show = S.shows[idx];
+  const idx = document.getElementById('showSel').value, show = S.shows.find(x => x.id === idx);
   if (!show) return toast('No show selected.');
   const over = overLimit(show);
   if (over.length) return toast(`"${show.name}" can't play: ${over[0].id} needs ${over[0].n} steps (max ${MAX_STEPS})${over.length > 1 ? ` and ${over.length - 1} more frame(s)` : ''}. Fix it in Programs → Show editor.`, 7000);
@@ -648,7 +716,7 @@ async function playShow() {
     setFrameStatus(id, r.ok ? 'ok' : 'fail');
     return r.ok;
   }));
-  showState = { idx, name: show.name, override: new Set() };
+  showState = { id: idx, name: show.name, override: new Set() };
   const macs = [...new Set(ids.map(id => nodeForWall(pid(id)[0])))];
   const rs = await Promise.all(macs.map(m => request({ cmd: 'play', node: m, ch: 'all' })));
   const bad = ok.filter(x => !x).length + rs.filter(r => !r.ok).length;
@@ -751,11 +819,11 @@ function renderControl() {
     const [w, ch] = pid(id), mac = nodeForWall(w), fs = frameState(id), ln = mac && live.nodes[mac];
     const online = ln && ln.online, lv = online && ln.level ? ln.level[ch - 1] / 100 : 0;
     lightStyle(el, lv, mac && !online);
-    const pname = fs.program != null ? (S.programs[fs.program].name || 'slot ' + (fs.program + 1)) : (mode === 'edit' ? '— none —' : '');
+    const fpr = progById(fs.program), pname = fpr ? (fpr.name || 'Untitled') : (mode === 'edit' ? '— none —' : '');
     const playing = online && (ln.playing >> (ch - 1) & 1);
     const inShow = showState && !showState.override.has(id);
     el.pn.textContent = inShow ? (playing ? '▶ show' : 'show') : (playing ? '▶ ' : '') + pname;
-    const st = live.frame[id] || (mac ? null : (fs.program != null ? 'nonode' : null));
+    const st = live.frame[id] || (mac ? null : (fpr ? 'nonode' : null));
     const b = BADGE[st];
     el.badge.innerHTML = b ? `<circle r="8" fill="${b[0]}" class="${st === 'sending' ? 'sending' : ''}"/><text y="3.5" text-anchor="middle">${b[1]}</text>` : '';
   }
@@ -799,9 +867,12 @@ modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal();
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const wallOptions = sel => Object.entries(WALLS).map(([w, c]) => `<option value="${w}" ${w === sel ? 'selected' : ''}>${c.name} · ${esc(c.desc)} (${c.frames})${nodeForWall(w) && w !== sel ? ' — has node' : ''}</option>`).join('');
 
+function frameProgOptions(cur) {     // frame dropdown: single-frame programs only (never shows)
+  return S.programs.filter(p => p.text).map(p => `<option value="${esc(p.id)}" ${cur === p.id ? 'selected' : ''}>${esc(p.name || 'Untitled')} — ${esc(p.text)}</option>`).join('');
+}
 function frameModal(id) {
   const [w, ch] = pid(id), fs = frameState(id), mac = nodeForWall(w);
-  const opts = S.programs.map((p, i) => p.text ? `<option value="${i}" ${fs.program === i ? 'selected' : ''}>${i + 1}. ${esc(p.name || 'Untitled')} — ${esc(p.text)}</option>` : '').join('');
+  const opts = frameProgOptions(fs.program);
   openModal(`<h2>${WALLS[w].name} · frame ${ch}</h2>
     <div class="small">${mac ? `Node ${isSim() ? 'Sim ' + w : '<b>' + esc(S.nodes[mac].name) + '</b>'}, channel ${ch}` : 'No node on this wall yet. The choice is saved and sent once a node is added.'}</div>
     <div class="row"><label>Program</label><select id="fProg"><option value="">— none —</option>${opts}</select></div>
@@ -809,7 +880,7 @@ function frameModal(id) {
   document.getElementById('fClose').onclick = closeModal;
   document.getElementById('fProg').onchange = async e => {
     const v = e.target.value;
-    fs.program = v === '' ? null : +v; save(); renderControl();
+    fs.program = v === '' ? null : v; save(); renderControl();
     const msg = document.getElementById('fMsg');
     msg.innerHTML = '<span style="color:var(--ok)">✓ Saved.</span>' + (mac ? ' <span class="spin"></span> sending to node…' : '');
     if (!mac) return;
@@ -855,7 +926,7 @@ function assignNode(mac, name, wall) {
   const prev = nodeForWall(wall);
   if (prev && prev !== mac) S.nodes[prev].wall = null;     // wall takes the new node; old one becomes unassigned
   S.nodes[mac] = { name, wall }; save(); renderNodes(); renderControl();
-  frameIds(wall).forEach(id => { if (frameState(id).program != null) syncFrame(id, true); });
+  frameIds(wall).forEach(id => { if (frameProg(id)) syncFrame(id, true); });
 }
 function nodeModal(mac) {
   const n = S.nodes[mac], ln = live.nodes[mac];
@@ -881,30 +952,12 @@ function nodeModal(mac) {
   };
 }
 
-/* ============================ PROGRAMS PAGE (read-only for now) ============================ */
-function renderPrograms() {
-  let h = '<tr><th>#</th><th>Name</th><th>Program</th><th>Length</th><th>Shape</th></tr>';
-  S.programs.forEach((p, i) => {
-    let shape = '', len = '';
-    if (p.text) {
-      try {
-        const pr = Engine.parse(p.text), tot = Engine.total(pr), span = Math.max(tot, 1000) * (pr.loop ? 2 : 1.15);
-        len = (tot / 1000).toFixed(1) + ' s' + (pr.loop ? ' (loop)' : '');
-        const pts = []; for (let k = 0; k <= 200; k++) { const t = span * k / 200; const tt = pr.loop && tot ? t % tot : t; pts.push(`${k},${30 - 28 * Engine.levelAt(pr, tt)}`); }
-        shape = `<svg viewBox="0 0 200 32" width="200" height="32"><polyline points="${pts.join(' ')}" fill="none" stroke="var(--light)" stroke-width="1.5"/></svg>`;
-      } catch (e) { len = '<span style="color:var(--bad)">' + esc(e.message) + '</span>'; }
-    }
-    h += `<tr><td>${i + 1}</td><td>${esc(p.name) || '<span class="small">empty</span>'}</td><td><code>${esc(p.text)}</code></td><td>${len}</td><td>${shape}</td></tr>`;
-  });
-  document.getElementById('progTable').innerHTML = h;
-}
-
 /* ============================ SHOW EDITOR ============================
    S.shows = [{name, loop, length_ms, tracks:[{frames, stagger_ms, clips:[{t,fx,a,b,per,dur}]}]}]
    The editor keeps ONE track per frame (frames:[id], stagger_ms:0). Older/imported shows with group
    tracks or stagger are expanded to that form by normalizeShow(); compileShow() output is identical. */
 const MAXT = 600000, SNAP = 100, LABEL_W = 84, RULER_H = 24;
-const ED = { idx: 0, view: 'ed', rows: new Set(), anchor: null, clips: new Set(), collapsed: {}, ppm: 0.06, rowH: 20, needFit: true,
+const ED = { idx: 0, view: S.progView === 'sp' ? 'sp' : 'ed', rows: new Set(), anchor: null, clips: new Set(), collapsed: {}, ppm: 0.06, rowH: 20, needFit: true,
   playing: false, pos: 0, pos0: 0, t0: 0, undo: [], redo: [], clipboard: null, cache: null };
 const byId = id => document.getElementById(id);
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -955,7 +1008,7 @@ function normalizeShow(raw) {       // any valid show -> one track per frame, st
     for (const c of list) { const start = Math.max(c.t, now), dur = c.t + c.dur - start; if (dur > 0) { clips.push({ ...c, t: start, dur }); now = start + dur; } }
     if (clips.length) tracks.push({ frames: [id], stagger_ms: 0, clips });
   }
-  const sh = { name: String(raw.name || 'Untitled').slice(0, 60), loop: !!raw.loop, tracks };
+  const sh = { id: typeof raw.id === 'string' && raw.id ? raw.id : newId('s'), name: String(raw.name || 'Untitled').slice(0, 60), loop: !!raw.loop, tracks };
   const len = Math.round(+raw.length_ms) || 0;
   if (sh.loop) sh.length_ms = Math.max(len, contentEnd(sh)) || 10000;
   else if (len > 0) sh.length_ms = len;
@@ -965,6 +1018,7 @@ function ensureShows() {
   if (!Array.isArray(S.shows) || !S.shows.length) S.shows = JSON.parse(JSON.stringify(DEFAULT_SHOWS));
   S.shows = S.shows.map(sh => { try { return normalizeShow(sh); } catch { return null; } }).filter(Boolean);
   if (!S.shows.length) S.shows = DEFAULT_SHOWS.map(normalizeShow);
+  const seenS = new Set(); S.shows.forEach(sh => { if (seenS.has(sh.id)) sh.id = newId('s'); seenS.add(sh.id); });
   ED.idx = clamp(+S.edShow || 0, 0, S.shows.length - 1);
   save();
 }
@@ -1009,6 +1063,7 @@ const undo = () => history(ED.undo, ED.redo), redo = () => history(ED.redo, ED.u
 
 /* ---- rendering ---- */
 function edActive() { return byId('page-programs').classList.contains('on') && ED.view === 'ed'; }
+function spActive() { return byId('page-programs').classList.contains('on') && ED.view === 'sp'; }
 function renderEditor() {
   if (!edActive()) return;
   const sc = byId('tlScroll');
@@ -1075,9 +1130,9 @@ function syncSel() {      // cheap selection refresh (no full timeline rebuild)
   renderTop();
 }
 function refreshShowSel() {     // Run mode dropdown reads S.shows
-  const sel = byId('showSel'), keep = +sel.value || 0;
-  sel.innerHTML = S.shows.map((s, i) => `<option value="${i}">${overLimit(s).length ? '⚠ ' : ''}${esc(s.name)}</option>`).join('');
-  sel.value = String(Math.min(keep, S.shows.length - 1));
+  const sel = byId('showSel'), keep = sel.value;
+  sel.innerHTML = S.shows.map(s => `<option value="${esc(s.id)}">${overLimit(s).length ? '⚠ ' : ''}${esc(s.name)}</option>`).join('');
+  sel.value = S.shows.some(s => s.id === keep) ? keep : (S.shows[0] ? S.shows[0].id : '');
 }
 
 /* ---- preview transport ---- */
@@ -1237,6 +1292,149 @@ function applyStagger() {
   toast(`Staggered ${plan.length} frames, ${off} ms apart`);
 }
 
+/* ============================ SINGLE-FRAME PROGRAM EDITOR ============================
+   S.programs = [{id, name, text}] — the text IS the program (same format a node receives). The table, graph and
+   preview are all derived from it with Engine.parse; table edits go back through Engine.format. */
+const SP = { playing: false, t0: 0, pr: null, g: null };
+const curProg = () => progById(S.spSel) || S.programs[0] || null;
+const progUse = pidv => Object.values(S.frames).filter(f => f.program === pidv).length;
+const usedLbl = n => n === 1 ? 'used by 1 frame' : `used by ${n} frames`;
+function uniqueProgName(base) {
+  const names = new Set(S.programs.map(p => p.name)); if (!names.has(base)) return base;
+  for (let i = 2; ; i++) if (!names.has(base + ' ' + i)) return base + ' ' + i;
+}
+function parseDur(txt) {       // "500ms" | "1.5s" | "500" (bare ms) -> ms, or null
+  const m = String(txt).trim().match(/^(\d+(?:\.\d+)?|\.\d+)\s*(ms|s)?$/i); if (!m) return null;
+  const ms = Engine.dur(m[1], (m[2] || '').toLowerCase()); return ms >= 0 && ms <= 86400000 ? ms : null;
+}
+function spModel() { const p = curProg(); if (!p) return null; try { return Engine.parse(p.text); } catch { return null; } }
+function spCommit(m) { const p = curProg(); p.text = Engine.format(m); save(); spRender(); }
+
+function niceStep(span) { for (const s of [100, 200, 500, 1000, 2000, 5000, 10000, 15000, 30000, 60000, 120000, 300000, 600000, 1800000, 3600000]) if (span / s <= 8) return s; return 3600000; }
+function spGraph(m) {
+  const W = 600, H = 300, X0 = 40, X1 = W - 12, Y0 = 12, Y1 = H - 30, svg = byId('spGraph');
+  if (!m) { svg.innerHTML = ''; SP.g = null; return; }
+  const tot = Engine.total(m), span = tot <= 0 ? 1000 : m.loop ? tot * 2 : Math.max(tot * 1.1, 1000);
+  const px = t => X0 + (X1 - X0) * t / span, py = v => Y1 - (Y1 - Y0) * v;
+  let h = '';
+  for (const v of [0, .25, .5, .75, 1]) h += `<line x1="${X0}" x2="${X1}" y1="${py(v)}" y2="${py(v)}" stroke="#ffffff${v % .5 ? '0d' : '22'}"/><text x="${X0 - 5}" y="${py(v) + 4}" text-anchor="end" font-size="11" fill="#8d93a6">${v * 100}%</text>`;
+  const step = niceStep(span);
+  for (let t = 0; t <= span + 1; t += step) h += `<line x1="${px(t)}" x2="${px(t)}" y1="${Y0}" y2="${Y1}" stroke="#ffffff10"/><text x="${px(t)}" y="${H - 12}" text-anchor="middle" font-size="11" fill="#8d93a6">${+(t / 1000).toFixed(2)}s</text>`;
+  const ts = new Set(); for (let k = 0; k <= 400; k++) ts.add(span * k / 400);
+  let acc = 0; for (let c = 0; c < (m.loop && tot > 0 ? 2 : 1); c++) for (const s of m.steps) { acc += s.dur; ts.add(acc); ts.add(Math.max(0, acc - .001)); }
+  const pts = [...ts].filter(t => t <= span).sort((a, b) => a - b).map(t => `${px(t).toFixed(1)},${py(progLevel(m, t)).toFixed(1)}`);
+  if (m.loop && tot > 0) h += `<line x1="${px(tot)}" x2="${px(tot)}" y1="${Y0}" y2="${Y1}" stroke="#5aa9ff" stroke-dasharray="4 4"/><text x="${px(tot) + 4}" y="${Y0 + 10}" font-size="10" fill="#5aa9ff">loop</text>`;
+  h += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--light)" stroke-width="2" stroke-linejoin="round"/><line id="spHead" x1="${X0}" x2="${X0}" y1="${Y0}" y2="${Y1}" stroke="#ff4d6d" stroke-width="2" style="display:none"/>`;
+  svg.innerHTML = h; SP.g = { px, tot, span };
+}
+function spPaint(lv, t) {      // swatch glow, time + playhead
+  const sw = byId('spSwatch'), a = [58, 63, 75], b = [255, 214, 140], c = a.map((v, i) => Math.round(v + (b[i] - v) * lv));
+  sw.style.borderColor = `rgb(${c})`;
+  sw.style.boxShadow = lv > .02 ? `0 0 ${10 + 30 * lv}px rgba(255,200,110,${.25 + .6 * lv})` : 'none';
+  sw.style.background = `rgb(${[13, 15, 20].map((v, i) => Math.round(v + (b[i] - v) * lv * .55))})`;
+  byId('spTime').textContent = (t / 1000).toFixed(1) + 's'; byId('spLvl').textContent = Math.round(lv * 100) + '%';
+  const hd = byId('spHead');
+  if (hd && SP.g) { const g = SP.g, x = g.px(g.tot > 0 && SP.pr && SP.pr.loop ? t % g.tot : Math.min(t, g.span)); hd.setAttribute('x1', x); hd.setAttribute('x2', x); hd.style.display = SP.playing ? '' : 'none'; }
+}
+function spTick() {
+  if (SP.playing && spActive() && SP.pr) {
+    const t = performance.now() - SP.t0, tot = Engine.total(SP.pr);
+    spPaint(progLevel(SP.pr, t), t);
+    if (!SP.pr.loop && t >= tot) { SP.playing = false; byId('spPlay').textContent = '▶ Play'; }
+  }
+  requestAnimationFrame(spTick);
+}
+function spPlayStop(on) {
+  const m = spModel();
+  SP.playing = on && !!m && m.steps.length > 0; SP.pr = m; SP.t0 = performance.now();
+  byId('spPlay').textContent = SP.playing ? '↻ Restart' : '▶ Play'; spPaint(0, 0);
+}
+function spRender() {
+  if (!spActive()) return;
+  const p = curProg(), no = !p;
+  if (p) S.spSel = p.id;
+  byId('spList').innerHTML = S.programs.map(q => `<div class="shItem ${p && q.id === p.id ? 'on' : ''}" data-id="${esc(q.id)}"><span>${esc(q.name || 'Untitled')}<small>${usedLbl(progUse(q.id))}</small></span></div>`).join('');
+  ['spDup', 'spRen', 'spDel', 'spAdd', 'spLoop', 'spText', 'spPlay', 'spStop'].forEach(x => byId(x).disabled = no);
+  byId('spName').textContent = p ? p.name : 'No program';
+  let m = null, err = '';
+  if (p) { try { m = Engine.parse(p.text); } catch (e) { err = e.message; } }
+  if (document.activeElement !== byId('spText')) byId('spText').value = p ? p.text : '';
+  byId('spErr').textContent = err ? '⚠ ' + err + ' — table not updated' : '';
+  byId('spLoop').checked = !!(m && m.loop);
+  const n = m ? m.steps.length : 0;
+  byId('spCount').textContent = `${n} / ${MAX_STEPS}`;
+  byId('spAdd').disabled = no || !m || n >= MAX_STEPS;
+  byId('spAdd').title = n >= MAX_STEPS ? `Limit is ${MAX_STEPS} steps` : '';
+  const last = n - 1;
+  byId('spRows').innerHTML = (m ? m.steps : []).map((s, i) => {
+    const num = (f, v) => `<input type="number" min="0" max="100" step="1" value="${v}" data-i="${i}" data-f="${f}">`;
+    return `<tr><td>${i + 1}</td>
+      <td><select data-i="${i}" data-f="type">${['H', 'F', 'B'].map(t => `<option value="${t}" ${s.type === t ? 'selected' : ''}>${FXNAME[t]}</option>`).join('')}</select></td>
+      <td>${num('a', s.a)}</td>
+      <td class="${s.type === 'H' ? 'na' : ''}">${s.type === 'H' ? '—' : num('b', s.b)}</td>
+      <td class="${s.type === 'B' ? '' : 'na'}">${s.type === 'B' ? `<input value="${Engine.fmtDur(s.per) === '0' ? '0ms' : Engine.fmtDur(s.per)}" data-i="${i}" data-f="per">` : '—'}</td>
+      <td><input value="${Engine.fmtDur(s.dur) === '0' ? '0ms' : Engine.fmtDur(s.dur)}" data-i="${i}" data-f="dur" title="Type 500ms, 1.5s, or a bare number = ms"></td>
+      <td style="white-space:nowrap"><button data-i="${i}" data-act="up" ${i === 0 ? 'disabled' : ''} title="Move up">↑</button> <button data-i="${i}" data-act="down" ${i === last ? 'disabled' : ''} title="Move down">↓</button> <button data-i="${i}" data-act="del" class="danger" title="Delete step">✕</button></td></tr>`;
+  }).join('') || `<tr><td colspan="7" class="small" style="text-align:center;padding:16px">${err ? 'Fix the program text below.' : 'No steps. Click “+ Add step”.'}</td></tr>`;
+  spGraph(m);
+  SP.pr = m; if (SP.playing && !m) spPlayStop(false); else if (!SP.playing) spPaint(0, 0);
+}
+function initSingle() {
+  const withModel = fn => { const m = spModel(); if (!m) return toast('Fix the program text first.'); fn(m); };
+  byId('spList').onclick = e => { const it = e.target.closest('.shItem'); if (it) { S.spSel = it.dataset.id; save(); spPlayStop(false); spRender(); } };
+  byId('spNew').onclick = () => { const p = { id: newId('p'), name: uniqueProgName('New program'), text: 'H100:1s' }; S.programs.push(p); S.spSel = p.id; save(); spPlayStop(false); spRender(); };
+  byId('spDup').onclick = () => { const o = curProg(); if (!o) return; const p = { id: newId('p'), name: uniqueProgName(o.name + ' copy'), text: o.text }; S.programs.push(p); S.spSel = p.id; save(); spRender(); };
+  byId('spRen').onclick = () => { const p = curProg(); if (p) textModal('Rename program', p.name, 'Rename', v => { p.name = v.slice(0, 60); save(); renderControl(); spRender(); }); };
+  byId('spDel').onclick = () => {
+    const p = curProg(); if (!p) return; const n = progUse(p.id);
+    openModal(`<h2>Delete program?</h2><p>“${esc(p.name)}” will be removed. This cannot be undone.</p>${n ? `<p class="warn">Used by ${n} frame${n === 1 ? '' : 's'}. They will be unassigned.</p>` : ''}<div class="row" style="justify-content:flex-end"><button id="dNo">Cancel</button><button class="danger" id="dYes">Delete</button></div>`);
+    byId('dNo').onclick = closeModal;
+    byId('dYes').onclick = () => {
+      closeModal();
+      const hit = Object.keys(S.frames).filter(id => S.frames[id].program === p.id);
+      hit.forEach(id => S.frames[id].program = null);
+      const i = S.programs.indexOf(p); S.programs.splice(i, 1); S.spSel = (S.programs[Math.min(i, S.programs.length - 1)] || {}).id || null;
+      save(); spPlayStop(false); renderControl(); spRender();
+      hit.forEach(id => nodeForWall(pid(id)[0]) && syncFrame(id, true));      // tell the nodes those channels are unassigned
+    };
+  };
+  byId('spLoop').onchange = e => withModel(m => { m.loop = e.target.checked; spCommit(m); });
+  byId('spAdd').onclick = () => withModel(m => { if (m.steps.length >= MAX_STEPS) return toast(`Limit is ${MAX_STEPS} steps`); m.steps.push({ type: 'H', a: 100, b: 0, per: 0, dur: 1000 }); spCommit(m); });
+  byId('spRows').onclick = e => {
+    const b = e.target.closest('button[data-act]'); if (!b) return;
+    withModel(m => {
+      const i = +b.dataset.i, st = m.steps;
+      if (b.dataset.act === 'del') st.splice(i, 1);
+      else { const j = b.dataset.act === 'up' ? i - 1 : i + 1; if (j < 0 || j >= st.length) return; [st[i], st[j]] = [st[j], st[i]]; }
+      spCommit(m);
+    });
+  };
+  byId('spRows').onchange = e => {
+    const el = e.target, f = el.dataset.f; if (!f) return;
+    withModel(m => {
+      const s = m.steps[+el.dataset.i], bad = () => { el.classList.add('bad'); toast('Not a valid value', 1800); };
+      if (f === 'type') {
+        const old = s.type; s.type = el.value;
+        if (s.type === 'H') { s.b = 0; s.per = 0; } else { if (old === 'H') s.b = s.a; s.per = s.type === 'B' ? (s.per || 1000) : 0; }
+      } else if (f === 'a' || f === 'b') {
+        const v = Math.round(+el.value); if (el.value === '' || !(v >= 0 && v <= 100)) return bad(); s[f] = v;
+      } else {
+        const v = parseDur(el.value); if (v == null || (f === 'per' && !(v > 0 && v <= 65535))) return bad(); s[f] = v;
+      }
+      spCommit(m);
+    });
+  };
+  byId('spText').oninput = e => {         // text -> table, only when the parser accepts it
+    const p = curProg(); if (!p) return;
+    try { Engine.parse(e.target.value); } catch (x) { byId('spErr').textContent = '⚠ ' + x.message + ' — table not updated'; return; }
+    p.text = e.target.value.trim(); save(); spRender();
+  };
+  byId('spText').onblur = () => spRender();       // snap the box back to the saved text
+  byId('spPlay').onclick = () => spPlayStop(true);
+  byId('spStop').onclick = () => spPlayStop(false);
+  requestAnimationFrame(spTick);
+}
+
 /* ---- show list actions ---- */
 function switchShow(i) {
   ED.idx = clamp(i, 0, S.shows.length - 1); S.edShow = ED.idx;
@@ -1259,28 +1457,29 @@ function importShows(text) {
   let data; try { data = JSON.parse(text); } catch { return toast('Import failed: not a JSON file'); }
   const list = Array.isArray(data) ? data : Array.isArray(data && data.shows) ? data.shows : [data];
   const added = [];
-  for (const raw of list) { try { const sh = normalizeShow(raw); sh.name = uniqueName(sh.name); S.shows.push(sh); added.push(sh); } catch { } }
+  for (const raw of list) { try { const sh = normalizeShow(raw); sh.id = newId('s'); sh.name = uniqueName(sh.name); S.shows.push(sh); added.push(sh); } catch { } }
   if (!added.length) return toast('Import failed: no valid show found in that file');
   toast(`Imported ${added.length} show${added.length === 1 ? '' : 's'}`);
   switchShow(S.shows.indexOf(added[0]));
 }
 
 /* ---- wiring (called once at start) ---- */
-function setProgView(v) {
-  ED.view = v;
+function setProgView(v) {      // 'ed' = entire set (shows), 'sp' = single frame programs
+  ED.view = v; S.progView = v; save();
   document.querySelectorAll('#progSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   byId('edView').style.display = v === 'ed' ? 'flex' : 'none';
-  byId('libView').style.display = v === 'lib' ? 'block' : 'none';
-  if (v === 'lib') ED.playing = false;
-  renderEditor();
+  byId('spView').style.display = v === 'sp' ? 'flex' : 'none';
+  byId('progHint').textContent = v === 'ed' ? 'Whole-room timeline. Every change saves automatically.' : 'One program for one frame. Every change saves automatically; frames pick up changes the next time you run them.';
+  if (v === 'sp') ED.playing = false; else SP.playing = false;
+  v === 'ed' ? renderEditor() : spRender();
 }
 function initEditor() {
   const sc = byId('tlScroll'), tAt = e => (e.clientX - sc.getBoundingClientRect().left + sc.scrollLeft - LABEL_W) / ED.ppm;
   const snapT = (t, e) => e.altKey ? Math.round(t) : Math.round(t / SNAP) * SNAP;
   document.querySelectorAll('#progSeg button').forEach(b => b.onclick = () => setProgView(b.dataset.v));
   byId('shList').onclick = e => { const it = e.target.closest('.shItem'); if (it) switchShow(+it.dataset.i); };
-  byId('shNew').onclick = () => { S.shows.push({ name: uniqueName('New show'), loop: false, tracks: [] }); switchShow(S.shows.length - 1); };
-  byId('shDup').onclick = () => { const c = JSON.parse(JSON.stringify(curShow())); c.name = uniqueName(c.name + ' copy'); S.shows.push(c); switchShow(S.shows.length - 1); };
+  byId('shNew').onclick = () => { S.shows.push({ id: newId('s'), name: uniqueName('New show'), loop: false, tracks: [] }); switchShow(S.shows.length - 1); };
+  byId('shDup').onclick = () => { const c = JSON.parse(JSON.stringify(curShow())); c.id = newId('s'); c.name = uniqueName(c.name + ' copy'); S.shows.push(c); switchShow(S.shows.length - 1); };
   byId('shRen').onclick = () => textModal('Rename show', curShow().name, 'Rename', v => edit(s => s.name = v));
   byId('shDel').onclick = () => {
     if (S.shows.length < 2) return toast('Keep at least one show');
@@ -1486,6 +1685,24 @@ function selfTest() {
     check('click inside a multi-selection narrows to that clip, no popup', r3.sel.size === 1 && r3.sel.has(a) && !r3.open, '');
     check('click on another clip moves the selection, no popup', r4.sel.has(a) && !r4.sel.has(b) && !r4.open, '');
   }
+  { // 5) single-frame program library (S.programs) vs show library (S.shows)
+    const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+    for (const p of S.programs) {
+      let m = null, err = null; try { m = Engine.parse(p.text); } catch (e) { err = e.message; }
+      const t2 = m && Engine.format(m);
+      check(`program "${p.name}" parse/format round trip`, m && same(Engine.parse(t2), m) && Engine.format(Engine.parse(t2)) === t2, err || `${p.text} -> ${t2}`);
+    }
+    const pids = S.programs.map(p => p.id), sids = S.shows.map(x => x.id);
+    check('program ids are unique and non-empty', pids.every(Boolean) && new Set(pids).size === pids.length, pids.join());
+    check('show ids are unique and non-empty', sids.every(Boolean) && new Set(sids).size === sids.length, sids.join());
+    check('no id is shared between programs and shows', !pids.some(i => sids.includes(i)), '');
+    const dangling = Object.entries(S.frames).filter(([, f]) => f.program != null && !pids.includes(f.program)).map(([k]) => k);
+    check('no frame references a missing program id', !dangling.length, dangling.join());
+    const box = document.createElement('select'); box.innerHTML = '<option value="">none</option>' + frameProgOptions(null);
+    const fv = [...box.options].map(o => o.value).filter(Boolean), sv = [...byId('showSel').options].map(o => o.value);
+    check('frame dropdown lists only frame programs (no shows)', fv.every(v => pids.includes(v)) && !fv.some(v => sids.includes(v)), fv.join());
+    check('show dropdown lists only shows, all of them (no frame programs)', sv.length === sids.length && sv.every(v => sids.includes(v)) && !sv.some(v => pids.includes(v)), sv.join());
+  }
   lines.forEach(l => console.log(l));
   console.log(ok ? 'SELFTEST PASS' : 'SELFTEST FAIL');
   return ok;
@@ -1505,8 +1722,8 @@ let toastT; function toast(m, ms = 3200) { const t = document.getElementById('to
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + b.dataset.tab));
-  if (b.dataset.tab === 'programs') { renderPrograms(); setProgView(ED.view); }
-  else ED.playing = false;     // preview only runs while the editor is on screen
+  if (b.dataset.tab === 'programs') setProgView(ED.view);
+  else { ED.playing = false; SP.playing = false; }     // previews only run while their editor is on screen
 });
 function setMode(m) {
   mode = m;
@@ -1554,7 +1771,7 @@ cornerSel.value = S.view.corner || '';
 ctrlEls = drawRoom(document.getElementById('roomSvg'), true);
 simEls = drawRoom(document.getElementById('simSvg'), false);
 edEls = drawRoom(byId('edSvg'), false, 'e');
-ensureShows(); refreshShowSel(); initEditor();
+migratePrograms(); ensureShows(); refreshShowSel(); initEditor(); initSingle();
 SimTransport.open(onEvent);
 renderNodes(); renderControl();
 if (!storageOk()) toast('This viewer blocks saving. Open control.html in Chrome, Edge or Safari so assignments persist.');

@@ -22,6 +22,7 @@ web/control.html          control UI + built-in simulator (single file). Bottom 
                           Programs tab = whole-room show editor (shows saved in S.shows, one track per frame,
                           compileShow() is the single compiler). Run `selfTest()` in the browser console.
 ```
+UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated when the UI changes).
 
 ## Rules
 - Never change `protocol.h` struct layouts without bumping `LF_PROTO_VER` and rebuilding BOTH sides.
