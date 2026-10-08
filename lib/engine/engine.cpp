@@ -10,9 +10,9 @@ namespace lf {
 static float pct(uint8_t v) { return (v > 100 ? 100 : v) / 100.0f; }
 
 uint32_t programTotalMs(const LfProgram& p) {
-  uint32_t t = 0;
+  uint64_t t = 0;
   for (uint8_t i = 0; i < p.n_steps && i < LF_MAX_STEPS; i++) t += p.steps[i].duration_ms;
-  return t;
+  return t > 0xFFFFFFFFull ? 0xFFFFFFFFu : (uint32_t)t;  // saturate (only reachable with absurd durations)
 }
 
 float stepEndLevel(const LfStep& s) {
@@ -108,11 +108,31 @@ void Channel::setManual(float target, uint32_t fade_ms, uint32_t now) {
   if (fade_ms == 0) cur_ = target;
 }
 
-void Channel::play(const LfProgram* p, uint32_t now) {
+void Channel::play(const LfProgram* p, uint32_t now, uint32_t offset_ms) {
   if (!p) return;
   mode_ = PROGRAM;
   prog_ = p;
-  start_ = now;
+  start_ = now - offset_ms;  // unsigned: elapsed (now - start_) == offset_ms, also across millis() wrap
+}
+
+bool Channel::sync(uint32_t t_ms, uint32_t now) {
+  if (mode_ != PROGRAM || !prog_) return false;
+  uint32_t total = programTotalMs(*prog_);
+  bool loop = (prog_->flags & LF_PROG_LOOP) && total > 0;
+  uint32_t cur = now - start_, target = t_ms;
+  int64_t drift;
+  if (loop) {  // compare positions inside one cycle, shortest way round
+    cur %= total;
+    target %= total;
+    drift = (int64_t)target - (int64_t)cur;
+    if (drift > (int64_t)(total / 2)) drift -= total;
+    else if (drift < -(int64_t)(total / 2)) drift += total;
+  } else {
+    drift = (int64_t)target - (int64_t)cur;
+  }
+  if (drift <= LF_SYNC_TOLERANCE_MS && drift >= -(int64_t)LF_SYNC_TOLERANCE_MS) return false;
+  start_ = now - target;
+  return true;
 }
 
 void Channel::stop(uint32_t now) {
@@ -153,10 +173,10 @@ static bool parseLevel(const char*& s, uint8_t& out) {
 static bool parseDur(const char*& s, uint32_t& out) {
   char* end;
   double v = strtod(s, &end);
-  if (end == s || v < 0) return false;
+  if (end == s || !(v >= 0)) return false;  // also rejects NaN
   if (end[0] == 'm' && end[1] == 's') { end += 2; }
   else if (end[0] == 's') { v *= 1000.0; end += 1; }
-  if (v > 4.0e9) return false;
+  if (v > 4294967295.0) return false;  // uint32 ms
   out = (uint32_t)(v + 0.5);
   s = end;
   return true;
@@ -169,10 +189,10 @@ bool parseProgram(const char* text, LfProgram& out, char* err, size_t errlen) {
     while (*s == ' ' || *s == ',' || *s == '\t') s++;
     if (!*s || *s == '\r' || *s == '\n') break;
     const char* tok = s;
-    if (strncmp(s, "loop", 4) == 0 && (s[4] == 0 || s[4] == ' ' || s[4] == ',')) {
+    if (strncmp(s, "loop", 4) == 0 && (s[4] == 0 || strchr(" ,\t\r\n", s[4]))) {
       out.flags |= LF_PROG_LOOP; s += 4; continue;
     }
-    if (out.n_steps >= LF_MAX_STEPS) { setErr(err, errlen, "max 10 steps", tok); return false; }
+    if (out.n_steps >= LF_MAX_STEPS) { setErr(err, errlen, "max 24 steps", tok); return false; }
     LfStep& st = out.steps[out.n_steps];
     char c = (char)toupper((unsigned char)*s++);
     if (c == 'H') {

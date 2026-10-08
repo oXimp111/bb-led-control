@@ -318,7 +318,7 @@ for (const c of Object.values(WALLS)) {      // channel order = left→right as 
   c.frames = c.boxes.length;
 }
 const WALL_ORDER = ['W1', 'W2', 'W3', 'W4'];   // clockwise
-const MAX_STEPS = 24;   // NOTE: node firmware is still 10 (LF_MAX_STEPS); raise to 24 before shows run on hardware
+const MAX_STEPS = 24;   // = LF_MAX_STEPS in lib/protocol/protocol.h (node firmware accepts 24 since LF_PROTO_VER 2)
 
 /* ---- Shows: whole-room programs. Compiled into one program per frame (slot n = channel n). ----
    track: { frames: [ids] | 'W1' | 'all', stagger_ms, clips: [{ t, fx:'H'|'F'|'B', a, b, per, dur }] }
@@ -1790,6 +1790,11 @@ setInterval(() => Sim.tick(), 50);
      {"id":5,"cmd":"prog","node":MAC,"slot":1,"text":"H100:10s B0-100/1s:5s H0:0"}
      {"id":6,"cmd":"assign","node":MAC,"ch":3,"slot":1|null}
      {"id":7,"cmd":"play"|"stop","node":MAC,"ch":3|"all"}
+     {"id":7,"cmd":"play","node":MAC,"ch":"all","t_ms":0}     DOC ONLY (not sent yet): start as if t_ms already elapsed -> MSG_PLAY offset_ms
+     {"id":10,"cmd":"sync","node":MAC,"ch":"all","t_ms":12345}  DOC ONLY (not sent yet): re-anchor PLAYING channels to show time t_ms,
+                                                              only if off by > 20 ms. Best effort: no ACK, no "result" event.
+                                                              "node" may be "all" (broadcast). Control ESP32 sends it every 2 s during a show,
+                                                              excluding overridden frames. See CLAUDE.md "Control center must send".
      {"id":8,"cmd":"set","node":MAC,"ch":"all","level":0,"fade_ms":1000}
      {"id":9,"cmd":"identify","node":MAC,"ch":"all","seconds":5}
    control -> UI:

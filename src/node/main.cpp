@@ -7,6 +7,7 @@
 #include <esp_wifi.h>
 #include <esp_task_wdt.h>
 #include <Preferences.h>
+#include <errno.h>
 #include "node_config.h"
 #include "protocol.h"
 #include "engine.h"
@@ -74,7 +75,12 @@ static void loadAll() {
     prefs.getBytes("state", &tmp, sizeof(tmp));
     if (tmp.layout == 1) st = tmp;
   }
-  if (prefs.getBytesLength("progs") == sizeof(progs)) prefs.getBytes("progs", progs, sizeof(progs));
+  size_t progBytes = prefs.getBytesLength("progs");
+  if (progBytes == sizeof(progs)) prefs.getBytes("progs", progs, sizeof(progs));
+  else if (progBytes != 0) {  // saved by firmware with a different program size (e.g. old 10-step layout)
+    prefs.remove("progs");
+    Serial.println("[boot] old program format discarded");
+  }
   for (int i = 0; i < LF_MAX_PROGS; i++)
     if (!lf::validateProgram(progs[i])) memset(&progs[i], 0, sizeof(LfProgram));
 }
@@ -85,23 +91,46 @@ static bool chanHasProgram(int i) {
 }
 
 // ------------------------------------------------------------ actions (serial + radio share these)
+static bool normMask(uint8_t& mask);
+
 static uint8_t doSet(uint8_t mask, uint8_t level, uint32_t fade) {
-  if (level > 100) return ACK_BAD_ARG;
+  if (level > 100 || !normMask(mask)) return ACK_BAD_ARG;
   uint32_t now = millis();
   for (int i = 0; i < NUM_CH; i++) if (mask & (1 << i)) chans[i].setManual(level / 100.0f, fade, now);
   markDirty();
   return ACK_OK;
 }
 
-static uint8_t doPlay(uint8_t mask) {
+// Channel mask check shared by every command: only existing channels, at least one.
+// LF_ALL_CH (0xFF) means "every channel" whatever NUM_CH is.
+static bool normMask(uint8_t& mask) {
+  const uint8_t valid = (uint8_t)((1u << NUM_CH) - 1);
+  if (mask == LF_ALL_CH) mask = valid;
+  return mask != 0 && (mask & ~valid) == 0;
+}
+
+static uint8_t doPlay(uint8_t mask, uint32_t offset_ms = 0) {
+  if (!normMask(mask)) return ACK_BAD_ARG;
   uint32_t now = millis();
   for (int i = 0; i < NUM_CH; i++)
-    if ((mask & (1 << i)) && chanHasProgram(i)) chans[i].play(&progs[st.assign[i]], now);
+    if ((mask & (1 << i)) && chanHasProgram(i)) chans[i].play(&progs[st.assign[i]], now, offset_ms);
   markDirty();
   return ACK_OK;
 }
 
+// Re-anchor playing channels to show time t_ms. Nothing worth saving, no ACK.
+static uint8_t doSync(uint8_t mask, uint32_t t_ms, int* moved = nullptr) {
+  if (!normMask(mask)) return ACK_BAD_ARG;
+  uint32_t now = millis();
+  int n = 0;
+  for (int i = 0; i < NUM_CH; i++)
+    if ((mask & (1 << i)) && chans[i].sync(t_ms, now)) n++;
+  if (moved) *moved = n;
+  return ACK_OK;
+}
+
 static uint8_t doStop(uint8_t mask) {
+  if (!normMask(mask)) return ACK_BAD_ARG;
   uint32_t now = millis();
   for (int i = 0; i < NUM_CH; i++) if (mask & (1 << i)) chans[i].stop(now);
   markDirty();
@@ -117,19 +146,20 @@ static uint8_t doProg(uint8_t slot, const LfProgram& p) {
   uint8_t restart = 0;
   for (int i = 0; i < NUM_CH; i++) if (chans[i].playing() && st.assign[i] == slot) restart |= 1 << i;
   if (restart) doPlay(restart);
-  char buf[200]; lf::formatProgram(progs[slot], buf, sizeof buf);
+  char buf[LF_PROG_TEXT_MAX]; lf::formatProgram(progs[slot], buf, sizeof buf);
   Serial.printf("[prog] slot %u = %s\n", slot + 1, buf);
   return ACK_OK;
 }
 
 static uint8_t doAssign(uint8_t mask, uint8_t slot) {
-  if (slot >= LF_MAX_PROGS && slot != LF_NO_PROGRAM) return ACK_BAD_ARG;
+  if ((slot >= LF_MAX_PROGS && slot != LF_NO_PROGRAM) || !normMask(mask)) return ACK_BAD_ARG;
   for (int i = 0; i < NUM_CH; i++) if (mask & (1 << i)) st.assign[i] = slot;
   markDirty();
   return ACK_OK;
 }
 
 static uint8_t doIdentify(uint8_t mask, uint8_t seconds) {
+  if (!normMask(mask)) return ACK_BAD_ARG;
   uint32_t until = millis() + (uint32_t)seconds * 1000;
   for (int i = 0; i < NUM_CH; i++) if (mask & (1 << i)) identifyUntil[i] = until;
   return ACK_OK;
@@ -225,16 +255,26 @@ static void sendPairReq() {
   esp_now_send(BCAST, (uint8_t*)&r, sizeof(r));
 }
 
+static void warnBadVersion(const LfHeader* h, const char* from) {
+  static uint32_t lastWarn = 0;
+  uint32_t now = millis();
+  if (lastWarn && now - lastWarn < 1000) return;  // SYNC may arrive every 2 s: don't flood the log
+  lastWarn = now;
+  Serial.printf("[rx] WARNING: packet from %s has protocol v%u, this node speaks v%u. Not applied. Update the firmware on the older side.\n",
+                from, h->ver, LF_PROTO_VER);
+}
+
 static void handlePacket(const RxItem& it) {
   if (it.len < sizeof(LfHeader)) return;
   const LfHeader* h = (const LfHeader*)it.data;
-  if (h->magic != LF_MAGIC || h->ver != LF_PROTO_VER) return;
+  if (h->magic != LF_MAGIC) return;
   bool toMe = memcmp(h->target, myMac, 6) == 0;
   bool toAll = memcmp(h->target, BCAST, 6) == 0;
   char ms[18]; macStr(it.mac, ms);
 
   if (h->type == MSG_PAIR_ACK) {
     if (!pairing || !toMe) return;
+    if (h->ver != LF_PROTO_VER) { warnBadVersion(h, ms); return; }
     memcpy(st.ctrl, it.mac, 6);
     st.paired = 1;
     addPeer(st.ctrl);
@@ -247,6 +287,20 @@ static void handlePacket(const RxItem& it) {
 
   if (!st.paired || memcmp(it.mac, st.ctrl, 6) != 0) return;  // only my controller
   if (!toMe && !toAll) return;
+
+  if (h->ver != LF_PROTO_VER) {  // header layout is stable, so we can still tell the controller why
+    warnBadVersion(h, ms);
+    if (h->type != MSG_SYNC) sendAck(h->seq, ACK_BAD_VERSION);
+    return;
+  }
+
+  if (h->type == MSG_SYNC) {  // best effort: no ACK, not part of the retry/dedupe sequence
+    if (it.len >= sizeof(LfMsgSync)) {
+      LfMsgSync m; memcpy(&m, it.data, sizeof(m));
+      doSync(m.ch_mask, m.t_ms);
+    }
+    return;
+  }
 
   if (haveLastSeq && h->seq == lastSeq) {  // retry of a command already applied
     sendAck(h->seq, lastStatus);
@@ -271,10 +325,14 @@ static void handlePacket(const RxItem& it) {
         status = doAssign(m->ch_mask, m->slot);
       } break;
     case MSG_PLAY:
+      if (it.len >= sizeof(LfMsgPlay)) {
+        LfMsgPlay m; memcpy(&m, it.data, sizeof(m));
+        status = doPlay(m.ch_mask, m.offset_ms);
+      } break;
     case MSG_STOP:
       if (it.len >= sizeof(LfMsgChMask)) {
         const LfMsgChMask* m = (const LfMsgChMask*)it.data;
-        status = h->type == MSG_PLAY ? doPlay(m->ch_mask) : doStop(m->ch_mask);
+        status = doStop(m->ch_mask);
       } break;
     case MSG_IDENTIFY:
       if (it.len >= sizeof(LfMsgIdentify)) {
@@ -320,6 +378,18 @@ static bool parseMask(const char* s, uint8_t& mask) {
   return true;
 }
 
+static bool parseU32(const char* s, uint32_t& out) {  // plain decimal 0..4294967295, nothing else
+  while (*s == ' ') s++;
+  if (*s < '0' || *s > '9') return false;
+  char* end;
+  errno = 0;
+  unsigned long long v = strtoull(s, &end, 10);
+  while (*end == ' ') end++;
+  if (errno || *end || v > 0xFFFFFFFFull) return false;
+  out = (uint32_t)v;
+  return true;
+}
+
 static void printStatus() {
   char m[18];
   macStr(myMac, m);
@@ -339,7 +409,7 @@ static void printStatus() {
 }
 
 static void printProgs() {
-  char buf[200];
+  char buf[LF_PROG_TEXT_MAX];
   for (int s = 0; s < LF_MAX_PROGS; s++) {
     lf::formatProgram(progs[s], buf, sizeof buf);
     Serial.printf("slot %d crc %04X: %s\n", s + 1, lf::programCrc(progs[s]), buf);
@@ -353,7 +423,9 @@ static const char* HELP =
   "  prog <slot> [loop] <steps>   e.g. prog 1 H100:10s B0-100/1s:5s H0:0\n"
   "       H<lvl>:<dur>  F<a>-<b>:<dur>  B<a>-<b>/<period>:<dur>   dur: 500ms | 2s\n"
   "  assign <ch> <slot|none>\n"
-  "  play <ch> | stop <ch> | identify <ch> [seconds]\n"
+  "  play <ch> [offset_ms]        start as if offset_ms already elapsed\n"
+  "  sync <ch> <t_ms>             playing channels: jump to t_ms if off by > 20 ms\n"
+  "  stop <ch> | identify <ch> [seconds]\n"
   "  pair | unpair | reset (factory) | reboot\n";
 
 static void handleLine(char* line) {
@@ -386,23 +458,44 @@ static void handleLine(char* line) {
     r = doSet(mask, (uint8_t)constrain(atoi(lv), 0, 255), fd ? strtoul(fd, nullptr, 10) : 0);
   } else if (!strcmp(cmd, "assign")) {
     if (!rest) { Serial.println("ERR assign <ch> <slot|none>"); return; }
-    uint8_t slot = !strncmp(rest, "none", 4) ? LF_NO_PROGRAM : (uint8_t)(atoi(rest) - 1);
-    r = doAssign(mask, slot);
-  } else if (!strcmp(cmd, "play")) r = doPlay(mask);
+    bool none = !strncmp(rest, "none", 4);
+    int sn = atoi(rest);
+    if (!none && (sn < 1 || sn > LF_MAX_PROGS)) { Serial.println("ERR slot 1..8 or none"); return; }
+    r = doAssign(mask, none ? LF_NO_PROGRAM : (uint8_t)(sn - 1));
+  } else if (!strcmp(cmd, "play")) {
+    uint32_t off = 0;
+    if (rest && !parseU32(rest, off)) { Serial.println("ERR play <ch> [offset_ms]"); return; }
+    r = doPlay(mask, off);
+  } else if (!strcmp(cmd, "sync")) {
+    uint32_t t;
+    if (!rest || !parseU32(rest, t)) { Serial.println("ERR sync <ch> <t_ms>"); return; }
+    int moved = 0;
+    r = doSync(mask, t, &moved);
+    if (r == ACK_OK) { Serial.printf("OK (%d channel(s) moved)\n", moved); return; }
+  }
   else if (!strcmp(cmd, "stop")) r = doStop(mask);
   else if (!strcmp(cmd, "identify")) r = doIdentify(mask, rest ? atoi(rest) : 5);
   else { Serial.println("ERR unknown command. type 'help'"); return; }
   Serial.println(r == ACK_OK ? "OK" : "ERR bad argument");
 }
 
+#define SERIAL_LINE_MAX 1024  // a 24-step program is ~700 characters
+
 static void pollSerial() {
-  static char buf[256];
+  static char buf[SERIAL_LINE_MAX];
   static size_t n = 0;
+  static bool tooLong = false;
   while (Serial.available()) {
     char c = Serial.read();
     if (c == '\r') continue;
-    if (c == '\n') { buf[n] = 0; if (n) handleLine(buf); n = 0; }
+    if (c == '\n') {
+      if (tooLong) Serial.println("ERR line too long");
+      else if (n) { buf[n] = 0; handleLine(buf); }
+      n = 0;
+      tooLong = false;
+    }
     else if (n < sizeof(buf) - 1) buf[n++] = c;
+    else tooLong = true;  // drop the rest of this line, report at the newline
   }
 }
 
@@ -466,6 +559,7 @@ void setup() {
   }
   pinMode(STATUS_LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+  Serial.setRxBufferSize(2048);  // before begin(): a pasted 24-step line must not overflow while flash is written
   Serial.begin(115200);
   delay(50);
   Serial.printf("\n[boot] LED frame node fw %d, reset reason %d\n", FW_VERSION, (int)esp_reset_reason());

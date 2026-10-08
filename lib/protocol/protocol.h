@@ -6,13 +6,14 @@
 #include <stddef.h>
 
 #define LF_MAGIC        0x464C   // bytes 'L','F' little-endian
-#define LF_PROTO_VER    1
+#define LF_PROTO_VER    2
 #define LF_MAX_CH       8        // PWM channels per node
-#define LF_MAX_STEPS    10       // steps per program
+#define LF_MAX_STEPS    24       // steps per program (a compiled show needs up to 24 per frame)
 #define LF_MAX_PROGS    8        // program slots stored on each node
 #define LF_WIFI_CHANNEL 1        // all devices must use the same 2.4 GHz channel
 #define LF_NO_PROGRAM   0xFF     // "no program assigned"
 #define LF_ALL_CH       0xFF     // channel mask: every channel
+#define LF_SYNC_TOLERANCE_MS 20  // MSG_SYNC only moves a channel when it is off by more than this
 
 enum LfMsgType : uint8_t {
   MSG_PAIR_REQ  = 1,   // node -> broadcast   (only during pairing window)
@@ -22,10 +23,11 @@ enum LfMsgType : uint8_t {
   MSG_SET       = 10,  // manual level (stops program on those channels)
   MSG_PROG      = 11,  // write a program into a slot
   MSG_ASSIGN    = 12,  // assign slot to channels
-  MSG_PLAY      = 13,  // (re)start assigned program from t=0
+  MSG_PLAY      = 13,  // (re)start assigned program at offset_ms (0 = from the start)
   MSG_STOP      = 14,  // stop program, hold current level
   MSG_IDENTIFY  = 15,  // pulse channels so a person can find the frame
   MSG_UNPAIR    = 16,  // node forgets its controller
+  MSG_SYNC      = 17,  // re-anchor playing channels to show time t_ms (best effort: NO ACK, may be broadcast)
 };
 
 enum LfStepType : uint8_t {
@@ -34,7 +36,12 @@ enum LfStepType : uint8_t {
   STEP_BLINK = 2,  // a -> b -> a triangle, period_ms per cycle, for duration
 };
 
-enum LfAckStatus : uint8_t { ACK_OK = 0, ACK_BAD_LEN = 1, ACK_BAD_ARG = 2 };
+enum LfAckStatus : uint8_t {
+  ACK_OK = 0,
+  ACK_BAD_LEN = 1,
+  ACK_BAD_ARG = 2,
+  ACK_BAD_VERSION = 3,   // packet had a different LF_PROTO_VER; not applied. Header layout never changes, so this is always readable.
+};
 
 #pragma pack(push, 1)
 
@@ -57,7 +64,7 @@ struct LfStep {          // 9 bytes
 };
 
 #define LF_PROG_LOOP 0x01
-struct LfProgram {       // 92 bytes
+struct LfProgram {       // 2 + 24*9 = 218 bytes
   uint8_t n_steps;       // 0..LF_MAX_STEPS
   uint8_t flags;         // LF_PROG_LOOP
   LfStep  steps[LF_MAX_STEPS];  // unused steps must be zero
@@ -66,7 +73,9 @@ struct LfProgram {       // 92 bytes
 struct LfMsgSet      { LfHeader h; uint8_t ch_mask; uint8_t level; uint32_t fade_ms; };
 struct LfMsgProg     { LfHeader h; uint8_t slot; LfProgram prog; };
 struct LfMsgAssign   { LfHeader h; uint8_t ch_mask; uint8_t slot; };   // slot LF_NO_PROGRAM = clear
-struct LfMsgChMask   { LfHeader h; uint8_t ch_mask; };                 // PLAY / STOP
+struct LfMsgChMask   { LfHeader h; uint8_t ch_mask; };                 // STOP
+struct LfMsgPlay     { LfHeader h; uint8_t ch_mask; uint32_t offset_ms; }; // start as if offset_ms already elapsed
+struct LfMsgSync     { LfHeader h; uint8_t ch_mask; uint32_t t_ms; };      // playing channels: elapsed := t_ms
 struct LfMsgIdentify { LfHeader h; uint8_t ch_mask; uint8_t seconds; };
 struct LfMsgAck      { LfHeader h; uint16_t acked_seq; uint8_t status; };
 struct LfMsgPairReq  { LfHeader h; uint16_t fw_ver; uint8_t n_ch; };
@@ -86,6 +95,9 @@ struct LfMsgHeartbeat {
 
 static_assert(sizeof(LfHeader) == 12, "header size");
 static_assert(sizeof(LfStep) == 9, "step size");
-static_assert(sizeof(LfProgram) == 92, "program size");
+static_assert(sizeof(LfProgram) == 2 + LF_MAX_STEPS * 9, "program size");
+static_assert(sizeof(LfProgram) == 218, "program size");
+static_assert(sizeof(LfMsgPlay) == 17, "play size");
+static_assert(sizeof(LfMsgSync) == 17, "sync size");
 static_assert(sizeof(LfMsgProg) <= 250, "must fit one ESP-NOW v1 packet");
 static_assert(sizeof(LfMsgHeartbeat) <= 250, "must fit one ESP-NOW v1 packet");

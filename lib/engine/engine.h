@@ -21,7 +21,8 @@ uint32_t levelToDuty(float level, uint32_t max_duty);      // gamma 2.2
 class Channel {
  public:
   void  setManual(float target, uint32_t fade_ms, uint32_t now); // stops program
-  void  play(const LfProgram* p, uint32_t now);                  // restart from t=0
+  void  play(const LfProgram* p, uint32_t now, uint32_t offset_ms = 0); // start as if offset_ms already elapsed (loop wraps)
+  bool  sync(uint32_t t_ms, uint32_t now);                       // PLAYING only: elapsed := t_ms if off by > LF_SYNC_TOLERANCE_MS; true if moved
   void  stop(uint32_t now);                                      // hold current level
   float update(uint32_t now);                                    // call every tick
   bool  playing() const { return mode_ == PROGRAM; }
@@ -35,6 +36,9 @@ class Channel {
   float from_ = 0, to_ = 0, cur_ = 0;
   uint32_t fstart_ = 0, fdur_ = 0;
 };
+
+// longest possible formatProgram() output: "loop " + 24 * "B100-100/65535ms:4294967295ms "
+#define LF_PROG_TEXT_MAX 768
 
 // ---------- text format (serial commands, CLAUDE.md) ----------
 // "[loop] H100:10s B0-100/1s:5s F100-0:3s H0:0"

@@ -1,7 +1,7 @@
 // node_config.h — hardware settings for a wall node (30-pin ESP-WROOM-32 board).
 #pragma once
 
-#define FW_VERSION 1
+#define FW_VERSION 2
 
 // PWM output pins, channel 1..8 in order. Safe pins only (no strapping/flash/input-only).
 // Test kit (Seloky modules): use channel 1 = GPIO16, channel 2 = GPIO17.

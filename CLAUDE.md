@@ -8,8 +8,10 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
   driving opto-isolated MOSFET boards (YYNMOS) at **500 Hz max**. Same firmware on every node; identity = MAC.
 - **Control center**: ESP32-S3 touchscreen (Waveshare ESP32-S3-Touch-LCD-5B), not written yet.
 - **Radio**: ESP-NOW on Wi-Fi channel `LF_WIFI_CHANNEL` (1). No router.
-- **Programs**: up to 10 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
+- **Programs**: up to 24 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
   slots; each channel is assigned a slot. Without loop, the channel holds the last step's end level.
+  Channels are fully independent: a whole-room show is one program per frame (slot n = channel n),
+  started together with `MSG_PLAY` and kept aligned with `MSG_SYNC` (see "Control center must send").
 
 ## Layout
 ```
@@ -26,6 +28,9 @@ UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated 
 
 ## Rules
 - Never change `protocol.h` struct layouts without bumping `LF_PROTO_VER` and rebuilding BOTH sides.
+  Current: `LF_PROTO_VER` 2, `LF_MAX_STEPS` 24 (`LfProgram` 218 bytes, `LfMsgProg` 231 bytes, ESP-NOW v1 limit 250).
+  A packet with another version is NOT applied; the node ACKs `ACK_BAD_VERSION` (3) and prints a warning.
+  Flash saved by older firmware with the 10-step layout is discarded at boot (`[boot] old program format discarded`).
 - PWM pins: avoid GPIO 0,2,5,12,15 (strapping), 6–11 (flash), 34–39 (input only).
 - Node must restore saved state to the outputs BEFORE the radio starts. Outputs are set to 0 first.
 - Radio loss: node keeps doing what it was doing. Never turn lights off because the link dropped.
@@ -47,6 +52,13 @@ assign <ch|all> <slot|none>
 play <ch|all> | stop <ch|all> | identify <ch|all> [seconds]
 pair | unpair | reset | reboot
 ```
+Extra commands for testing the show features without a control center:
+```
+play <ch|all> [offset_ms]     start as if offset_ms had already elapsed (loop programs wrap)
+sync <ch|all> <t_ms>          PLAYING channels: jump so elapsed == t_ms, only if off by > 20 ms
+```
+Serial lines up to 1023 characters are accepted (a 24-step program is ~700). Longer lines are rejected with
+`ERR line too long` and nothing is applied.
 Program text: `H<lvl>:<dur>` hold · `F<a>-<b>:<dur>` fade · `B<a>-<b>/<period>:<dur>` blink (triangle a→b→a).
 Durations `500ms`, `1.5s`, or bare ms. Example: `prog 1 H100:10s B0-100/1s:5s H0:0`
 (100 % for 10 s, blink 0↔100 % with 1 s period for 5 s, then off.)
@@ -61,6 +73,36 @@ Durations `500ms`, `1.5s`, or bare ms. Example: `prog 1 H100:10s B0-100/1s:5s H0
   broadcast with the node MAC in `header.target` (avoids the ESP-NOW 20-peer limit) or target FF:FF.. for all nodes.
 - State is saved to flash 1 s after the last change; programs immediately. Playing channels auto-resume at boot.
 - Task watchdog (5 s) reboots on hang.
+- Every command is validated before anything changes: packet length >= struct size, slot < 8, `ch_mask` only
+  existing channels (and not 0; `0xFF` = all), level <= 100, blink period > 0, <= 24 steps. Bad input -> `ACK_BAD_ARG`
+  (or `ACK_BAD_LEN`), state untouched.
+
+## Control center must send (radio side of a show)
+A show is compiled by `compileShow()` in `web/control.html` into one program text per frame. The control
+ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`) and then:
+1. **Upload** each frame's program with `MSG_PROG` to its node (slot n for channel n), `MSG_ASSIGN` slot n -> channel n,
+   and wait for the ACKs. Check `prog_crc` in the heartbeat if unsure. All 24 frames stay independent; no node
+   needs to know about the others.
+2. **Start** with `MSG_PLAY { ch_mask, offset_ms }`. `offset_ms = 0` starts from the beginning; a non-zero offset
+   starts every masked channel as if that much time had already passed (loop programs wrap, finished non-loop
+   programs hold their end level). The control center records `t0 = its own millis()` at the moment it sends
+   PLAY and uses `offset_ms = 0` for a normal start. PLAY is ACKed and retried like any command, so a retry that
+   arrives late starts that node late: send `offset_ms = now - t0` on every retry.
+3. **Resync every 2 s while the show runs:** `MSG_SYNC { ch_mask, t_ms = millis() - t0 }`, normally as ONE broadcast
+   to `FF:FF:FF:FF:FF:FF` with `ch_mask = 0xFF`. Rules:
+   - Best effort: nodes do **not** ACK it and it is never retried (the next one comes 2 s later). It does not use
+     the command sequence/dedupe, so it cannot disturb retries of other commands.
+   - Only PLAYING channels react. A channel whose drift is <= 20 ms is left alone (no visible jumps); a larger
+     drift re-anchors that channel so its elapsed time equals `t_ms`.
+   - **Excluded frames:** a frame the operator has overridden (manual `set`, its own program, stopped) must be
+     left out of `ch_mask` (per node), otherwise a SYNC would drag a re-started frame back into the show. If
+     the overridden frame's node also carries show frames, send that node a SYNC with a narrower mask (unicast
+     or broadcast with the node MAC in `header.target`) instead of the all-nodes one.
+   - For a loop show, `t_ms` may keep growing past the cycle length; the node reduces it modulo the cycle.
+4. **Stop** with `MSG_STOP` (channels hold their level); to end a show with lights off send `MSG_SET` level 0.
+5. After a node reboot its playing channels restart from t=0; the next SYNC (<= 2 s) pulls them back into the show.
+6. Fill `header.ver = LF_PROTO_VER`. If a node answers `ACK_BAD_VERSION`, that node runs other firmware: tell the user
+   to reflash it instead of retrying.
 
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
