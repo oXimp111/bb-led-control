@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>LED 画框灯光控制软件 使用手册</title>
+<style>
+@page{size:A4;margin:14mm 13mm 15mm}
+*{box-sizing:border-box}
+body{font:11.5pt/1.7 "Microsoft YaHei","PingFang SC",sans-serif;color:#1d2330;margin:0}
+h1{font-size:30pt;margin:0 0 6mm}
+h2{font-size:19pt;margin:0 0 4mm;padding:2mm 4mm;background:#1f3a68;color:#fff;border-radius:2mm;margin-top:8mm;page-break-after:avoid}
+h2.first{page-break-before:avoid}
+h3{font-size:14pt;margin:7mm 0 2mm;color:#1f3a68;border-left:4px solid #e5322d;padding-left:3mm;page-break-after:avoid}
+p{margin:2mm 0}
+img{width:100%;display:block;border:1px solid #9aa3b5;border-radius:2mm;margin:3mm 0 2mm}
+img.m{width:58%;margin-left:auto;margin-right:auto}
+.cap{font-size:9.5pt;color:#555;text-align:center;margin:0 0 3mm}
+.en{font-family:Arial,sans-serif;font-weight:700;background:#e8edf7;padding:0 1.5mm;border-radius:1mm;white-space:nowrap}
+ol.mk{list-style:none;padding:0;margin:2mm 0;counter-reset:n;page-break-inside:auto}
+ol.mk li{counter-increment:n;position:relative;padding-left:9mm;margin:1.2mm 0;page-break-inside:avoid}
+ol.mk li::before{content:counter(n);position:absolute;left:0;top:.5mm;width:6mm;height:6mm;border-radius:50%;background:#e5322d;color:#fff;font:700 9pt/6mm Arial;text-align:center}
+.tip,.warn,.note{padding:2.5mm 4mm;border-radius:2mm;margin:3mm 0;page-break-inside:avoid}
+.tip{background:#e7f6ec;border-left:4px solid #2e9d58}
+.warn{background:#fdeceb;border-left:4px solid #e5322d}
+.note{background:#fff6e0;border-left:4px solid #e0a100}
+table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:10.5pt}
+th,td{border:1px solid #b9c0cf;padding:1.5mm 2.5mm;text-align:left;vertical-align:top}
+th{background:#e8edf7}
+tr{page-break-inside:avoid}
+.cover{height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.cover .sub{font-size:15pt;color:#445}
+.cover .bar{height:3mm;background:linear-gradient(90deg,#6aa8ff,#4fd1a1,#ffb15c);margin:10mm 0;border-radius:2mm}
+.sw{display:inline-block;width:3.5mm;height:3.5mm;border-radius:1mm;vertical-align:-0.3mm;margin-right:1mm}
+code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-radius:1mm}
+.steps{counter-reset:s;padding:0;list-style:none}
+.steps>li{counter-increment:s;position:relative;padding:1mm 0 1mm 11mm;margin:2mm 0;page-break-inside:avoid}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:1mm;width:7.5mm;height:7.5mm;border-radius:50%;background:#1f3a68;color:#fff;font:700 11pt/7.5mm Arial;text-align:center}
+</style></head><body>
+<div class="cover">
+  <div class="sub">LED 画框灯光控制软件</div>
+  <h1>操作手册</h1>
+  <div class="bar"></div>
+  <div class="note" style="text-align:left;font-size:12.5pt;margin:0 15mm">
+    <b>建议优先阅读：</b><br>
+    ① 第 1 章　界面总览（含基本概念）<br>
+    ② 第 2 章　Programs 页 · 整套节目（Entire set）<br>
+    ③ 第 3 章　Programs 页 · 单框程序（Single frame）<br>
+    <span style="font-size:10.5pt;color:#555">第 4 章（Control 页）和第 5 章（快捷键与备份）可作为参考，需要时查阅。</span>
+  </div>
+  <p style="margin-top:20mm;font-size:10.5pt;color:#666">软件文件：<code>web/control.html</code>（使用 Chrome 或 Edge 打开）<br>界面按钮名称保持英文原样；图中红色编号对应图下同编号的说明。</p>
+</div>
+
+<h2 class="first">第 1 章　界面总览</h2>
+
+<h3>1.1 基本概念</h3>
+<table>
+<tr><th style="width:20%">名称</th><th>说明</th></tr>
+<tr><td><b>画框 (frame)</b></td><td>每个画框内有一条灯带，对应一路灯光，共 24 路。</td></tr>
+<tr><td><b>墙 (W1–W4)</b></td><td>房间四面墙：W1 有 8 个画框，W2 有 4 个，W3 有 7 个，W4 有 5 个。画框编号为面向墙面<b>从左到右</b>依次编号，例如 <b>W1-3</b> = W1 墙左数第 3 个。</td></tr>
+<tr><td><b>三种效果</b></td><td>
+<span class="sw" style="background:#6aa8ff"></span><b>Hold</b>：亮度保持不变。<br>
+<span class="sw" style="background:#4fd1a1"></span><b>Fade</b>：亮度由 A 渐变到 B。<br>
+<span class="sw" style="background:#ffb15c"></span><b>Blink</b>：亮度在 A、B 之间来回渐变（三角波），需设置周期。<br>
+亮度范围 0–100%。每一个效果称为一“步 (step)”，每个画框最多 24 步。</td></tr>
+<tr><td><b>Loop</b></td><td>勾选后循环播放；未勾选则只播放一遍，并停在最后一步的亮度。</td></tr>
+<tr><td><b>单框程序</b><br>Single frame</td><td>只控制<b>一个画框</b>的效果（最多 24 步），可分配给任意多个画框。</td></tr>
+<tr><td><b>整套节目</b><br>Entire set (show)</td><td>控制<b>全部 24 个画框</b>的时间线，每个画框一行，各画框可在不同时间做不同的事。</td></tr>
+</table>
+<p>两种作品<b>相互独立</b>：节目在 Entire set 中编辑，单框程序在 Single frame 中编辑。</p>
+
+<h3>1.2 顶部栏</h3>
+<img src="img/01_header.png"><div class="cap">图 1-1　顶部栏（所有页面共有）</div>
+<ol class="mk">
+<li><span class="en">Control</span> / <span class="en">Programs</span>　页面标签。<b>Control</b>：分配程序并播放；<b>Programs</b>：制作程序和节目。</li>
+<li><span class="en">Edit</span> / <span class="en">Run</span>　模式开关。<b>Edit</b>：点画框用来分配程序，不会点亮灯。<b>Run</b>：点画框会播放该画框的程序。</li>
+<li><span class="en">Simulator ▸</span>　打开 / 关闭屏幕右侧的模拟器（虚拟房间，实时显示灯光效果）。点击后会自动切换到 Run 模式。</li>
+</ol>
+<div class="note">顶部栏及 Control 页右侧的 <span class="en">Find nodes</span>、连接下拉框、<span class="en">Log</span>、<span class="en">Nodes</span> 面板、画框上的 ✓ 标记，以及模拟器中的 <span class="en">Packet loss</span> 滑块，都属于设备通信功能，本手册不涉及，可忽略。</div>
+
+<h3>1.3 数据保存</h3>
+<p>所有修改<b>自动保存</b>在当前电脑的浏览器中。请始终使用<b>同一个浏览器</b>（Chrome 或 Edge），不要使用无痕窗口，也不要清除浏览器数据，否则已做的内容会丢失。建议定期在整套节目页点 <span class="en">Export all</span> 导出备份（见 2.3）。</p>
+
+<h2>第 2 章　Programs 页 · 整套节目（Entire set）</h2>
+<p>点 <span class="en">Programs</span>，再点 <span class="en">Entire set</span>。这是一条类似剪辑软件的时间线：<b>一行 = 一个画框，横向 = 时间，彩色条 = 片段 (clip)</b>。每次修改自动保存。<b>没有片段的空白时间，灯为熄灭状态。</b></p>
+<img src="img/08_show_editor.png"><div class="cap">图 2-1　整套节目编辑页（示例：Wave around the room，依次亮起再熄灭）</div>
+<ol class="mk">
+<li><span class="en">Entire set</span> / <span class="en">Single frame</span>　切换整套节目与单框程序（软件会记住上次的选择）。</li>
+<li><span class="en">Shows</span>　节目列表。名称后的 <b>↻</b> 表示该节目为循环节目。</li>
+<li>节目管理按钮，见 2.3。</li>
+<li>节目名称，可直接修改。</li>
+<li><span class="en">Loop</span>　节目循环；勾选后出现循环长度 <span class="en">length ... ms</span>（见 2.6）。</li>
+<li><span class="en">▶ Play</span> / <span class="en">■ Stop</span>　在编辑页预览（右侧小房间同步发光）。播放中变为 <span class="en">⏸ Pause</span>。</li>
+<li>当前播放时间（红色竖线位置）。</li>
+<li><span class="en">↶ Undo</span> / <span class="en">↷ Redo</span>　撤销 / 重做（最多 100 步）。</li>
+<li><span class="en">Select all</span> / <span class="en">Clear</span>　选中全部行 / 取消选择。</li>
+<li><span class="en">+ Clip on selected rows</span>　在选中的各行上添加片段（见 2.4）。</li>
+<li><span class="en">Stagger</span>　流水（追逐）效果，填写间隔毫秒数后点 <span class="en">Apply</span>（见 2.5）。</li>
+<li><span class="en">Copy</span> / <span class="en">Paste</span> / <span class="en">Duplicate</span>　复制 / 粘贴 / 紧接原片段之后复制一份（见 2.2）。</li>
+<li><span class="en">−</span> <span class="en">+</span> <span class="en">Fit</span>　时间线缩小 / 放大 / 适应窗口。也可按住 Ctrl 滚动滚轮缩放。</li>
+<li>时间尺。<b>单击或拖动</b>可移动红色播放线（playhead）。</li>
+<li>墙名。点击选中整面墙的所有画框；点 ▾ 折叠 / 展开该墙。</li>
+<li>画框行名。点击选中该行。右侧小数字为该画框已用步数（上限 24，见 2.7）。</li>
+<li>片段。<span class="sw" style="background:#6aa8ff"></span>蓝 = Hold，<span class="sw" style="background:#4fd1a1"></span>绿 = Fade，<span class="sw" style="background:#ffb15c"></span>橙 = Blink。片段上的文字：“0→100”表示由 0 渐变到 100，“100%”表示保持 100%。</li>
+<li><span class="en">Room preview</span>　房间预览，播放时各画框按播放线位置实时发光。</li>
+</ol>
+
+<h3>2.1 鼠标操作</h3>
+<table>
+<tr><th style="width:30%">操作</th><th>方法</th></tr>
+<tr><td>新建片段</td><td>在某一行的空白处按住鼠标拖动，生成一个 Hold 片段。</td></tr>
+<tr><td>移动片段</td><td>左右拖动（只改变时间，不能换行；多选时一起移动）。</td></tr>
+<tr><td>调整长度</td><td>拖动片段的左边缘或右边缘。</td></tr>
+<tr><td>选中片段</td><td>单击。<b>Shift 或 Ctrl + 单击</b>可多选。</td></tr>
+<tr><td>编辑片段参数</td><td>先单击选中，<b>再单击一次</b>，弹出窗口（见 2.4）。</td></tr>
+<tr><td>选中行</td><td>单击行名；<b>Shift + 单击</b>选连续范围；<b>Ctrl + 单击</b>逐个加选；单击墙名选整面墙。</td></tr>
+<tr><td>移动播放线</td><td>单击时间尺，或在空白处单击。</td></tr>
+<tr><td>缩放时间线</td><td>Ctrl + 鼠标滚轮。</td></tr>
+<tr><td>精确定位</td><td>拖动时默认吸附到 100 ms 的整数倍；按住 <b>Alt</b> 可精确到 1 ms。</td></tr>
+</table>
+<p><b>片段不能重叠。</b>拖动到重叠位置时片段变红，松开后提示 “That would overlap another clip, so it was not applied”，操作不生效。</p>
+
+<h3>2.2 复制、粘贴与 Duplicate</h3>
+<table>
+<tr><th style="width:20%">按钮</th><th>作用</th></tr>
+<tr><td><span class="en">Copy</span></td><td>复制选中的片段。</td></tr>
+<tr><td><span class="en">Paste</span></td><td>粘贴到<b>播放线位置</b>；粘贴前请先点时间尺移动播放线。</td></tr>
+<tr><td><span class="en">Duplicate</span></td><td>紧接选中片段之后复制一份，可连续使用以依次排列。如果只选中了一个片段、同时选中了若干行，这些行也会各得到一份。</td></tr>
+</table>
+
+<h3>2.3 节目管理按钮（图 2-1 的 3）</h3>
+<table>
+<tr><th style="width:20%">按钮</th><th>作用</th></tr>
+<tr><td><span class="en">New</span> / <span class="en">Duplicate</span> / <span class="en">Rename</span> / <span class="en">Delete</span></td><td>新建 / 复制 / 重命名 / 删除（删除前会确认；至少保留一个节目）。</td></tr>
+<tr><td><span class="en">Export</span></td><td>将当前节目保存为一个文件（.json）。</td></tr>
+<tr><td><span class="en">Import</span></td><td>从文件导入一个或多个节目，添加到列表中，不覆盖现有节目。</td></tr>
+<tr><td><span class="en">Export all</span></td><td>将所有节目保存为一个文件，建议定期备份。</td></tr>
+</table>
+
+<h3>2.4 片段窗口</h3>
+<p><b>修改已有片段：</b>单击选中后再单击一次。每项修改即时保存，窗口内显示 ✓ Saved；数值无效时以红字提示原因（如重叠、超出长度），且不会生效。</p>
+<img class="m" src="img/10_clip_edit.png"><div class="cap">图 2-2　Edit clip</div>
+<ol class="mk">
+<li><span class="en">Effect</span>　Hold / Fade / Blink。</li>
+<li><span class="en">Level %</span>（Fade、Blink 时为 <span class="en">From %</span>）　亮度 0–100。</li>
+<li><span class="en">Start (s)</span>　开始时间（秒）。</li>
+<li><span class="en">Length (s)</span>　持续时间（秒），可填小数。</li>
+<li><span class="en">Delete</span>　删除该片段（<span class="en">Done</span> 关闭窗口）。</li>
+</ol>
+<p><b>在多行上同时添加片段：</b>先选中若干行，再点 <span class="en">+ Clip on selected rows</span>。</p>
+<img class="m" src="img/11_clip_new.png"><div class="cap">图 2-3　Add clip（以 Blink 为例）</div>
+<ol class="mk">
+<li><span class="en">Effect</span>　效果类型。</li>
+<li><span class="en">From %</span>　起始亮度。</li>
+<li><span class="en">To %</span>　目标亮度（Hold 无此项）。</li>
+<li><span class="en">Period (ms)</span>　闪烁周期，单位毫秒（仅 Blink）。</li>
+<li><span class="en">Add</span>　添加到所有选中的行。</li>
+<li><span class="en">Cancel</span>　取消。</li>
+</ol>
+
+<h3>2.5 流水效果（Stagger）</h3>
+<ol class="steps">
+<li>在需要参与流水的各行上建立相同的片段（可先选中这些行，用 <span class="en">+ Clip on selected rows</span> 一次添加）。</li>
+<li>点时间尺，把<b>播放线移到这些片段上</b>（各行在播放线位置都必须有片段）。</li>
+<li>选中这些行。</li>
+<li>在 <span class="en">Stagger</span> 后填入相邻画框的间隔（ms），点 <span class="en">Apply</span>。</li>
+</ol>
+<p>结果：选中的第一行保持不动，之后每一行依次比前一行晚一个间隔开始。图 2-1 的示例即为间隔 300 ms 的波浪。如提示 “Select 2+ rows that have a clip at the playhead”，请检查所选行数以及播放线位置。</p>
+
+<h3>2.6 循环节目</h3>
+<p>勾选 <span class="en">Loop</span> 后出现 <span class="en">length ... ms</span>，即循环一圈的总长度（如 8000 = 8 秒）。时间线上不能在该长度之外放置片段，且长度不能小于最后一个片段的结束时间。节目总长度显示在旁边的 <span class="en">Total</span>。未循环的节目时间线最长 10 分钟，播放结束后各画框停在最后的亮度。</p>
+
+<h3>2.7 步数限制</h3>
+<p>每个画框最多 <b>24 步</b>。一个片段算一步，<b>片段之间的空隙（熄灯）也算一步</b>。</p>
+<ul>
+<li>行名右侧的小数字为已用步数。</li>
+<li>超过 24 步时该行变<b style="color:#e5322d">红</b>，顶部显示 <b>⚠ N frames over 24 steps</b>。</li>
+<li>超限的节目在 Run 模式下不能播放，会提示 “can't play: W1-3 needs 26 steps (max 24)”。请删减或合并片段后再播放。</li>
+</ul>
+
+<h2>第 3 章　Programs 页 · 单框程序（Single frame）</h2>
+<p>点 <span class="en">Programs</span>，再点 <span class="en">Single frame</span>。这里制作<b>只用于一个画框</b>的程序，数量不限，每个程序最多 24 步，每次修改自动保存。修改后的程序会在下次于 Run 模式播放该画框时生效。</p>
+<img src="img/14_single_frame.png"><div class="cap">图 3-1　单框程序页（预览 Demo：亮 10 s → 闪 5 s → 熄灭）</div>
+<ol class="mk">
+<li>程序列表。点击选中；名称下的 “used by N frames” 表示被 N 个画框使用。</li>
+<li><span class="en">New</span>（新建，默认 H100:1s）/ <span class="en">Duplicate</span> / <span class="en">Rename</span> / <span class="en">Delete</span>。删除正在使用的程序时会提示，并使相关画框变为无程序。</li>
+<li>当前程序名称。</li>
+<li><span class="en">Loop</span>　循环播放。</li>
+<li>步数计数，如 3 / 24。</li>
+<li><span class="en">+ Add step</span>　在末尾添加一步（满 24 步后不可用）。</li>
+<li><span class="en">Type</span>　Hold / Fade / Blink。</li>
+<li><span class="en">Level (%)</span>　亮度；Fade、Blink 时为起始亮度。</li>
+<li><span class="en">To level (%)</span>　目标亮度（Fade、Blink）。</li>
+<li><span class="en">Blink period</span>　闪烁周期：从 A 到 B 再回到 A 的时间（仅 Blink）。</li>
+<li><span class="en">Duration</span>　该步持续时间。</li>
+<li>每行右侧按钮：<b>↑</b> 上移、<b>↓</b> 下移、<b>✕</b> 删除该步。</li>
+<li><span class="en">Program text</span>　程序文本，与表格同步（见 3.2）。</li>
+<li><span class="en">Level vs time</span>　亮度–时间曲线。勾选 Loop 时显示两个周期，虚线为循环点；红线为预览播放位置。</li>
+<li>预览方块，亮度越高越亮。</li>
+<li><span class="en">▶ Play</span> / <span class="en">■ Stop</span>　预览播放 / 停止（播放中 Play 变为 <span class="en">↻ Restart</span>），并显示时间与亮度。未循环的程序播完后停在最后的亮度。离开本页预览自动停止。</li>
+</ol>
+
+<h3>3.1 时间的输入格式</h3>
+<p>Duration 与 Blink period 可输入：<code>500ms</code>、<code>1.5s</code>、<code>10s</code>；<b>只输入数字时单位为毫秒</b>。输入无效时输入框变红，并提示 Not a valid value。<br>
+最后一步的 Duration 填 <code>0</code>，表示执行该步后保持其亮度（例如 Hold、0%、0 = 最终保持熄灭）。</p>
+
+<h3>3.2 程序文本</h3>
+<p>表格下方的文本框与表格<b>双向同步</b>，也可直接编辑或复制粘贴。步骤之间用空格分隔。</p>
+<table>
+<tr><th style="width:34%">写法</th><th>含义</th></tr>
+<tr><td><code>H100:10s</code></td><td>Hold：100%，持续 10 秒</td></tr>
+<tr><td><code>F0-100:2s</code></td><td>Fade：2 秒内由 0 渐变到 100</td></tr>
+<tr><td><code>B0-100/1s:5s</code></td><td>Blink：0 与 100 之间来回，周期 1 秒，持续 5 秒</td></tr>
+<tr><td><code>loop</code></td><td>写在最前面，表示循环</td></tr>
+</table>
+<p>示例：<code>loop F0-100:2s F100-0:2s</code>（2 秒变亮、2 秒变暗，循环）；<code>H100:10s B0-100/1s:5s H0:0</code>（亮 10 秒、闪 5 秒、熄灭）。<br>
+文本有误时，文本框下方以红字提示，<b>表格保持不变</b>；离开文本框时若仍有误，会恢复为最近一次正确的内容。</p>
+
+<h3>3.3 制作示例：亮 10 秒 → 闪 5 秒 → 熄灭</h3>
+<ol class="steps">
+<li>点 <span class="en">New</span>，再点 <span class="en">Rename</span> 命名。</li>
+<li>第 1 步：Type = Hold，Level = 100，Duration = 10s。</li>
+<li>点 <span class="en">+ Add step</span>。第 2 步：Type = Blink，Level = 0，To level = 100，Blink period = 1s，Duration = 5s。</li>
+<li>再点 <span class="en">+ Add step</span>。第 3 步：Hold，Level = 0，Duration = 0。</li>
+<li>点 <span class="en">▶ Play</span> 预览，并对照曲线图检查。</li>
+</ol>
+
+<h2>第 4 章　Control 页 · 分配与播放</h2>
+<h3>4.1 Edit 模式：给画框分配程序</h3>
+<img src="img/02_control_edit.png"><div class="cap">图 4-1　Control 页（Edit 模式）。方块为画框，下方小字为已分配的程序名</div>
+<ol class="mk">
+<li>提示栏：点击画框分配程序；画框编号从左到右。</li>
+<li><span class="en">Flip view 180°</span>　将房间图旋转 180°，仅改变显示方向。</li>
+<li>画框。点击后弹出分配窗口（图 4-2）。</li>
+</ol>
+<img class="m" src="img/03_frame_modal.png"><div class="cap">图 4-2　点击画框弹出的窗口</div>
+<ol class="mk">
+<li><span class="en">Program</span>　选择该画框使用的程序（只列出单框程序）。<span class="en">— none —</span> 表示不分配。选择后立即保存。</li>
+<li>状态文字，显示 “Saved”。</li>
+<li><span class="en">Done</span>　关闭窗口。</li>
+</ol>
+
+<h3>4.2 Run 模式：播放</h3>
+<img src="img/06_control_run.png"><div class="cap">图 4-3　Control 页（Run 模式）</div>
+<ol class="mk">
+<li>节目下拉框，选择要播放的整套节目（只列出节目）。节目前带 <b>⚠</b> 表示超过步数限制，需先修改（见 2.7）。</li>
+<li><span class="en">▶ Play show</span>　播放所选节目，所有画框同时开始。</li>
+<li><span class="en">▶ Play all frames</span>　每个画框播放它自己被分配的程序；未分配程序的画框不动。</li>
+<li><span class="en">■ Stop all</span>　全部停止，<b>保持当前亮度</b>。</li>
+<li><span class="en">All off</span>　全部在 1 秒内渐灭至 0。</li>
+<li>点击单个画框：播放该画框自己的程序，且该画框此后<b>不再属于正在播放的节目</b>。未分配程序时提示 “No program assigned”。</li>
+</ol>
+
+<h3>4.3 模拟器</h3>
+<img src="img/07_simulator.png"><div class="cap">图 4-4　模拟器打开、节目播放中</div>
+<ol class="mk">
+<li><span class="en">Simulator ▸</span>　再次点击关闭模拟器。</li>
+<li>虚拟房间，直接读取灯光输出，亮度比左侧主画面更准确。</li>
+</ol>
+<div class="note">Control 页主画面显示的亮度来自约每 0.5 秒一次的状态更新，所以快于 1 秒一次的闪烁在主画面上可能显得偏慢或不准，请以模拟器为准。</div>
+
+<h2>第 5 章　快捷键与备份</h2>
+<h3>5.1 整套节目页快捷键</h3>
+<p>仅在整套节目页有效（输入文字或有弹窗时除外）。苹果电脑以 Cmd 代替 Ctrl。</p>
+<table>
+<tr><th style="width:34%">按键</th><th>作用</th></tr>
+<tr><td>Space</td><td>预览播放 / 暂停</td></tr>
+<tr><td>Delete / Backspace</td><td>删除选中的片段</td></tr>
+<tr><td>Ctrl + C / Ctrl + V</td><td>复制 / 粘贴（粘贴到播放线位置）</td></tr>
+<tr><td>Ctrl + D</td><td>紧接选中片段之后复制（可连续按）</td></tr>
+<tr><td>Ctrl + Z</td><td>撤销</td></tr>
+<tr><td>Ctrl + Y / Ctrl + Shift + Z</td><td>重做</td></tr>
+<tr><td>Ctrl + A</td><td>选中全部行</td></tr>
+<tr><td>Esc</td><td>取消选择</td></tr>
+<tr><td>Ctrl + 滚轮</td><td>缩放时间线</td></tr>
+<tr><td>Alt + 拖动</td><td>不吸附，精确到 1 ms</td></tr>
+</table>
+<p>单框程序页没有快捷键，也没有撤销功能；修改较大的程序前，建议先用 <span class="en">Duplicate</span> 保留一份副本。</p>
+
+<h3>5.2 备份与迁移</h3>
+<ul>
+<li>整套节目：用 <span class="en">Export</span>（单个）或 <span class="en">Export all</span>（全部）导出为文件，在另一台电脑上用 <span class="en">Import</span> 导入。</li>
+<li>单框程序及画框分配保存在浏览器中，没有导出功能；换电脑或换浏览器后需重新制作。</li>
+<li>如果浏览器禁止保存，启动时会提示 “This viewer blocks saving…”，此时请改用 Chrome 或 Edge 打开。</li>
+</ul>
+</body></html>
