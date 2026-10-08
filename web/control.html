@@ -84,6 +84,54 @@ table{border-collapse:collapse;width:100%}
 td,th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:middle}
 code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 @media (max-width:900px){#sim{position:fixed;inset:54px 0 0 0;width:auto;z-index:8}}
+/* show editor */
+#page-programs.on{display:flex;flex-direction:column;overflow:hidden}
+#edView{display:flex;gap:10px;flex:1;min-height:0}
+.edLeft{flex:0 0 190px;display:flex;flex-direction:column;min-height:0;margin:0}
+.shList{flex:1;overflow:auto;margin:0 -4px;min-height:60px}
+.shItem{display:flex;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:13px}
+.shItem:hover{background:var(--panel2)} .shItem.on{background:#2c4a73}
+.shBtns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.shBtns button{padding:5px 6px;font-size:12px}
+.edCenter{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+.edRight{flex:0 0 340px;overflow:auto;min-height:0}
+.edRight .card{margin-bottom:10px}
+.edBar{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.edBar button{padding:4px 9px;font-size:13px}
+.edBar input[type=number]{width:72px}
+.edBar .sep{width:1px;height:20px;background:var(--line)}
+.warn{color:var(--bad);font-size:12px;font-weight:600}
+.mono{font-variant-numeric:tabular-nums;min-width:56px;display:inline-block}
+.lg{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--mute)}
+.lg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+#tlScroll{flex:1;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;position:relative}
+#tlInner{position:relative;min-width:100%;user-select:none}
+.trow{display:flex;position:relative}
+.rlabel{position:sticky;left:0;z-index:5;flex:none;width:84px;background:var(--panel2);border-right:1px solid var(--line);border-bottom:1px solid #0004;padding:0 6px;display:flex;align-items:center;justify-content:space-between;font-size:11px;cursor:pointer;white-space:nowrap;overflow:hidden}
+.rlabel .cnt{color:var(--mute);font-size:10px}
+.rlabel .car{display:inline-block;width:12px;cursor:pointer}
+.rlane{position:relative;flex:none;border-bottom:1px solid #ffffff0a;background-image:linear-gradient(90deg,#ffffff12 1px,transparent 1px);background-size:var(--gs,100px) 100%}
+.trow.sel .rlabel{background:#2c4a73}
+.trow.sel .rlane{background-color:#5aa9ff16}
+.trow.over .rlabel{color:#ff8a8a;box-shadow:inset 3px 0 var(--bad)} .trow.over .rlabel .cnt{color:#ff8a8a;font-weight:700}
+.trow.over .rlane{background-color:#ff5d5d26}
+.trow.over .clip{outline:1px solid var(--bad)}
+.whead .rlabel{background:#2a3042;font-weight:700;font-size:12px}
+.whead .rlane{background-color:#ffffff08}
+.ruler{position:sticky;top:0;z-index:6;background:var(--panel2)}
+.ruler .rlabel{z-index:7;cursor:default;color:var(--mute)}
+.ruler .rlane{cursor:ew-resize;background-image:none;border-bottom:1px solid var(--line)}
+.tk{position:absolute;top:0;bottom:0;border-left:1px solid #ffffff30;padding-left:3px;font-size:10px;color:var(--mute);line-height:24px;pointer-events:none}
+#phm{position:absolute;top:14px;width:0;height:0;margin-left:-5px;border:5px solid transparent;border-top:9px solid #ff4d6d;border-bottom:0;pointer-events:none}
+#phead{position:absolute;top:0;bottom:0;width:0;border-left:2px solid #ff4d6d;z-index:4;pointer-events:none}
+.clip{position:absolute;top:2px;bottom:2px;border-radius:4px;font-size:10px;line-height:1;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;color:#071322;cursor:grab;border:1px solid #0007;z-index:1}
+.clip.fxH{background:#6aa8ff} .clip.fxF{background:#4fd1a1} .clip.fxB{background:#ffb15c}
+.clip.sel{outline:2px solid #fff;z-index:2}
+.clip.bad{outline:2px solid var(--bad);background-image:repeating-linear-gradient(45deg,#ff5d5d99 0 4px,transparent 4px 8px)}
+.clip.ghost{opacity:.65;pointer-events:none}
+.clip i{position:absolute;top:0;bottom:0;width:6px;max-width:35%;cursor:ew-resize}
+.clip i.hl{left:0} .clip i.hr{right:0}
+.clip:hover i{background:#0005}
 </style>
 </head>
 <body>
@@ -129,10 +177,64 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
   </section>
 
   <section class="page" id="page-programs">
-    <div class="card">
-      <h3>Program library (8 slots)</h3>
-      <p class="small">Program editor is on hold. These presets are what frames can be assigned. Format: <code>H&lt;lvl&gt;:&lt;dur&gt;</code> hold · <code>F&lt;a&gt;-&lt;b&gt;:&lt;dur&gt;</code> fade · <code>B&lt;a&gt;-&lt;b&gt;/&lt;period&gt;:&lt;dur&gt;</code> blink · optional <code>loop</code>.</p>
-      <table id="progTable"></table>
+    <div class="toolbar" style="margin-bottom:8px">
+      <div class="seg" id="progSeg"><button data-v="ed" class="on">Show editor</button><button data-v="lib">Program library</button></div>
+      <span class="small">Whole-room timeline. Every change saves automatically.</span>
+    </div>
+    <div id="libView" style="display:none;overflow:auto;flex:1;min-height:0">
+      <div class="card">
+        <h3>Program library (8 slots)</h3>
+        <p class="small">Program editor is on hold. These presets are what frames can be assigned. Format: <code>H&lt;lvl&gt;:&lt;dur&gt;</code> hold · <code>F&lt;a&gt;-&lt;b&gt;:&lt;dur&gt;</code> fade · <code>B&lt;a&gt;-&lt;b&gt;/&lt;period&gt;:&lt;dur&gt;</code> blink · optional <code>loop</code>.</p>
+        <table id="progTable"></table>
+      </div>
+    </div>
+    <div id="edView">
+      <aside class="edLeft card">
+        <h3>Shows</h3>
+        <div class="shList" id="shList"></div>
+        <div class="shBtns">
+          <button id="shNew">New</button><button id="shDup">Duplicate</button>
+          <button id="shRen">Rename</button><button id="shDel" class="danger">Delete</button>
+          <button id="shExp" title="Save this show as a JSON file">Export</button><button id="shImp" title="Load show(s) from a JSON file">Import</button>
+          <button id="shExpAll" style="grid-column:span 2" title="Save every show in one JSON file">Export all</button>
+          <input type="file" id="shFile" accept=".json,application/json" hidden>
+        </div>
+      </aside>
+      <div class="edCenter">
+        <div class="edBar">
+          <input id="edName" style="width:210px" aria-label="Show name" placeholder="Show name">
+          <label class="small"><input type="checkbox" id="edLoop"> Loop</label>
+          <span id="edLenWrap" class="small" style="display:none">length <input id="edLen" type="number" min="100" step="100"> ms</span>
+          <span class="small" id="edTotal"></span>
+          <span class="spacer"></span>
+          <span id="edWarn" class="warn"></span>
+          <button id="btnPlayPrev" class="pri">▶ Play</button><button id="btnStopPrev">■ Stop</button><b id="edTime" class="mono">0.0s</b>
+        </div>
+        <div class="edBar">
+          <button id="btnUndo">↶ Undo</button><button id="btnRedo">↷ Redo</button><span class="sep"></span>
+          <button id="btnSelAll">Select all</button><button id="btnSelNone">Clear</button><span class="sep"></span>
+          <button id="btnAddClip" title="Add one clip to every selected row">+ Clip on selected rows</button><span class="sep"></span>
+          <span class="small">Stagger</span><input id="stgMs" type="number" step="50" value="200" title="Offset between neighbouring frames, ms"><span class="small">ms</span><button id="btnStagger" title="Chase: each next selected frame starts this much later">Apply</button><span class="sep"></span>
+          <button id="btnCopy">Copy</button><button id="btnPaste">Paste</button><button id="btnDup" title="Copy the selected clip(s) right after themselves (Ctrl+D). Repeatable: the copies become the selection.">Duplicate</button><span class="sep"></span>
+          <button id="zOut" title="Zoom out (Ctrl+wheel)">−</button><button id="zIn" title="Zoom in (Ctrl+wheel)">+</button><button id="zFit">Fit</button><span class="sep"></span>
+          <span class="lg"><i style="background:#6aa8ff"></i>Hold</span><span class="lg"><i style="background:#4fd1a1"></i>Fade</span><span class="lg"><i style="background:#ffb15c"></i>Blink</span>
+          <span class="small" id="edSelInfo"></span>
+        </div>
+        <div id="tlScroll"><div id="tlInner"></div></div>
+      </div>
+      <aside class="edRight">
+        <div class="card"><h3>Room preview</h3><div class="roomwrap" style="padding:4px"><svg id="edSvg"></svg></div></div>
+        <div class="card small" style="line-height:1.55">
+          <b>Mouse</b><br>
+          Drag on an empty lane → new Hold clip · drag a clip → move · drag its edges → resize · click a clip → edit.<br>
+          Snaps to 100 ms (hold <b>Alt</b> for free). Overlaps are refused (red).<br>
+          Rows: click a label · Shift = range · Ctrl = toggle · click a wall name = whole wall.<br>
+          Click the ruler to move the playhead. Ctrl+wheel = zoom.<br>
+          <b>Keys</b>: Del delete · Ctrl+C / Ctrl+V copy / paste at playhead · Ctrl+D duplicate right after the selected clip(s) (repeat to build a sequence; with one clip selected, rows you selected get the copy too) · Ctrl+Z / Ctrl+Y undo / redo · Space play / pause.<br>
+          <b>Stagger</b>: select rows (or clips) that have a clip at the playhead; the first keeps its time, each next frame starts <i>offset</i> later.<br>
+          Each frame can hold at most 24 steps (gaps count). Rows over the limit turn red; Run mode will not play that show.
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -182,7 +284,7 @@ const MAX_STEPS = 24;   // NOTE: node firmware is still 10 (LF_MAX_STEPS); raise
    track: { frames: [ids] | 'W1' | 'all', stagger_ms, clips: [{ t, fx:'H'|'F'|'B', a, b, per, dur }] }
    stagger_ms shifts each next frame of the track later by that amount (chase).            */
 const ROOM_ORDER = () => WALL_ORDER.flatMap(w => frameIds(w));
-const SHOWS = [
+const DEFAULT_SHOWS = [   // seed for S.shows on first load; after that shows live in saved state
   { name: 'Wave around the room', loop: false, tracks: [
     { frames: 'all', stagger_ms: 300, clips: [{ t: 0, fx: 'F', a: 0, b: 100, dur: 1000 }, { t: 1000, fx: 'H', a: 100, dur: 3000 }, { t: 4000, fx: 'F', a: 100, b: 0, dur: 1000 }] }] },
   { name: 'Wall by wall, blink, fade out', loop: false, tracks: [
@@ -209,7 +311,7 @@ function stepText(c, dur) {
   if (c.fx === 'F') return `F${c.a}-${c.b}:${d}`;
   return `B${c.a}-${c.b}/${c.per}ms:${d}`;
 }
-function compileShow(show) {      // -> { frameId: programText }
+function compileSteps(show) {     // -> { frameId: [step text, ...] }  (no step-limit check; the editor counts these)
   const per = {};
   for (const tr of show.tracks) trackFrames(tr.frames).forEach((id, i) => {
     for (const c of tr.clips) (per[id] = per[id] || []).push({ ...c, t: c.t + i * (tr.stagger_ms || 0) });
@@ -225,10 +327,21 @@ function compileShow(show) {      // -> { frameId: programText }
     }
     if (show.loop && show.length_ms > now) steps.push(`H0:${show.length_ms - now}ms`);
     if (!steps.length) steps.push('H0:0');
-    if (steps.length > MAX_STEPS) throw Error(`${id} needs ${steps.length} steps (max ${MAX_STEPS})`);
-    out[id] = (show.loop ? 'loop ' : '') + steps.join(' ');
+    out[id] = steps;
   }
   return out;
+}
+function compileShow(show) {      // -> { frameId: programText }   THE show compiler (editor, preview and Run mode all use it)
+  const steps = compileSteps(show), out = {};
+  for (const id of ROOM_ORDER()) {
+    if (steps[id].length > MAX_STEPS) throw Error(`${id} needs ${steps[id].length} steps (max ${MAX_STEPS})`);
+    out[id] = (show.loop ? 'loop ' : '') + steps[id].join(' ');
+  }
+  return out;
+}
+function overLimit(show) {        // frames whose compiled program has too many steps
+  const steps = compileSteps(show);
+  return ROOM_ORDER().filter(id => steps[id].length > MAX_STEPS).map(id => ({ id, n: steps[id].length }));
 }
 
 const PRESETS = [
@@ -244,11 +357,11 @@ const PRESETS = [
 /* ============================ ENGINE (port of lib/engine) ============================ */
 const Engine = {
   dur(v, u) { const n = parseFloat(v); return Math.round(u === 's' ? n * 1000 : n); },
-  parse(text) {
+  parse(text, max = MAX_STEPS) {   // max: the editor preview passes Infinity so over-limit rows can still be shown
     const p = { loop: false, steps: [] };
     for (const t of (text || '').trim().split(/[\s,]+/).filter(Boolean)) {
       if (t === 'loop') { p.loop = true; continue; }
-      if (p.steps.length >= MAX_STEPS) throw Error('max ' + MAX_STEPS + ' steps');
+      if (p.steps.length >= max) throw Error('max ' + max + ' steps');
       let m, s;
       if ((m = t.match(/^H(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'H', a: +m[1], b: 0, per: 0, dur: this.dur(m[2], m[3]) };
       else if ((m = t.match(/^F(\d+)-(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'F', a: +m[1], b: +m[2], per: 0, dur: this.dur(m[3], m[4]) };
@@ -519,7 +632,10 @@ async function playAll() {
 }
 let showState = null;   // { idx, name, override: Set of frame ids }
 async function playShow() {
-  const idx = +document.getElementById('showSel').value, show = SHOWS[idx];
+  const idx = +document.getElementById('showSel').value, show = S.shows[idx];
+  if (!show) return toast('No show selected.');
+  const over = overLimit(show);
+  if (over.length) return toast(`"${show.name}" can't play: ${over[0].id} needs ${over[0].n} steps (max ${MAX_STEPS})${over.length > 1 ? ` and ${over.length - 1} more frame(s)` : ''}. Fix it in Programs → Show editor.`, 7000);
   let prog; try { prog = compileShow(show); } catch (e) { return toast('Show error: ' + e.message); }
   const ids = ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
   if (!ids.length) return toast('No nodes yet.');
@@ -566,10 +682,10 @@ function wallPoint(side, u, W, D) {
   if (side === 'bottom') return [(1 - u) * W, D];
   return [0, (1 - u) * D];
 }
-function drawRoom(svg, interactive) {
+function drawRoom(svg, interactive, tag = interactive ? 1 : 0) {   // tag keeps marker ids unique per svg
   const [W, D] = planSize(), M = GAP + PANEL.top[1] + 6, MX = GAP + PANEL.left[0] + 6;
   svg.setAttribute('viewBox', `${-MX} ${-M} ${W + 2 * MX} ${D + 2 * M}`);
-  let h = `<defs><marker id="ah${interactive ? 1 : 0}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#59607a"/></marker></defs>`;
+  let h = `<defs><marker id="ah${tag}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#59607a"/></marker></defs>`;
   h += `<rect x="0" y="0" width="${W}" height="${D}" fill="#151820" class="wallLine"/>`;
   const frames = [];
   for (const w of WALL_ORDER) {
@@ -585,7 +701,7 @@ function drawRoom(svg, interactive) {
     h += `<text class="wallLbl" x="${px + 8}" y="${py + 16}"><tspan font-weight="700" fill="#e7e9ef">${c.name}</tspan> · ${esc(c.desc)} · ${c.frames} frames · ${c.len} m</text>`;
     // arrow from cluster middle on the wall toward the panel
     const mid = wallPoint(side, (c.from + c.to) / 2, W, D), out = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] }[side];
-    h += `<line class="arrow" x1="${mid[0] + out[0] * 4}" y1="${mid[1] + out[1] * 4}" x2="${mid[0] + out[0] * (GAP - 4)}" y2="${mid[1] + out[1] * (GAP - 4)}" marker-end="url(#ah${interactive ? 1 : 0})"/>`;
+    h += `<line class="arrow" x1="${mid[0] + out[0] * 4}" y1="${mid[1] + out[1] * 4}" x2="${mid[0] + out[0] * (GAP - 4)}" y2="${mid[1] + out[1] * (GAP - 4)}" marker-end="url(#ah${tag})"/>`;
     // elevation: scale traced boxes into the panel
     const bx0 = Math.min(...c.boxes.map(b => b.x)), bx1 = Math.max(...c.boxes.map(b => b.x + b.w));
     const by0 = Math.min(...c.boxes.map(b => b.y)), by1 = Math.max(...c.boxes.map(b => b.y + b.h));
@@ -628,7 +744,7 @@ function lightStyle(el, lv, offline) {
 }
 
 /* ============================ RENDER ============================ */
-let ctrlEls, simEls;
+let ctrlEls, simEls, edEls;
 const BADGE = { sending: ['var(--warn)', '●'], ok: ['var(--ok)', '✓'], fail: ['var(--bad)', '!'], nonode: ['#8d93a6', '?'] };
 function renderControl() {
   for (const [id, el] of Object.entries(ctrlEls)) {
@@ -783,6 +899,598 @@ function renderPrograms() {
   document.getElementById('progTable').innerHTML = h;
 }
 
+/* ============================ SHOW EDITOR ============================
+   S.shows = [{name, loop, length_ms, tracks:[{frames, stagger_ms, clips:[{t,fx,a,b,per,dur}]}]}]
+   The editor keeps ONE track per frame (frames:[id], stagger_ms:0). Older/imported shows with group
+   tracks or stagger are expanded to that form by normalizeShow(); compileShow() output is identical. */
+const MAXT = 600000, SNAP = 100, LABEL_W = 84, RULER_H = 24;
+const ED = { idx: 0, view: 'ed', rows: new Set(), anchor: null, clips: new Set(), collapsed: {}, ppm: 0.06, rowH: 20, needFit: true,
+  playing: false, pos: 0, pos0: 0, t0: 0, undo: [], redo: [], clipboard: null, cache: null };
+const byId = id => document.getElementById(id);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const curShow = () => S.shows[ED.idx];
+const contentEnd = sh => sh.tracks.reduce((m, tr) => tr.clips.reduce((m2, c) => Math.max(m2, c.t + c.dur), m), 0);
+const showLen = sh => sh.loop ? Math.max(sh.length_ms, contentEnd(sh)) : contentEnd(sh);
+const maxT = sh => sh.loop ? sh.length_ms : MAXT;
+const edExtent = sh => sh.loop ? Math.max(sh.length_ms, 1000) : Math.max(contentEnd(sh) + 5000, 20000);
+const FXNAME = { H: 'Hold', F: 'Fade', B: 'Blink' };
+const clipLabel = c => c.fx === 'H' ? c.a + '%' : c.fx === 'F' ? c.a + '→' + c.b : 'blink ' + c.a + '↔' + c.b;
+const clipTip = c => `${FXNAME[c.fx]} ${clipLabel(c)} · start ${fmtT(c.t)} · length ${fmtT(c.dur)}${c.fx === 'B' ? ' · period ' + c.per + ' ms' : ''}`;
+function fmtT(ms) {
+  ms = Math.max(0, Math.round(ms)); const s = ms / 1000;
+  if (s < 60) return s.toFixed(1) + 's';
+  const m = Math.floor(s / 60); return m + ':' + (s - m * 60).toFixed(1).padStart(4, '0');
+}
+function rowTrack(sh, id, create) {
+  let tr = sh.tracks.find(t => Array.isArray(t.frames) && t.frames.length === 1 && t.frames[0] === id);
+  if (!tr && create) { tr = { frames: [id], stagger_ms: 0, clips: [] }; sh.tracks.push(tr); }
+  return tr;
+}
+const rowClips = (sh, id) => { const tr = rowTrack(sh, id, false); return tr ? tr.clips : []; };
+function locate(sh, clip) { for (const tr of sh.tracks) if (tr.clips.includes(clip)) return tr.frames[0]; return null; }
+const conflicts = (sh, id, t, dur, ignore) => rowClips(sh, id).some(o => !ignore.has(o) && t < o.t + o.dur && o.t < t + dur);
+
+function cleanClip(c, t) {
+  if (!c || !['H', 'F', 'B'].includes(c.fx)) return null;
+  const lv = v => clamp(Math.round(+v || 0), 0, 100), dur = Math.round(+c.dur);
+  if (!(dur > 0)) return null;
+  const k = { t: Math.max(0, t), fx: c.fx, a: lv(c.a), dur };
+  if (c.fx !== 'H') k.b = lv(c.b);
+  if (c.fx === 'B') k.per = clamp(Math.round(+c.per) || 1000, 1, 65535);
+  return k;
+}
+function normalizeShow(raw) {       // any valid show -> one track per frame, stagger baked in, overlaps trimmed like compileShow
+  if (!raw || !Array.isArray(raw.tracks)) throw Error('not a show');
+  const valid = new Set(ROOM_ORDER()), per = {};
+  for (const tr of raw.tracks) {
+    let ids; try { ids = trackFrames(tr.frames); } catch { continue; }
+    ids.forEach((id, i) => {
+      if (!valid.has(id)) return;
+      for (const c of tr.clips || []) { const k = cleanClip(c, Math.round((+c.t || 0) + i * (+tr.stagger_ms || 0))); if (k) (per[id] = per[id] || []).push(k); }
+    });
+  }
+  const tracks = [];
+  for (const id of ROOM_ORDER()) {
+    const list = (per[id] || []).sort((x, y) => x.t - y.t), clips = []; let now = 0;
+    for (const c of list) { const start = Math.max(c.t, now), dur = c.t + c.dur - start; if (dur > 0) { clips.push({ ...c, t: start, dur }); now = start + dur; } }
+    if (clips.length) tracks.push({ frames: [id], stagger_ms: 0, clips });
+  }
+  const sh = { name: String(raw.name || 'Untitled').slice(0, 60), loop: !!raw.loop, tracks };
+  const len = Math.round(+raw.length_ms) || 0;
+  if (sh.loop) sh.length_ms = Math.max(len, contentEnd(sh)) || 10000;
+  else if (len > 0) sh.length_ms = len;
+  return sh;
+}
+function ensureShows() {
+  if (!Array.isArray(S.shows) || !S.shows.length) S.shows = JSON.parse(JSON.stringify(DEFAULT_SHOWS));
+  S.shows = S.shows.map(sh => { try { return normalizeShow(sh); } catch { return null; } }).filter(Boolean);
+  if (!S.shows.length) S.shows = DEFAULT_SHOWS.map(normalizeShow);
+  ED.idx = clamp(+S.edShow || 0, 0, S.shows.length - 1);
+  save();
+}
+function uniqueName(base) {
+  const names = new Set(S.shows.map(s => s.name)); if (!names.has(base)) return base;
+  for (let i = 2; ; i++) if (!names.has(base + ' ' + i)) return base + ' ' + i;
+}
+
+/* ---- preview: compiled programs + the same Engine.levelAt the simulator and nodes use ---- */
+function buildPreview(sh) {
+  const steps = compileSteps(sh), progs = {}, counts = {};
+  for (const id of ROOM_ORDER()) { counts[id] = steps[id].length; progs[id] = Engine.parse((sh.loop ? 'loop ' : '') + steps[id].join(' '), Infinity); }
+  return { progs, counts };
+}
+const preview = () => ED.cache || (ED.cache = buildPreview(curShow()));
+function progLevel(pr, t) {          // same wrap rule as Channel.update
+  const tot = Engine.total(pr);
+  return Engine.levelAt(pr, pr.loop && tot > 0 ? t % tot : t);
+}
+
+/* ---- edit + undo/redo ---- */
+function finishEdit() {
+  const sh = curShow();
+  sh.tracks = sh.tracks.filter(t => t.clips.length);
+  sh.tracks.forEach(t => t.clips.sort((x, y) => x.t - y.t));
+  const alive = new Set(sh.tracks.flatMap(t => t.clips));
+  [...ED.clips].forEach(c => alive.has(c) || ED.clips.delete(c));
+  ED.cache = null; save(); refreshShowSel(); renderEditor();
+}
+function edit(fn) {       // every change goes through here: snapshot -> mutate -> save -> redraw
+  const snap = JSON.stringify(curShow());
+  fn(curShow());
+  ED.undo.push(snap); if (ED.undo.length > 100) ED.undo.shift();
+  ED.redo.length = 0; finishEdit();
+}
+function history(from, to) {
+  if (!from.length) return;
+  to.push(JSON.stringify(curShow())); S.shows[ED.idx] = JSON.parse(from.pop());
+  ED.clips.clear(); closeModal(); finishEdit();
+}
+const undo = () => history(ED.undo, ED.redo), redo = () => history(ED.redo, ED.undo);
+
+/* ---- rendering ---- */
+function edActive() { return byId('page-programs').classList.contains('on') && ED.view === 'ed'; }
+function renderEditor() {
+  if (!edActive()) return;
+  const sc = byId('tlScroll');
+  if (ED.needFit && sc.clientWidth > LABEL_W + 60) { ED.ppm = clamp((sc.clientWidth - LABEL_W - 8) / edExtent(curShow()), 0.003, 0.6); ED.needFit = false; }
+  renderShowList(); renderTop(); renderTimeline(); renderEdPreview();
+}
+function renderShowList() {
+  byId('shList').innerHTML = S.shows.map((s, i) =>
+    `<div class="shItem${i === ED.idx ? ' on' : ''}" data-i="${i}" title="${esc(s.name)}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name)}</span><span class="small">${overLimit(s).length ? '<span style="color:var(--bad)">⚠</span> ' : ''}${s.loop ? '↻' : ''}</span></div>`).join('');
+}
+function renderTop() {
+  const sh = curShow(), pre = preview();
+  const nm = byId('edName'); if (document.activeElement !== nm) nm.value = sh.name;
+  byId('edLoop').checked = sh.loop;
+  byId('edLenWrap').style.display = sh.loop ? '' : 'none';
+  const ln = byId('edLen'); if (document.activeElement !== ln) ln.value = sh.length_ms || '';
+  byId('edTotal').textContent = 'Total ' + fmtT(showLen(sh));
+  byId('btnPlayPrev').textContent = ED.playing ? '⏸ Pause' : '▶ Play';
+  byId('btnUndo').disabled = !ED.undo.length; byId('btnRedo').disabled = !ED.redo.length;
+  byId('edSelInfo').textContent = `${ED.rows.size} row${ED.rows.size === 1 ? '' : 's'} · ${ED.clips.size} clip${ED.clips.size === 1 ? '' : 's'} selected`;
+  const over = ROOM_ORDER().filter(id => pre.counts[id] > MAX_STEPS).length;
+  byId('edWarn').textContent = over ? `⚠ ${over} frame${over === 1 ? '' : 's'} over ${MAX_STEPS} steps — Run mode will refuse this show` : '';
+}
+function renderTimeline() {
+  const sc = byId('tlScroll'), sh = curShow(), pre = preview(), ext = edExtent(sh);
+  const laneW = Math.ceil(ext * ED.ppm), nrows = WALL_ORDER.reduce((n, w) => n + 1 + (ED.collapsed[w] ? 0 : WALLS[w].frames), 0);
+  const rh = ED.rowH = clamp(Math.floor((sc.offsetHeight - RULER_H - 22) / nrows), 15, 26);
+  const step = [100, 200, 500, 1000, 2000, 5000, 10000, 15000, 30000, 60000, 120000].find(s => s * ED.ppm >= 70) || 300000;
+  let ticks = ''; for (let t = 0; t <= ext; t += step) ticks += `<span class="tk" style="left:${t * ED.ppm}px">${fmtT(t)}</span>`;
+  let h = `<div class="trow ruler" style="height:${RULER_H}px"><div class="rlabel">time</div><div class="rlane" id="ruler" style="width:${laneW}px">${ticks}<i id="phm"></i></div></div>`;
+  for (const w of WALL_ORDER) {
+    const col = ED.collapsed[w], ids = frameIds(w);
+    h += `<div class="trow whead" style="height:${rh}px"><div class="rlabel" data-wall="${w}" title="Click: select this whole wall · ▾ collapses it"><span><span class="car" data-car="${w}">${col ? '▸' : '▾'}</span>${w}</span><span class="cnt">${ids.length}</span></div><div class="rlane" style="width:${laneW}px"></div></div>`;
+    if (col) continue;
+    for (const id of ids) {
+      const n = pre.counts[id], over = n > MAX_STEPS;
+      const tip = over ? `${id} needs ${n} steps; the limit is ${MAX_STEPS} (gaps count as steps). Remove or merge clips.` : `${id}: ${n} of ${MAX_STEPS} steps`;
+      h += `<div class="trow${ED.rows.has(id) ? ' sel' : ''}${over ? ' over' : ''}" style="height:${rh}px" title="${tip}"><div class="rlabel" data-row="${id}"><b>${id}</b><span class="cnt">${n}</span></div><div class="rlane" data-lane="${id}" style="width:${laneW}px">`;
+      rowClips(sh, id).forEach((c, i) => {
+        h += `<div class="clip fx${c.fx}${ED.clips.has(c) ? ' sel' : ''}" data-id="${id}" data-i="${i}" style="left:${c.t * ED.ppm}px;width:${Math.max(2, c.dur * ED.ppm)}px" title="${esc(clipTip(c))}">${esc(clipLabel(c))}<i class="hl"></i><i class="hr"></i></div>`;
+      });
+      h += `</div></div>`;
+    }
+  }
+  h += `<div id="phead"></div>`;
+  const inner = byId('tlInner');
+  inner.style.width = (LABEL_W + laneW) + 'px'; inner.style.setProperty('--gs', step * ED.ppm + 'px'); inner.innerHTML = h;
+  updatePlayhead();
+}
+function updatePlayhead() {
+  const x = ED.pos * ED.ppm, ph = byId('phead'), pm = byId('phm');
+  if (ph) ph.style.left = (LABEL_W + x) + 'px';
+  if (pm) pm.style.left = x + 'px';
+  byId('edTime').textContent = fmtT(ED.pos);
+}
+function renderEdPreview() {
+  if (!edEls) return;
+  const pre = preview();
+  for (const id of ROOM_ORDER()) if (edEls[id]) lightStyle(edEls[id], progLevel(pre.progs[id], ED.pos));
+}
+function syncSel() {      // cheap selection refresh (no full timeline rebuild)
+  const sh = curShow();
+  byId('tlScroll').querySelectorAll('.clip').forEach(el => el.classList.toggle('sel', ED.clips.has(rowClips(sh, el.dataset.id)[+el.dataset.i])));
+  renderTop();
+}
+function refreshShowSel() {     // Run mode dropdown reads S.shows
+  const sel = byId('showSel'), keep = +sel.value || 0;
+  sel.innerHTML = S.shows.map((s, i) => `<option value="${i}">${overLimit(s).length ? '⚠ ' : ''}${esc(s.name)}</option>`).join('');
+  sel.value = String(Math.min(keep, S.shows.length - 1));
+}
+
+/* ---- preview transport ---- */
+function seek(t) {
+  ED.pos = clamp(t, 0, edExtent(curShow())); ED.pos0 = ED.pos; ED.t0 = performance.now();
+  updatePlayhead(); renderEdPreview();
+}
+function togglePlay() {
+  if (ED.playing) ED.playing = false;
+  else { const sh = curShow(); if (!sh.loop && ED.pos >= showLen(sh)) ED.pos = 0; ED.pos0 = ED.pos; ED.t0 = performance.now(); ED.playing = true; }
+  renderTop();
+}
+function stopPlay() { ED.playing = false; seek(0); renderTop(); }
+function edTick() {
+  if (ED.playing && edActive()) {
+    const sh = curShow(), len = showLen(sh), now = performance.now();
+    let p = ED.pos0 + (now - ED.t0);
+    if (sh.loop && len > 0) { if (p >= len) { p %= len; ED.pos0 = p; ED.t0 = now; } }
+    else if (p >= len) { p = len; ED.playing = false; renderTop(); }
+    ED.pos = p; updatePlayhead(); renderEdPreview();
+    const sc = byId('tlScroll'), vx = LABEL_W + p * ED.ppm - sc.scrollLeft;
+    if (ED.playing && (vx > sc.clientWidth - 30 || vx < LABEL_W)) sc.scrollLeft = p * ED.ppm - (sc.clientWidth - LABEL_W) * 0.2;
+  }
+  requestAnimationFrame(edTick);
+}
+function setZoom(p, ax) {         // ax = x inside the scroll viewport to keep fixed (default: centre)
+  const sc = byId('tlScroll'); p = clamp(p, 0.003, 0.6);
+  const vx = ax == null ? (sc.clientWidth + LABEL_W) / 2 : ax, tA = (sc.scrollLeft + vx - LABEL_W) / ED.ppm;
+  ED.ppm = p; renderTimeline(); sc.scrollLeft = tA * p + LABEL_W - vx;
+}
+
+/* ---- row selection ---- */
+function selectRow(id, e) {
+  const all = ROOM_ORDER();
+  if (e.shiftKey && ED.anchor) { const a = all.indexOf(ED.anchor), b = all.indexOf(id); ED.rows = new Set(all.slice(Math.min(a, b), Math.max(a, b) + 1)); }
+  else if (e.ctrlKey || e.metaKey) { ED.rows.has(id) ? ED.rows.delete(id) : ED.rows.add(id); ED.anchor = id; }
+  else { ED.rows = new Set([id]); ED.anchor = id; }
+}
+function selectWall(w, e) {
+  const ids = frameIds(w);
+  ED.rows = (e.ctrlKey || e.metaKey) ? new Set([...ED.rows, ...ids]) : new Set(ids); ED.anchor = ids[0];
+}
+
+/* ---- clip popup (edit one clip, or add one clip to all selected rows) ---- */
+function clipModal(clip) {
+  const sh = curShow(), isNew = !clip;
+  const d = clip ? { ...clip } : { fx: 'H', a: 100, b: 0, per: 1000, t: Math.round(ED.pos), dur: 1000 };
+  openModal(`<h2>${isNew ? 'Add clip' : 'Edit clip'} <span class="small">· ${isNew ? ED.rows.size + ' selected row' + (ED.rows.size === 1 ? '' : 's') : locate(sh, clip)}</span></h2>
+    <div class="row"><label>Effect</label><select id="cFx"><option value="H">Hold</option><option value="F">Fade</option><option value="B">Blink</option></select></div>
+    <div class="row"><label id="cLa">Level %</label><input id="cA" type="number" min="0" max="100" step="1"></div>
+    <div class="row" id="cRowB"><label>To %</label><input id="cB" type="number" min="0" max="100" step="1"></div>
+    <div class="row" id="cRowP"><label>Period (ms)</label><input id="cP" type="number" min="1" max="65535" step="50"></div>
+    <div class="row"><label>Start (s)</label><input id="cT" type="number" min="0" step="0.1"></div>
+    <div class="row"><label>Length (s)</label><input id="cD" type="number" min="0.001" step="0.1"></div>
+    <div class="row" style="justify-content:flex-end"><span class="small" id="cMsg" style="flex:1"></span>${isNew ? '<button id="cCancel">Cancel</button>' : '<button class="danger" id="cDel">Delete</button>'}<button class="pri" id="cOk">${isNew ? 'Add' : 'Done'}</button></div>`);
+  const g = byId;
+  g('cFx').value = d.fx; g('cA').value = d.a; g('cB').value = d.b ?? 0; g('cP').value = d.per ?? 1000;
+  g('cT').value = +(d.t / 1000).toFixed(3); g('cD').value = +(d.dur / 1000).toFixed(3);
+  const sync = () => {
+    const fx = g('cFx').value;
+    g('cRowB').style.display = fx === 'H' ? 'none' : ''; g('cRowP').style.display = fx === 'B' ? '' : 'none';
+    g('cLa').textContent = fx === 'H' ? 'Level %' : 'From %';
+  };
+  sync();
+  const msg = (t, bad) => { g('cMsg').innerHTML = t ? `<span style="color:var(${bad ? '--bad' : '--ok'})">${esc(t)}</span>` : ''; };
+  const read = () => {
+    const fx = g('cFx').value, lv = v => clamp(Math.round(+v || 0), 0, 100);
+    const c = { t: Math.round(+g('cT').value * 1000), fx, a: lv(g('cA').value), dur: Math.round(+g('cD').value * 1000) };
+    if (fx !== 'H') c.b = lv(g('cB').value);
+    if (fx === 'B') { c.per = Math.round(+g('cP').value); if (!(c.per >= 1 && c.per <= 65535)) return { err: 'Blink period must be 1–65535 ms' }; }
+    if (!(c.t >= 0)) return { err: 'Start must be 0 or later' };
+    if (!(c.dur >= 1)) return { err: 'Length must be at least 1 ms' };
+    if (c.t + c.dur > maxT(sh)) return { err: sh.loop ? 'Clip would run past the loop length' : 'Clip is past the maximum show length (10 min)' };
+    const ids = isNew ? [...ED.rows] : [locate(sh, clip)], ignore = new Set(clip ? [clip] : []);
+    const hit = ids.find(id => conflicts(sh, id, c.t, c.dur, ignore));
+    if (hit) return { err: 'Overlaps another clip on ' + hit };
+    return { c, ids };
+  };
+  const onChange = () => {
+    sync(); if (isNew) return;
+    const r = read(); if (r.err) return msg(r.err, true);
+    edit(() => { delete clip.b; delete clip.per; Object.assign(clip, r.c); }); msg('✓ Saved');
+  };
+  ['cFx', 'cA', 'cB', 'cP', 'cT', 'cD'].forEach(id => g(id).onchange = onChange);
+  g('cOk').onclick = () => {
+    if (!isNew) return closeModal();
+    if (!ED.rows.size) return msg('Select some rows first', true);
+    const r = read(); if (r.err) return msg(r.err, true);
+    const added = []; edit(s => r.ids.forEach(id => { const k = { ...r.c }; rowTrack(s, id, true).clips.push(k); added.push(k); }));
+    ED.clips = new Set(added); renderEditor(); closeModal();
+  };
+  if (isNew) g('cCancel').onclick = closeModal;
+  else g('cDel').onclick = () => { edit(s => { const tr = s.tracks.find(t => t.clips.includes(clip)); tr.clips.splice(tr.clips.indexOf(clip), 1); }); closeModal(); };
+}
+
+/* ---- clipboard, delete, stagger ---- */
+function deleteSelected() {
+  if (!ED.clips.size) return toast('Click a clip first');
+  const del = new Set(ED.clips);
+  edit(s => s.tracks.forEach(tr => tr.clips = tr.clips.filter(c => !del.has(c))));
+}
+function copyClips() {
+  const sel = [...ED.clips]; if (!sel.length) return toast('Click a clip first (Ctrl/Shift-click for several)');
+  const sh = curShow(), t0 = Math.min(...sel.map(c => c.t));
+  ED.clipboard = sel.map(c => ({ id: locate(sh, c), c: { ...c }, dt: c.t - t0 }));
+  toast(`Copied ${sel.length} clip${sel.length === 1 ? '' : 's'}`);
+}
+function planPlace(sh, entries, at, rows, verb) {   // pure: entries [{id, c, dt}] -> {jobs} or {err}. One source row + rows selected -> onto all selected rows
+  const ids = new Set(entries.map(x => x.id)), jobs = [];
+  const targets = ids.size === 1 && rows.size ? [...rows] : null;
+  for (const x of entries) for (const id of (targets || [x.id])) jobs.push({ id, c: { ...x.c, t: at + x.dt } });
+  for (const j of jobs) {
+    if (j.c.t + j.c.dur > maxT(sh)) return { err: `${verb} refused: it would run past the end` };
+    if (conflicts(sh, j.id, j.c.t, j.c.dur, new Set())) return { err: `${verb} refused: overlaps a clip on ${j.id}` };
+  }
+  return { jobs };
+}
+function addJobs(sh, jobs) { return jobs.map(j => { const k = { ...j.c }; rowTrack(sh, j.id, true).clips.push(k); return k; }); }
+function placeClips(entries, at, verb) {
+  const plan = planPlace(curShow(), entries, at, ED.rows, verb); if (plan.err) return toast(plan.err);
+  let added; edit(s => { added = addJobs(s, plan.jobs); });
+  ED.clips = new Set(added); renderEditor();     // the new clips become the selection, so Duplicate can be repeated
+}
+function pasteClips() {
+  if (!ED.clipboard || !ED.clipboard.length) return toast('Nothing copied yet');
+  placeClips(ED.clipboard, Math.round(ED.pos), 'Paste');
+}
+function dupSource(sh, sel) {      // pure: selected clips -> placement entries + the time right after them
+  const t0 = Math.min(...sel.map(c => c.t)), end = Math.max(...sel.map(c => c.t + c.dur));
+  return { entries: sel.map(c => ({ id: locate(sh, c), c: { ...c }, dt: c.t - t0 })), at: end };
+}
+function duplicateClips() {       // copy of the selected clips, placed right after them; the copies get selected
+  const sel = [...ED.clips]; if (!sel.length) return toast('Click a clip first (Ctrl/Shift-click for several)');
+  const d = dupSource(curShow(), sel); placeClips(d.entries, d.at, 'Duplicate');
+}
+function clickClipResult(before, clip) {   // pure: plain click (no drag) on a clip. First click selects it; clicking the already-selected clip opens the popup
+  return { sel: new Set([clip]), open: before.size === 1 && before.has(clip) };
+}
+function applyStagger() {
+  const sh = curShow(), off = Math.round(+byId('stgMs').value);
+  if (!Number.isFinite(off)) return toast('Enter an offset in ms');
+  const pick = new Map();      // row -> the clip to shift
+  if (ED.clips.size >= 2) { for (const c of ED.clips) { const id = locate(sh, c); if (!pick.has(id) || c.t < pick.get(id).t) pick.set(id, c); } }
+  else for (const id of ED.rows) {
+    const cl = rowClips(sh, id), c = cl.find(c => c.t <= ED.pos && ED.pos < c.t + c.dur) || cl.find(c => c.t >= ED.pos);
+    if (c) pick.set(id, c);
+  }
+  const ids = ROOM_ORDER().filter(id => pick.has(id));
+  if (ids.length < 2) return toast('Select 2+ rows that have a clip at the playhead (or 2+ clips on different rows).', 5000);
+  const base = pick.get(ids[0]).t, moved = new Set(ids.map(id => pick.get(id)));
+  const plan = ids.map((id, k) => ({ id, c: pick.get(id), t: base + k * off }));
+  for (const p of plan) {
+    if (p.t < 0 || p.t + p.c.dur > maxT(sh)) return toast(`Stagger refused: ${p.id} would leave the timeline`);
+    if (conflicts(sh, p.id, p.t, p.c.dur, moved)) return toast(`Stagger refused: ${p.id} would overlap another clip`);
+  }
+  edit(() => plan.forEach(p => p.c.t = p.t));
+  toast(`Staggered ${plan.length} frames, ${off} ms apart`);
+}
+
+/* ---- show list actions ---- */
+function switchShow(i) {
+  ED.idx = clamp(i, 0, S.shows.length - 1); S.edShow = ED.idx;
+  ED.clips.clear(); ED.undo = []; ED.redo = []; ED.cache = null; ED.playing = false; ED.pos = 0; ED.needFit = true;
+  save(); refreshShowSel(); renderEditor();
+}
+function textModal(title, value, okLabel, onOk) {
+  openModal(`<h2>${esc(title)}</h2><div class="row"><input id="tmIn" value="${esc(value)}" maxlength="60" style="min-width:240px"></div>
+    <div class="row" style="justify-content:flex-end"><button id="tmNo">Cancel</button><button class="pri" id="tmOk">${esc(okLabel)}</button></div>`);
+  const inp = byId('tmIn'); inp.focus(); inp.select();
+  const go = () => { const v = inp.value.trim(); if (v) { closeModal(); onOk(v); } };
+  byId('tmOk').onclick = go; byId('tmNo').onclick = closeModal; inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+function download(name, text) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const slug = s => (s.replace(/[^\w\-]+/g, '_').replace(/^_+|_+$/g, '') || 'show');
+function importShows(text) {
+  let data; try { data = JSON.parse(text); } catch { return toast('Import failed: not a JSON file'); }
+  const list = Array.isArray(data) ? data : Array.isArray(data && data.shows) ? data.shows : [data];
+  const added = [];
+  for (const raw of list) { try { const sh = normalizeShow(raw); sh.name = uniqueName(sh.name); S.shows.push(sh); added.push(sh); } catch { } }
+  if (!added.length) return toast('Import failed: no valid show found in that file');
+  toast(`Imported ${added.length} show${added.length === 1 ? '' : 's'}`);
+  switchShow(S.shows.indexOf(added[0]));
+}
+
+/* ---- wiring (called once at start) ---- */
+function setProgView(v) {
+  ED.view = v;
+  document.querySelectorAll('#progSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  byId('edView').style.display = v === 'ed' ? 'flex' : 'none';
+  byId('libView').style.display = v === 'lib' ? 'block' : 'none';
+  if (v === 'lib') ED.playing = false;
+  renderEditor();
+}
+function initEditor() {
+  const sc = byId('tlScroll'), tAt = e => (e.clientX - sc.getBoundingClientRect().left + sc.scrollLeft - LABEL_W) / ED.ppm;
+  const snapT = (t, e) => e.altKey ? Math.round(t) : Math.round(t / SNAP) * SNAP;
+  document.querySelectorAll('#progSeg button').forEach(b => b.onclick = () => setProgView(b.dataset.v));
+  byId('shList').onclick = e => { const it = e.target.closest('.shItem'); if (it) switchShow(+it.dataset.i); };
+  byId('shNew').onclick = () => { S.shows.push({ name: uniqueName('New show'), loop: false, tracks: [] }); switchShow(S.shows.length - 1); };
+  byId('shDup').onclick = () => { const c = JSON.parse(JSON.stringify(curShow())); c.name = uniqueName(c.name + ' copy'); S.shows.push(c); switchShow(S.shows.length - 1); };
+  byId('shRen').onclick = () => textModal('Rename show', curShow().name, 'Rename', v => edit(s => s.name = v));
+  byId('shDel').onclick = () => {
+    if (S.shows.length < 2) return toast('Keep at least one show');
+    const nm = curShow().name;
+    openModal(`<h2>Delete show?</h2><p>“${esc(nm)}” will be removed. This cannot be undone.</p><div class="row" style="justify-content:flex-end"><button id="dNo">Cancel</button><button class="danger" id="dYes">Delete</button></div>`);
+    byId('dNo').onclick = closeModal;
+    byId('dYes').onclick = () => { closeModal(); S.shows.splice(ED.idx, 1); switchShow(Math.min(ED.idx, S.shows.length - 1)); };
+  };
+  byId('shExp').onclick = () => download(slug(curShow().name) + '.show.json', JSON.stringify(curShow(), null, 1));
+  byId('shExpAll').onclick = () => download('all-shows.json', JSON.stringify({ shows: S.shows }, null, 1));
+  byId('shImp').onclick = () => byId('shFile').click();
+  byId('shFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) f.text().then(importShows); };
+
+  byId('edName').onchange = e => { const v = e.target.value.trim(); if (v && v !== curShow().name) edit(s => s.name = v.slice(0, 60)); else e.target.value = curShow().name; };
+  byId('edLoop').onchange = e => edit(s => { s.loop = e.target.checked; if (s.loop) s.length_ms = Math.max(s.length_ms || 0, contentEnd(s), 1000); });
+  byId('edLen').onchange = e => {
+    const sh = curShow(), end = contentEnd(sh); let v = Math.round(+e.target.value) || 0;
+    if (v < Math.max(end, 100)) { v = Math.max(end, 100); toast(`Loop length can't be shorter than the last clip (${fmtT(end)})`); }
+    v = Math.min(v, MAXT); if (v !== sh.length_ms) edit(s => s.length_ms = v); else e.target.value = v;
+  };
+  byId('btnPlayPrev').onclick = togglePlay; byId('btnStopPrev').onclick = stopPlay;
+  byId('btnUndo').onclick = undo; byId('btnRedo').onclick = redo;
+  byId('btnSelAll').onclick = () => { ED.rows = new Set(ROOM_ORDER()); renderEditor(); };
+  byId('btnSelNone').onclick = () => { ED.rows.clear(); ED.clips.clear(); renderEditor(); };
+  byId('btnAddClip').onclick = () => ED.rows.size ? clipModal(null) : toast('Select rows first: click a row label (Shift = range, Ctrl = toggle)');
+  byId('btnStagger').onclick = applyStagger; byId('btnCopy').onclick = copyClips; byId('btnPaste').onclick = pasteClips; byId('btnDup').onclick = duplicateClips;
+  byId('zIn').onclick = () => setZoom(ED.ppm * 1.4); byId('zOut').onclick = () => setZoom(ED.ppm / 1.4);
+  byId('zFit').onclick = () => { ED.needFit = true; renderEditor(); };
+
+  sc.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom(ED.ppm * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX - sc.getBoundingClientRect().left); }, { passive: false });
+  sc.addEventListener('click', e => {      // row / wall labels
+    const car = e.target.closest('[data-car]');
+    if (car) { ED.collapsed[car.dataset.car] = !ED.collapsed[car.dataset.car]; return renderTimeline(); }
+    const wl = e.target.closest('[data-wall]'); if (wl) { selectWall(wl.dataset.wall, e); return renderEditor(); }
+    const rl = e.target.closest('[data-row]'); if (rl) { selectRow(rl.dataset.row, e); renderEditor(); }
+  });
+
+  /* mouse editing: scrub / create / move / resize */
+  let drag = null;
+  const tooShort = e => e.altKey ? 1 : SNAP;
+  sc.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    const sh = curShow();
+    if (e.target.closest('#ruler')) { e.preventDefault(); drag = { kind: 'scrub' }; return seek(snapT(tAt(e), e)); }
+    const clipEl = e.target.closest('.clip');
+    if (clipEl) {
+      e.preventDefault();
+      const id = clipEl.dataset.id, clip = rowClips(sh, id)[+clipEl.dataset.i]; if (!clip) return;
+      if (e.ctrlKey || e.metaKey || e.shiftKey) { ED.clips.has(clip) ? ED.clips.delete(clip) : ED.clips.add(clip); return syncSel(); }
+      const h = e.target.closest('i'), before = new Set(ED.clips);
+      if (h) { ED.clips = new Set([clip]); syncSel(); drag = { kind: h.classList.contains('hl') ? 'rl' : 'rr', x0: e.clientX, clip, id, el: clipEl, before }; return; }
+      if (!ED.clips.has(clip)) { ED.clips = new Set([clip]); syncSel(); }
+      const items = [...ED.clips].map(c => {
+        const rid = locate(sh, c);
+        return { c, id: rid, el: sc.querySelector(`.clip[data-id="${rid}"][data-i="${rowClips(sh, rid).indexOf(c)}"]`) };
+      });
+      drag = { kind: 'move', x0: e.clientX, grab: tAt(e), primary: clip, items, before };
+      return;
+    }
+    const lane = e.target.closest('[data-lane]');
+    if (lane) {
+      e.preventDefault();
+      const id = lane.dataset.lane, raw = tAt(e), cl = rowClips(sh, id);
+      let t0 = clamp(snapT(raw, e), 0, maxT(sh));
+      const inside = cl.find(c => t0 > c.t && t0 < c.t + c.dur);
+      if (inside) t0 = raw >= inside.t + inside.dur ? inside.t + inside.dur : inside.t;
+      const lo = Math.max(0, ...cl.filter(c => c.t + c.dur <= t0).map(c => c.t + c.dur));
+      const hi = Math.min(maxT(sh), ...cl.filter(c => c.t >= t0).map(c => c.t));
+      drag = { kind: 'create', x0: e.clientX, id, t0, lo, hi, lane, ghost: null, raw };
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const sh = curShow();
+    if (drag.kind === 'scrub') return seek(snapT(tAt(e), e));
+    if (!drag.moved && Math.abs(e.clientX - drag.x0) < 3) return;
+    drag.moved = true;
+    if (drag.kind === 'create') {
+      const cur = clamp(snapT(tAt(e), e), drag.lo, drag.hi), a = Math.min(drag.t0, cur), b = Math.max(drag.t0, cur);
+      if (!drag.ghost) { drag.ghost = document.createElement('div'); drag.ghost.className = 'clip fxH ghost'; drag.lane.appendChild(drag.ghost); }
+      drag.a = a; drag.b = b;
+      drag.ghost.style.left = a * ED.ppm + 'px'; drag.ghost.style.width = Math.max(2, (b - a) * ED.ppm) + 'px'; drag.ghost.textContent = fmtT(b - a);
+    } else if (drag.kind === 'move') {
+      const { items, primary } = drag, ignore = new Set(items.map(i => i.c));
+      let dt = snapT(primary.t + (tAt(e) - drag.grab), e) - primary.t;
+      dt = clamp(dt, -Math.min(...items.map(i => i.c.t)), maxT(sh) - Math.max(...items.map(i => i.c.t + i.c.dur)));
+      drag.dt = dt; drag.bad = false;
+      for (const it of items) {
+        const bad = conflicts(sh, it.id, it.c.t + dt, it.c.dur, ignore); drag.bad = drag.bad || bad;
+        if (it.el) { it.el.style.left = (it.c.t + dt) * ED.ppm + 'px'; it.el.classList.toggle('bad', bad); }
+      }
+    } else {      // resize one clip
+      const { clip } = drag, min = tooShort(e); let t = clip.t, dur = clip.dur;
+      if (drag.kind === 'rr') dur = clamp(snapT(tAt(e), e) - clip.t, min, maxT(sh) - clip.t);
+      else { const end = clip.t + clip.dur; t = clamp(snapT(tAt(e), e), 0, end - min); dur = end - t; }
+      drag.t = t; drag.dur = dur; drag.bad = conflicts(sh, drag.id, t, dur, new Set([clip]));
+      drag.el.style.left = t * ED.ppm + 'px'; drag.el.style.width = Math.max(2, dur * ED.ppm) + 'px'; drag.el.classList.toggle('bad', drag.bad);
+    }
+  });
+  window.addEventListener('mouseup', e => {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (d.kind === 'scrub') return;
+    if (d.kind === 'create') {
+      if (d.moved && d.b > d.a) {
+        const k = { t: d.a, fx: 'H', a: 100, dur: d.b - d.a };
+        edit(s => rowTrack(s, d.id, true).clips.push(k)); ED.clips = new Set([k]); return syncSel();
+      }
+      ED.clips.clear(); seek(d.t0); return renderEditor();       // plain click on an empty lane: move the playhead there
+    }
+    const clip = d.kind === 'move' ? d.primary : d.clip;
+    if (!d.moved) { const r = clickClipResult(d.before, clip); ED.clips = r.sel; syncSel(); if (r.open) clipModal(clip); return; }    // 1st click selects, click on the selected clip -> popup
+    if (d.bad) { toast('That would overlap another clip, so it was not applied'); return renderEditor(); }
+    if (d.kind === 'move') { if (d.dt) edit(() => d.items.forEach(i => i.c.t += d.dt)); else renderEditor(); }
+    else edit(() => { clip.t = d.t; clip.dur = d.dur; });
+  });
+  new ResizeObserver(() => { if (edActive()) { let w = sc.offsetWidth, h = sc.offsetHeight; if (w !== initEditor.w || h !== initEditor.h) { initEditor.w = w; initEditor.h = h; renderEditor(); } } }).observe(sc);
+
+  document.addEventListener('keydown', e => {
+    if (!edActive() || modalBg.classList.contains('on')) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+    const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
+    if (mod && k === 'z') { e.shiftKey ? redo() : undo(); }
+    else if (mod && k === 'y') redo();
+    else if (mod && k === 'c') copyClips();
+    else if (mod && k === 'v') pasteClips();
+    else if (mod && k === 'd') duplicateClips();
+    else if (mod && k === 'a') { ED.rows = new Set(ROOM_ORDER()); renderEditor(); }
+    else if (k === 'delete' || k === 'backspace') deleteSelected();
+    else if (k === ' ' && tag !== 'button') togglePlay();
+    else if (k === 'escape') { ED.rows.clear(); ED.clips.clear(); renderEditor(); }
+    else return;
+    e.preventDefault();
+  });
+  requestAnimationFrame(edTick);
+}
+
+/* ---- self test: run selfTest() in the browser console ---- */
+const clipStep = c => ({ type: c.fx, a: c.a, b: c.b || 0, per: c.per || 0, dur: c.dur });
+function directLevel(sh, id, t) {      // independent oracle: evaluate the clips directly, no compiler involved
+  const clips = rowClips(sh, id).slice().sort((x, y) => x.t - y.t), L = showLen(sh);
+  if (sh.loop && L > 0) t %= L;
+  let last = null;
+  for (const c of clips) {
+    if (t < c.t) return 0;                                           // gap / before first clip = off
+    if (t < c.t + c.dur) return Engine.stepAt(clipStep(c), t - c.t);
+    last = c;
+  }
+  return last && !sh.loop ? Engine.endLevel(clipStep(last)) : 0;     // non-loop holds the last end level
+}
+function selfTest() {
+  let ok = true; const lines = [];
+  const check = (name, cond, detail) => { lines.push((cond ? 'PASS  ' : 'FAIL  ') + name + (cond ? '' : '  -> ' + detail)); if (!cond) ok = false; };
+  const ids = ROOM_ORDER();
+  for (const sh of S.shows) {          // 1) every saved show compiles within the step limit
+    let err = null, max = 0;
+    try { compileShow(sh); } catch (e) { err = e.message; }
+    for (const s of Object.values(compileSteps(sh))) max = Math.max(max, s.length);
+    check(`saved show "${sh.name}" compiles (max ${max}/${MAX_STEPS} steps)`, !err, err);
+  }
+  for (const raw of DEFAULT_SHOWS) {   // 2) demo shows: normalising keeps the compile output, preview == nodes == oracle
+    const norm = normalizeShow(raw), A = compileShow(raw), B = compileShow(norm), pre = buildPreview(norm), len = showLen(norm);
+    check(`demo "${raw.name}": editor form compiles to the same programs as the original`, ids.every(id => A[id] === B[id]), ids.find(id => A[id] !== B[id]));
+    let n = 0, bad = [];
+    for (const id of ids) {
+      const prog = Engine.parse(B[id]);                                 // exactly what a node would receive
+      for (let k = 0; k < 10; k++) {
+        const t = Math.floor(len * (k + 0.5) / 10), node = progLevel(prog, t), pv = progLevel(pre.progs[id], t), dr = directLevel(norm, id, t); n++;
+        if (Math.abs(node - pv) > 1e-9 || Math.abs(node - dr) > 1e-9) bad.push(`${id}@${t}ms node=${node.toFixed(3)} preview=${pv.toFixed(3)} clips=${dr.toFixed(3)}`);
+      }
+    }
+    check(`demo "${raw.name}": ${n} levelAt samples agree (compiled program / preview / clip model)`, !bad.length, bad.slice(0, 3).join('; '));
+  }
+  const over = normalizeShow({ name: 'limit', loop: false, tracks: [{ frames: ['W1-1'], clips: Array.from({ length: 13 }, (_, i) => ({ t: i * 2000, fx: 'H', a: 50, dur: 1000 })) }] });
+  check('step limit is detected (13 clips + 12 gaps = 25 steps)', overLimit(over).length === 1 && overLimit(over)[0].n === 25, JSON.stringify(overLimit(over)));
+  { // 3) duplicate (Ctrl+D) on a scratch show: repeatable chain, multi-clip spacing, refusal, selected rows
+    const scratch = () => normalizeShow({ name: 'scratch', loop: false, tracks: [] });
+    const put = (sh, id, ...cl) => cl.forEach(c => rowTrack(sh, id, true).clips.push({ ...c }));
+    const dup = (sh, sel, rows = new Set()) => { const d = dupSource(sh, sel), p = planPlace(sh, d.entries, d.at, rows, 'Duplicate'); return p.err ? { err: p.err, added: [] } : { added: addJobs(sh, p.jobs) }; };
+    let sh = scratch(); put(sh, 'W1-1', { t: 1000, fx: 'F', a: 0, b: 100, dur: 500 });
+    let sel = [rowClips(sh, 'W1-1')[0]]; for (let i = 0; i < 3; i++) sel = dup(sh, sel).added;     // each round duplicates the previous copies
+    let ts = rowClips(sh, 'W1-1').map(c => c.t).join();
+    check('duplicate x3 builds a back-to-back chain (selection moves to the newest copy)', ts === '1000,1500,2000,2500' && sel.length === 1 && sel[0] === rowClips(sh, 'W1-1')[3], ts);
+    check('duplicate keeps effect, levels and length', rowClips(sh, 'W1-1').every(c => c.fx === 'F' && c.a === 0 && c.b === 100 && c.dur === 500), '');
+    sh = scratch(); put(sh, 'W1-2', { t: 0, fx: 'H', a: 100, dur: 200 }, { t: 400, fx: 'H', a: 50, dur: 200 });
+    dup(sh, [...rowClips(sh, 'W1-2')]);
+    check('duplicate of 2 clips keeps their spacing', rowClips(sh, 'W1-2').map(c => c.t).join() === '0,400,600,1000', rowClips(sh, 'W1-2').map(c => c.t).join());
+    sh = scratch(); put(sh, 'W1-3', { t: 0, fx: 'H', a: 100, dur: 500 }, { t: 600, fx: 'H', a: 100, dur: 500 });
+    const blocked = dup(sh, [rowClips(sh, 'W1-3')[0]]);
+    check('duplicate that would overlap is refused and changes nothing', !!blocked.err && rowClips(sh, 'W1-3').length === 2, blocked.err);
+    sh = scratch(); put(sh, 'W1-5', { t: 0, fx: 'H', a: 80, dur: 300 });
+    dup(sh, [rowClips(sh, 'W1-5')[0]], new Set(['W1-5', 'W1-6', 'W1-7']));
+    check('one clip + selected rows: copy goes onto every selected row right after it', ['W1-5', 'W1-6', 'W1-7'].every(id => rowClips(sh, id).some(c => c.t === 300)) && rowClips(sh, 'W1-5').length === 2, '');
+    sh = normalizeShow({ name: 'loop', loop: true, length_ms: 1000, tracks: [{ frames: ['W1-1'], clips: [{ t: 500, fx: 'H', a: 100, dur: 500 }] }] });
+    check('duplicate past the loop length is refused', !!dup(sh, [rowClips(sh, 'W1-1')[0]]).err, '');
+  }
+  { // 4) clip click: first click only selects, clicking the selected clip opens the popup
+    const a = { t: 0 }, b = { t: 1 };
+    const r1 = clickClipResult(new Set(), a), r2 = clickClipResult(r1.sel, a), r3 = clickClipResult(new Set([a, b]), a), r4 = clickClipResult(new Set([b]), a);
+    check('click on an unselected clip selects it, no popup', r1.sel.size === 1 && r1.sel.has(a) && !r1.open, '');
+    check('click on the already-selected clip opens the popup', r2.open && r2.sel.has(a), '');
+    check('click inside a multi-selection narrows to that clip, no popup', r3.sel.size === 1 && r3.sel.has(a) && !r3.open, '');
+    check('click on another clip moves the selection, no popup', r4.sel.has(a) && !r4.sel.has(b) && !r4.open, '');
+  }
+  lines.forEach(l => console.log(l));
+  console.log(ok ? 'SELFTEST PASS' : 'SELFTEST FAIL');
+  return ok;
+}
+
 /* ============================ MISC UI ============================ */
 const logEl = document.getElementById('log');
 function log(kind, txt) {
@@ -792,12 +1500,13 @@ function log(kind, txt) {
   logEl.appendChild(d); while (logEl.childNodes.length > 300) logEl.firstChild.remove();
   logEl.scrollTop = logEl.scrollHeight;
 }
-let toastT; function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => t.style.display = 'none', 3200); }
+let toastT; function toast(m, ms = 3200) { const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => t.style.display = 'none', ms); }
 
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + b.dataset.tab));
-  if (b.dataset.tab === 'programs') renderPrograms();
+  if (b.dataset.tab === 'programs') { renderPrograms(); setProgView(ED.view); }
+  else ED.playing = false;     // preview only runs while the editor is on screen
 });
 function setMode(m) {
   mode = m;
@@ -822,7 +1531,6 @@ document.getElementById('btnPlayAll').onclick = playAll;
 document.getElementById('btnStopAll').onclick = () => { showState = null; allNodes({ cmd: 'stop' }, 'Stop all'); renderControl(); };
 document.getElementById('btnAllOff').onclick = () => { showState = null; allNodes({ cmd: 'set', level: 0, fade_ms: 1000 }, 'All off'); renderControl(); };
 document.getElementById('btnPlayShow').onclick = playShow;
-document.getElementById('showSel').innerHTML = SHOWS.map((sh, i) => `<option value="${i}">${esc(sh.name)}</option>`).join('');
 document.getElementById('roomSvg').addEventListener('click', e => {
   const f = e.target.closest('.frame'); if (!f) return;
   mode === 'edit' ? frameModal(f.dataset.id) : runFrame(f.dataset.id);
@@ -837,7 +1545,7 @@ document.getElementById('transportSel').onchange = async e => {
   renderNodes(); renderControl();
 };
 
-function redraw() { ctrlEls = drawRoom(document.getElementById('roomSvg'), true); simEls = drawRoom(document.getElementById('simSvg'), false); renderControl(); }
+function redraw() { ctrlEls = drawRoom(document.getElementById('roomSvg'), true); simEls = drawRoom(document.getElementById('simSvg'), false); edEls = drawRoom(byId('edSvg'), false, 'e'); renderControl(); renderEdPreview(); }
 document.getElementById('btnRot').onclick = () => { S.view.rot = (S.view.rot + 2) % 4; save(); redraw(); };
 const cornerSel = document.getElementById('cornerSel');
 cornerSel.onchange = () => { S.view.corner = cornerSel.value || null; save(); redraw(); };
@@ -845,6 +1553,8 @@ cornerSel.onchange = () => { S.view.corner = cornerSel.value || null; save(); re
 cornerSel.value = S.view.corner || '';
 ctrlEls = drawRoom(document.getElementById('roomSvg'), true);
 simEls = drawRoom(document.getElementById('simSvg'), false);
+edEls = drawRoom(byId('edSvg'), false, 'e');
+ensureShows(); refreshShowSel(); initEditor();
 SimTransport.open(onEvent);
 renderNodes(); renderControl();
 if (!storageOk()) toast('This viewer blocks saving. Open control.html in Chrome, Edge or Safari so assignments persist.');

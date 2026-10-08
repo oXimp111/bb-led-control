@@ -19,6 +19,8 @@ src/node/                 wall node firmware (node_config.h = pins and timings)
 test/engine_test.cpp      PC unit tests for the engine
 web/control.html          control UI + built-in simulator (single file). Bottom of file = USB JSON-line protocol
                           the control ESP32 must implement. Wall/frame layout = WALLS config at top.
+                          Programs tab = whole-room show editor (shows saved in S.shows, one track per frame,
+                          compileShow() is the single compiler). Run `selfTest()` in the browser console.
 ```
 
 ## Rules
