@@ -1,0 +1,4 @@
+.pio/
+.vscode/
+*.exe
+engine_test

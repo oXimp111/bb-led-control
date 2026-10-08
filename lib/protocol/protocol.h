@@ -1,0 +1,91 @@
+// protocol.h — the ONE shared definition of every radio packet.
+// Used by node firmware AND control center firmware. Change it in one place only,
+// and bump LF_PROTO_VER whenever a struct layout changes.
+#pragma once
+#include <stdint.h>
+#include <stddef.h>
+
+#define LF_MAGIC        0x464C   // bytes 'L','F' little-endian
+#define LF_PROTO_VER    1
+#define LF_MAX_CH       8        // PWM channels per node
+#define LF_MAX_STEPS    10       // steps per program
+#define LF_MAX_PROGS    8        // program slots stored on each node
+#define LF_WIFI_CHANNEL 1        // all devices must use the same 2.4 GHz channel
+#define LF_NO_PROGRAM   0xFF     // "no program assigned"
+#define LF_ALL_CH       0xFF     // channel mask: every channel
+
+enum LfMsgType : uint8_t {
+  MSG_PAIR_REQ  = 1,   // node -> broadcast   (only during pairing window)
+  MSG_PAIR_ACK  = 2,   // ctrl -> node        (node stores sender MAC as its controller)
+  MSG_HEARTBEAT = 3,   // node -> ctrl        (best effort, never retried)
+  MSG_ACK       = 4,   // node -> ctrl        (reply to every command below)
+  MSG_SET       = 10,  // manual level (stops program on those channels)
+  MSG_PROG      = 11,  // write a program into a slot
+  MSG_ASSIGN    = 12,  // assign slot to channels
+  MSG_PLAY      = 13,  // (re)start assigned program from t=0
+  MSG_STOP      = 14,  // stop program, hold current level
+  MSG_IDENTIFY  = 15,  // pulse channels so a person can find the frame
+  MSG_UNPAIR    = 16,  // node forgets its controller
+};
+
+enum LfStepType : uint8_t {
+  STEP_HOLD  = 0,  // level a for duration
+  STEP_FADE  = 1,  // a -> b over duration
+  STEP_BLINK = 2,  // a -> b -> a triangle, period_ms per cycle, for duration
+};
+
+enum LfAckStatus : uint8_t { ACK_OK = 0, ACK_BAD_LEN = 1, ACK_BAD_ARG = 2 };
+
+#pragma pack(push, 1)
+
+// Every packet starts with this. target = node MAC, or FF:FF:FF:FF:FF:FF = all paired nodes.
+// Controller must start seq at a random value after boot (node drops repeats of last seq).
+struct LfHeader {
+  uint16_t magic;
+  uint8_t  ver;
+  uint8_t  type;
+  uint8_t  target[6];
+  uint16_t seq;
+};
+
+struct LfStep {          // 9 bytes
+  uint8_t  type;         // LfStepType
+  uint8_t  a;            // level 0..100 %
+  uint8_t  b;            // level 0..100 % (FADE/BLINK)
+  uint16_t period_ms;    // BLINK only
+  uint32_t duration_ms;
+};
+
+#define LF_PROG_LOOP 0x01
+struct LfProgram {       // 92 bytes
+  uint8_t n_steps;       // 0..LF_MAX_STEPS
+  uint8_t flags;         // LF_PROG_LOOP
+  LfStep  steps[LF_MAX_STEPS];  // unused steps must be zero
+};
+
+struct LfMsgSet      { LfHeader h; uint8_t ch_mask; uint8_t level; uint32_t fade_ms; };
+struct LfMsgProg     { LfHeader h; uint8_t slot; LfProgram prog; };
+struct LfMsgAssign   { LfHeader h; uint8_t ch_mask; uint8_t slot; };   // slot LF_NO_PROGRAM = clear
+struct LfMsgChMask   { LfHeader h; uint8_t ch_mask; };                 // PLAY / STOP
+struct LfMsgIdentify { LfHeader h; uint8_t ch_mask; uint8_t seconds; };
+struct LfMsgAck      { LfHeader h; uint16_t acked_seq; uint8_t status; };
+struct LfMsgPairReq  { LfHeader h; uint16_t fw_ver; uint8_t n_ch; };
+
+struct LfMsgHeartbeat {
+  LfHeader h;
+  uint16_t fw_ver;
+  uint32_t uptime_s;
+  uint8_t  n_ch;
+  uint8_t  playing_mask;           // bit n = channel n is running a program
+  uint8_t  level[LF_MAX_CH];       // current output 0..100 %
+  uint8_t  assign[LF_MAX_CH];      // slot per channel, LF_NO_PROGRAM = none
+  uint16_t prog_crc[LF_MAX_PROGS]; // CRC16 of each stored slot (0 = empty) -> screen checks sync
+};
+
+#pragma pack(pop)
+
+static_assert(sizeof(LfHeader) == 12, "header size");
+static_assert(sizeof(LfStep) == 9, "step size");
+static_assert(sizeof(LfProgram) == 92, "program size");
+static_assert(sizeof(LfMsgProg) <= 250, "must fit one ESP-NOW v1 packet");
+static_assert(sizeof(LfMsgHeartbeat) <= 250, "must fit one ESP-NOW v1 packet");
