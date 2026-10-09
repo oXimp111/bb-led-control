@@ -12,13 +12,22 @@ jobs:
         run: g++ -std=c++17 -Wall -Ilib/protocol -Ilib/engine test/engine_test.cpp lib/engine/engine.cpp -o engine_test && ./engine_test
       - name: Build node firmware
         run: pio run -e node
+      - name: Build control firmware
+        run: pio run -e control
       - name: Merge into one flashable file (offset 0x0)
         run: |
           B=.pio/build/node
           FW=~/.platformio/packages/framework-arduinoespressif32
           python ~/.platformio/packages/tool-esptoolpy/esptool.py --chip esp32 merge_bin -o node-full.bin \
             0x1000 $B/bootloader.bin 0x8000 $B/partitions.bin 0xe000 $FW/tools/partitions/boot_app0.bin 0x10000 $B/firmware.bin
+      - name: Merge control firmware
+        run: |
+          B=.pio/build/control
+          FW=~/.platformio/packages/framework-arduinoespressif32
+          python ~/.platformio/packages/tool-esptoolpy/esptool.py --chip esp32 merge_bin -o control-full.bin             0x1000 $B/bootloader.bin 0x8000 $B/partitions.bin 0xe000 $FW/tools/partitions/boot_app0.bin 0x10000 $B/firmware.bin
       - uses: actions/upload-artifact@v4
         with:
-          name: node-firmware
-          path: node-full.bin
+          name: firmware
+          path: |
+            node-full.bin
+            control-full.bin

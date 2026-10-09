@@ -19,7 +19,9 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
   driving opto-isolated MOSFET boards (YYNMOS) at **500 Hz max**. Same firmware on every node; identity = MAC.
 - **Control center**: a PLAIN ESP32 (same 30-pin board as the nodes), no screen. Connects to the laptop by USB and
   bridges the JSON-line protocol in `web/control.html` to ESP-NOW. Later it may host the page over its own Wi-Fi AP.
-  Its firmware is NOT written yet.
+  Firmware: `src/control/` (env `control`). It is a Wi-Fi AP (`LED-Control` / `ledframes`, channel 1) serving
+  `web/control.html` at http://192.168.4.1/ and bridging the same JSON lines (WebSocket port 81, or USB 115200)
+  to ESP-NOW. Written, compiles, NOT yet tested on hardware.
 - **Radio**: ESP-NOW on Wi-Fi channel `LF_WIFI_CHANNEL` (1). No router.
 - **Programs**: up to 24 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
   slots; each channel is assigned a slot. Without loop, the channel holds the last step's end level.
@@ -29,6 +31,8 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
 ## Layout
 ```
 lib/protocol/protocol.h   ONLY definition of radio packets (node + control center). Bump LF_PROTO_VER on layout change.
+src/control/              control center firmware (AP + web server + WebSocket/USB JSON <-> ESP-NOW bridge)
+tools/embed_web.py        build step: gzips web/control.html (+ tools/ws_shim.js) into the control firmware
 lib/engine/               program player + text format, pure C++ (unit-tested on PC)
 src/node/                 wall node firmware (node_config.h = pins and timings)
 test/engine_test.cpp      PC unit tests for the engine
@@ -53,6 +57,7 @@ UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated 
 1. CH340 driver: WCH CH341SER.EXE v3.9+ (https://www.wch-ic.com/downloads/CH341SER_EXE.html). Board shows as COMx in Device Manager.
 2. `pip install platformio` (Python 3 required).
 3. Build + flash + monitor: `pio run -e node -t upload` then `pio device monitor` (115200 baud).
+   Control center: `pio run -e control -t upload` (the page is embedded; to ship a new UI edit `web/control.html`, rebuild, flash).
    If upload fails to connect: hold BOOT, tap EN, release BOOT, retry.
 4. Engine tests (needs g++): `g++ -std=c++17 -Ilib/protocol -Ilib/engine test/engine_test.cpp lib/engine/engine.cpp -o engine_test && ./engine_test`
 
@@ -134,4 +139,4 @@ ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`)
   each press plays the next step. Design: upload once, each press = one small broadcast "go to step N".
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
-- TODO: control center firmware; site survey (packet loss/RSSI at each wall).
+- TODO: test control firmware on hardware; site survey (packet loss/RSSI at each wall).
