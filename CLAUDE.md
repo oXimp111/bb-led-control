@@ -21,7 +21,7 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
   bridges the JSON-line protocol in `web/control.html` to ESP-NOW. Later it may host the page over its own Wi-Fi AP.
   Firmware: `src/control/` (env `control`). It is a Wi-Fi AP (`LED-Control` / `ledframes`, channel 1) serving
   `web/control.html` at http://192.168.4.1/ and bridging the same JSON lines (WebSocket port 81, or USB 115200)
-  to ESP-NOW. Written, compiles, NOT yet tested on hardware.
+  to ESP-NOW. Tested on hardware (pairing, Run-mode play, link loss, reboot) with one node; multi-node and RSSI survey still open.
 - **Radio**: ESP-NOW on Wi-Fi channel `LF_WIFI_CHANNEL` (1). No router.
 - **Programs**: up to 24 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
   slots; each channel is assigned a slot. Without loop, the channel holds the last step's end level.
@@ -139,4 +139,4 @@ ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`)
   each press plays the next step. Design: upload once, each press = one small broadcast "go to step N".
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
-- TODO: test control firmware on hardware; site survey (packet loss/RSSI at each wall).
+- TODO: multi-node test of control firmware; site survey (packet loss/RSSI at each wall).
