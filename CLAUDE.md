@@ -3,10 +3,23 @@
 Wireless control of ~24 LED strips (one per picture frame) for a show. Owner: Sean (US, develops).
 Installer: his girlfriend (China, Windows, non-technical) — explain steps simply when helping her.
 
+## Project scope
+- Purpose: lighting for picture frames in Sean's girlfriend's show in China. ~24 LED strips, one per frame.
+- Room: 4 walls, clockwise: W1 yellow curtain 8 frames, W2 white wall 4, W3 red curtain 7, W4 white wall (door side) 5.
+  One node per wall. Channel n = frame n, counted left→right facing the wall. Control center sits in a room corner (TBD).
+- Users: operator uses `web/control.html` on a laptop. Edit mode = assign frame programs. Run mode = click a frame to
+  play its program (overrides the show for that frame only; it then holds its end level), or play a whole-room show.
+- Program types: single-frame programs (`S.programs`) and whole-room shows (`S.shows`), never mixed in the UI.
+- Priorities: lowest cost, reliability (lights never go dark because the radio drops), operator latency < 500 ms.
+- Installer is non-technical; Sean guides by video call; her Claude builds/flashes from this repo.
+- The simulator in `control.html` is temporary and is removed once the real control center works.
+
 ## System
 - **Wall nodes**: one ESP32 (30-pin ESP-WROOM-32, CH340 USB) per wall, up to 8 PWM channels each,
   driving opto-isolated MOSFET boards (YYNMOS) at **500 Hz max**. Same firmware on every node; identity = MAC.
-- **Control center**: ESP32-S3 touchscreen (Waveshare ESP32-S3-Touch-LCD-5B), not written yet.
+- **Control center**: a PLAIN ESP32 (same 30-pin board as the nodes), no screen. Connects to the laptop by USB and
+  bridges the JSON-line protocol in `web/control.html` to ESP-NOW. Later it may host the page over its own Wi-Fi AP.
+  Its firmware is NOT written yet.
 - **Radio**: ESP-NOW on Wi-Fi channel `LF_WIFI_CHANNEL` (1). No router.
 - **Programs**: up to 24 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
   slots; each channel is assigned a slot. Without loop, the channel holds the last step's end level.
@@ -113,3 +126,12 @@ ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`)
 6. Power-cycle with strip powered: no flash at boot.
 7. Hold BOOT 3 s, release → LED double-blinks, strip pulses, closes after 60 s.
 8. Hold BOOT 10 s → factory reset; `progs` all empty.
+
+## Open decisions / roadmap
+- DECIDED, not implemented: after a power cycle, a FINISHED non-loop program must hold its end level, not replay.
+  Needs a saved "finished" flag per channel.
+- PLANNED: third program type "stepped show" — a show cut into steps; in Run mode a button plays step 1 and stops,
+  each press plays the next step. Design: upload once, each press = one small broadcast "go to step N".
+- PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
+  `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
+- TODO: control center firmware; site survey (packet loss/RSSI at each wall).
