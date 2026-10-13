@@ -55,3 +55,12 @@ control center is adequate. (An earlier guess that the flash write of the progra
 - Open: `node_test` can hit the 5 s task watchdog when loads repeat back to back (suspect: LittleFS flush after every packet; not root-caused).
 - Open: node never power-cycled during these runs (CLAUDE.md step 7); wall-to-wall RSSI and loss survey; real strip observed only by the operator.
 - Plain-node stress was 50 loads, earlier runs 100.
+
+## Log of the day's test sequence (2026-10-13)
+1. Board on COM3 identified as the production control (MAC ...7C:31 AP). The node board was a separate ESP32 (MAC ...4F:EC); both CH340, COM3 / COM4.
+2. node_test flashed to the node (needed BOOT held during upload). First report: boots 1, log ok, not paired, outtest 8 x 5 levels: only 100 % flagged (core remap 16383 -> 16384), fixed in 080e2a7.
+3. control_test flashed to the control board; pairing confirmed by first heartbeat. Load #1: 17/17 ACKed, CRC 8/8, but the output window closed at once (stale `now` bug, fixed in 9b1c73a).
+4. Load #2 (fixed control): output PASS 960 samples, tolerant 100 %. Heartbeat gap 1642 ms (load #1) / 1254 ms (#2) / 1566 ms (clean run) around the load.
+5. Node-side log read: packets correct (see section 1). Node reported ~16,100 "readback differs" events: instrumentation artifact (readback before the 2 ms PWM latch), fixed in 6b54c7e;
+   after reflashing, write_mismatch 0 / log_mismatch 0 and outtest 40/40.
+6. `stress 100` on node_test: poor delivery, node rebooting (task watchdog) - section 2. Cause isolated by flashing the plain `node` firmware: `stress 50` PASS - section 3.

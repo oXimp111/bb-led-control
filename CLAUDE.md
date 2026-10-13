@@ -205,6 +205,26 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
   Stress on `node_test` FAILED (task watchdog reboots caused by the test logging) - known limitation, not a node firmware problem.
 - Not yet done: node power-cycle check, strip observed on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
 
+### Findings for future firmware (from the 2026-10-13 two-board tests)
+- **Flashing these boards:** they do not enter download mode by themselves. Hold BOOT BEFORE starting the upload and keep holding until it prints `Writing`;
+  release, then tap EN. (Hold, tap EN, release before the command does not work: esptool resets the chip again.)
+- **Opening the serial port from a PC resets the board** (DTR). A node then restarts its saved playing programs from t=0; counters/log in flash survive.
+- **LEDC readback lags one PWM period** (2 ms at 500 Hz): a duty read right after `ledcWrite` is the previous value. Wait >= 4 ms. Core 2.x also turns duty `max`
+  (16383) into 16384 (constant high, no 1-tick low per period), so 100 % reads back 16384; `ledcReadFreq()` returns 0 while duty is 0.
+- **Large packet timing (plain node, 231-byte MSG_PROG):** ACK round trip 3-45 ms, a full 17-command load takes about 0.4 s, heartbeats stay at 2/s.
+  The 120 ms ACK timeout is adequate. Node reset reason 6 = task watchdog (5 s).
+- **Never put file or flash logging on the node's radio path.** A LittleFS append after every packet made the node trip the 5 s task watchdog when loads repeated
+  back to back (reboot every 13-29 s; playing channels restart at t=0 until the next SYNC). Keep flash writes deferred and rare; log from RAM and flush when idle.
+- **Flash writes per PROG:** `saveProgs()` rewrites the whole 8-slot blob (1.7 KB) for every MSG_PROG, even when the program is identical. Idea (not done): skip
+  the write when the slot already holds the same program; control sends a slot only when the heartbeat `prog_crc` differs (see planned latency fixes).
+- **Seq numbers:** control firmware uses one counter for all nodes and for SYNC, so a node sees gaps by design with several nodes. Per-node loss statistics need per-node seq.
+- **Pairing survives reboots and a control reflash** (verified: control NVS holds the node MAC, node NVS holds the control MAC). After the very first `node_test` flash a node showed
+  `not paired`; cause not found - re-pair after reflashing a node if it does not heartbeat.
+- **ESP-NOW MAC send success is not delivery to the app:** use the application ACK; the send callback only says the radio got a frame-level ack.
+- **Host tests on a PC without g++:** `pip install --target <dir> ziglang`, then `PYTHONPATH=<dir> python -m ziglang c++ -std=c++17 -fno-sanitize=undefined ...` (see test file headers).
+  `-fno-sanitize=undefined` is needed because `parseProgram` passes `st.duration_ms` (a field of a packed struct) by reference (`lib/engine/engine.cpp`, parseDur call): works on ESP32,
+  but it is undefined behaviour; fix by parsing into a local `uint32_t` and copying.
+
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
 2. `set 1 100` → strip full. `set 1 0 3000` → smooth 3 s fade out. `set 1 10` → steady dim, no flicker.
