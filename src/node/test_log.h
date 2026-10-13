@@ -103,6 +103,9 @@ static int32_t tlRssiOf(const uint8_t* mac) {
 }
 
 // ------------------------------------------------------------ output check
+// The Arduino core 2.x turns duty == max (16383) into 16384 = constant high, so that is the correct readback for 100 %.
+static uint32_t tlExpectRead(uint32_t written) { return written == PWM_MAX_DUTY ? written + 1 : written; }
+
 static void tlOutRow(const char* event, int i, int shownLevel, const char* note) {
   LfLogRow r;
   r.ms = millis(); r.event = event;
@@ -111,7 +114,7 @@ static void tlOutRow(const char* event, int i, int shownLevel, const char* note)
   r.duty_w = (int32_t)lastDuty[i];
   r.duty_r = (int32_t)ledcRead(i);
   r.duty_exp = (int32_t)lf::levelToDuty(chans[i].level(), PWM_MAX_DUTY);
-  r.mismatch = r.duty_r != r.duty_w;
+  r.mismatch = (uint32_t)r.duty_r != tlExpectRead((uint32_t)r.duty_w);
   r.note = note;
   tlC.out_checks++;
   if (r.mismatch) tlC.log_mismatch++;
@@ -129,7 +132,7 @@ static void tlLogOutputs(const char* note, bool playingOnly) {
 
 static void tlAfterWrite(int i, uint32_t d) {   // called right after every ledcWrite in updateOutputs
   uint32_t back = ledcRead(i);
-  if (back == d) return;
+  if (back == tlExpectRead(d)) return;
   tlC.wr_mismatch++; tlCDirty = true;
   if (tlWrMismatchRows++ < 100) {
     LfLogRow r;
@@ -327,7 +330,7 @@ static void tlOutTest() {
       char note[24]; snprintf(note, sizeof note, "f=%uHz", (unsigned)ledcReadFreq(i));
       tlOutRow("OUTTEST", i, lv, note);
       uint32_t w = lastDuty[i], rd = ledcRead(i), ex = lf::levelToDuty(lv / 100.0f, PWM_MAX_DUTY);
-      bool ok = w == rd && w == ex;
+      bool ok = rd == tlExpectRead(w) && w == ex;
       if (!ok) bad++;
       Serial.printf("ch%d %3d%%  written %5u  readback %5u  expected %5u  %s\n", i + 1, lv, (unsigned)w, (unsigned)rd, (unsigned)ex, ok ? "ok" : "MISMATCH");
     }

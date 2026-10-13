@@ -142,7 +142,7 @@ CSV columns (one row per event; empty = not applicable):
   (from promiscuous action frames; approximate, empty if unavailable), `ack` status we sent (0 OK, 1 BAD_LEN, 2 BAD_ARG, 3 BAD_VERSION; empty = none),
   PROG only: `slot` (1-based), `n_steps`, `loop`, `crc` = `programCrc()` of the stored slot (hex).
 - OUT/OUTTEST: `ch` 1-based, `level_pct` engine level, `duty_w` duty we wrote, `duty_r` duty read back from the LEDC peripheral,
-  `duty_exp` duty the engine level should give, `mismatch` 1 if `duty_r != duty_w`. OUT rows are written after every applied
+  `duty_exp` duty the engine level should give, `mismatch` 1 if the readback is not what was written (at 100 % the core writes 16383 and the register reads 16384 = constant high; that counts as OK). OUT rows are written after every applied
   PROG/ASSIGN/PLAY/SET/STOP (all channels) and once per second for PLAYING channels. While pairing or identify is active `duty_w` differs from `duty_exp` on purpose.
 Counters (`report`): `raw` frames given to our callback · `taken` packets processed · `queue_drops` rx queue (16) was full ·
 `bad_len` too short for its type · `bad_hdr` too short or wrong magic · `bad_ver` other protocol version · `ignored` valid but not from our controller or not for us ·
