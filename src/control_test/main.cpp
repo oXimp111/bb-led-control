@@ -550,7 +550,7 @@ static void printLog(const char* arg) {
 
 static void clearAll() {
   wbufN = 0;
-  LittleFS.remove(LOG_FILE); LittleFS.remove(LOG_OLD);
+  LittleFS.remove(LOG_FILE); if (LittleFS.exists(LOG_OLD)) LittleFS.remove(LOG_OLD);
   File f = LittleFS.open(LOG_FILE, FILE_WRITE);
   if (f) { f.print(CSV_HEADER); f.close(); }
   uint32_t boots = C.boots;
@@ -738,6 +738,7 @@ void loop() {
   pollSerial();
   pollButton(now);
   if (loadRequested) { loadRequested = false; loadAll(); }
+  now = millis();   // commands above can take long and set pairStart / playT0: never compare against the stale value
   updateLed(now);
 
   if (pairing && now - pairStart >= PAIR_WINDOW_MS) { pairing = false; pairConfirmPending = false; logNote("PAIR", "window closed"); Serial.println("[pair] window closed"); }
