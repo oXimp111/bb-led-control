@@ -53,7 +53,8 @@ control center is adequate. (An earlier guess that the flash write of the progra
 ## Conclusions and follow-ups
 - Use `node_test` for single-load accuracy checks only. Do not run `stress` against `node_test`; use the plain `node` firmware for stress and timing.
 - Open: `node_test` can hit the 5 s task watchdog when loads repeat back to back (suspect: LittleFS flush after every packet; not root-caused).
-- Open: node never power-cycled during these runs (CLAUDE.md step 7); wall-to-wall RSSI and loss survey; real strip observed only by the operator.
+- Not possible with the current setup, skipped: node power-cycle check, strip on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
+- Decisions about improving the firmware are listed in CLAUDE.md, section "Decisions waiting for Sean".
 - Plain-node stress was 50 loads, earlier runs 100.
 
 ## Log of the day's test sequence (2026-10-13)

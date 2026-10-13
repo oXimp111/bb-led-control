@@ -203,7 +203,7 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
 - 2026-10-13, node_test + control_test, boards side by side: single load PASS (17/17 ACKed, node saw all packets with correct lengths, no seq gaps, 8/8 program CRCs,
   output 100 % within tolerance, outtest 40/40). Stress on the plain `node` firmware: 50 loads PASS (850/850 ACKed, 0 retries, no reboots, ACK RTT avg 20 ms, max 45 ms).
   Stress on `node_test` FAILED (task watchdog reboots caused by the test logging) - known limitation, not a node firmware problem.
-- Not yet done: node power-cycle check, strip observed on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
+- Not possible with the current setup (skipped, do not remind): node power-cycle check, strip on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
 
 ### Findings for future firmware (from the 2026-10-13 two-board tests)
 - **Flashing these boards:** they do not enter download mode by themselves. Hold BOOT BEFORE starting the upload and keep holding until it prints `Writing`;
@@ -235,6 +235,19 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
 7. Hold BOOT 3 s, release → LED double-blinks, strip pulses, closes after 60 s.
 8. Hold BOOT 10 s → factory reset; `progs` all empty.
 
+## Decisions waiting for Sean (REMIND HIM at the start of the next session, with the recommendation)
+Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a choice about improving the firmware; none is started.
+1. **Skip identical program writes on the node** (`saveProgs()` in `src/node/main.cpp` rewrites the 1.7 KB store on every MSG_PROG). Gain: less flash wear, faster repeat uploads. Risk: very low. Recommend: yes.
+2. **Control center sends only changed slots** (compare heartbeat `prog_crc`; same as the planned latency fix). Gain: a repeat load drops from 17 packets to about 1. Recommend: yes, with the real control center work.
+3. **Acknowledge first, save to flash after** on the node (like the state, which is saved 1 s later). Gain: heartbeats and the next command are not delayed by a flash write. Cost: a power cut between ACK and save loses that program
+   (the control can detect it via `prog_crc`). With decision 1 the benefit is small. Recommend: skip unless uploads must be faster.
+4. **ACK timeout in the real control center**: measured PROG ACK max 45 ms, current 120 ms is adequate. Keep, or raise to about 150 ms for margin when the node also runs sync. Recommend: keep.
+5. **Fix the packed-struct reference in `parseProgram`** (`lib/engine/engine.cpp`, `parseDur(s, st.duration_ms)`): undefined behaviour that works on ESP32. Tiny change (local variable), engine tests must still pass. Recommend: yes.
+6. **`node_test` watchdog reboots under repeated loads**: fix by logging to RAM and writing the file only when idle, or accept the limitation (stress is run on the plain `node`). Recommend: accept unless a stress test with logging is needed.
+7. **Per-node sequence numbers in the real control center** so loss statistics stay valid with several nodes. Low value; the node already de-duplicates by the last seq. Recommend: only if a loss survey is ever possible.
+8. **Restore the production control firmware** on the control board before real use: it currently runs `control_test` (`pio run -e control -t upload`, BOOT held). The node board currently runs the plain `node` firmware.
+9. Still open from before: after a power cycle a FINISHED non-loop program must hold its end level (DECIDED, not implemented); one-broadcast start for shows and steps (PLANNED).
+
 ## Open decisions / roadmap
 - DECIDED, not implemented: after a power cycle, a FINISHED non-loop program must hold its end level, not replay.
   Needs a saved "finished" flag per channel.
@@ -242,4 +255,4 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
   each press plays the next step. Design: upload once, each press = one small broadcast "go to step N".
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
-- TODO: multi-node test of control firmware; site survey (packet loss/RSSI at each wall).
+- Skipped (not possible with the current setup): multi-node test of control firmware; site survey (packet loss/RSSI at each wall).
