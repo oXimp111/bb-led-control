@@ -195,9 +195,15 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
 4. Control: `load`. Expect `all 17 commands ACKed`. The strip on channel 1 pulses at once, other channels (if wired) chase 0.5 s apart.
 5. Wait 65 s, then control `report`. PASS looks like: ACKed 100 %, failed 0, rejected 0, all 8 slots `PASS`, output check `PASS` (tolerant >= 95 %),
    heartbeats `PASS` (about 2/s, longest gap < 1500 ms), `RESULT: ... => PASS`. Node `report`: `programs_stored` 8, `bad_len/bad_hdr/bad_ver` 0, `queue_drops` 0, both mismatch counters 0.
-6. `mode raw` then `stress 100 200` for true loss; then `mode reliable` and `stress 100 200`. PASS: reliable `STRESS: PASS`, no CRC mismatches.
+6. Stress: flash the plain node (`pio run -e node -t upload`) first - `node_test` can hit the task watchdog when loads repeat. `mode raw`, `stress 100 200`, then `mode reliable`, `stress 100 200`. PASS: reliable `STRESS: PASS`, no CRC mismatches.
 7. Power-cycle the node, wait 10 s, control `report`: CRC must still PASS (programs are in flash); the node resumes the programs from t = 0.
 8. Paste both `report` blocks (and `log 100` on any FAIL) to Claude.
+
+### Test results so far (details: docs/TEST_RESULTS.md)
+- 2026-10-13, node_test + control_test, boards side by side: single load PASS (17/17 ACKed, node saw all packets with correct lengths, no seq gaps, 8/8 program CRCs,
+  output 100 % within tolerance, outtest 40/40). Stress on the plain `node` firmware: 50 loads PASS (850/850 ACKed, 0 retries, no reboots, ACK RTT avg 20 ms, max 45 ms).
+  Stress on `node_test` FAILED (task watchdog reboots caused by the test logging) - known limitation, not a node firmware problem.
+- Not yet done: node power-cycle check, strip observed on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
 
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
