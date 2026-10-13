@@ -238,6 +238,7 @@ static void tlDropRx()  { tlC.queue_drops++; } // WiFi task
 
 // ------------------------------------------------------------ report / log / clear / outtest
 static size_t tlFileSize(const char* path) {
+  if (!LittleFS.exists(path)) return 0;
   File f = LittleFS.open(path, FILE_READ);
   size_t n = f ? f.size() : 0;
   if (f) f.close();
