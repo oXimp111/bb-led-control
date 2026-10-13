@@ -42,6 +42,32 @@ static bool     haveLastSeq = false;
 static uint16_t lastSeq = 0;
 static uint8_t  lastStatus = 0;
 
+// Test build (env node_test): observation hooks. In the normal build every hook is empty.
+#ifdef LF_TEST_LOG
+#include "test_log.h"
+#define LF_T_INIT()            tlInit()
+#define LF_T_RADIO_READY()     tlRadioReady()
+#define LF_T_TICK(now)         tlTick(now)
+#define LF_T_ACK(seq, status)  tlOnAck(seq, status)
+#define LF_T_RAW_RX()          tlRawRx()
+#define LF_T_RX_DROP()         tlDropRx()
+#define LF_T_PAIR_OPEN()       tlOnPairOpen()
+#define LF_T_PAIR_CLOSED()     tlOnPairClosed()
+#define LF_T_AFTER_WRITE(i, d) tlAfterWrite(i, d)
+#define LF_T_SERIAL(line)      tlSerial(line)
+#else
+#define LF_T_INIT()            ((void)0)
+#define LF_T_RADIO_READY()     ((void)0)
+#define LF_T_TICK(now)         ((void)0)
+#define LF_T_ACK(seq, status)  ((void)0)
+#define LF_T_RAW_RX()          ((void)0)
+#define LF_T_RX_DROP()         ((void)0)
+#define LF_T_PAIR_OPEN()       ((void)0)
+#define LF_T_PAIR_CLOSED()     ((void)0)
+#define LF_T_AFTER_WRITE(i, d) ((void)0)
+#define LF_T_SERIAL(line)      handleLine(line)
+#endif
+
 // ------------------------------------------------------------ helpers
 static void macStr(const uint8_t* m, char* out) {
   sprintf(out, "%02X:%02X:%02X:%02X:%02X:%02X", m[0], m[1], m[2], m[3], m[4], m[5]);
@@ -195,6 +221,7 @@ static void startPairing() {
   pairStart = millis();
   lastPairReq = 0;
   Serial.println("[pair] pairing window open (60 s)");
+  LF_T_PAIR_OPEN();
 }
 
 // ------------------------------------------------------------ radio
@@ -203,11 +230,16 @@ static QueueHandle_t rxQueue;
 
 static void onRecv(const uint8_t* mac, const uint8_t* data, int len) {  // WiFi task: copy only
   if (len <= 0 || len > 250) return;
+  LF_T_RAW_RX();
   RxItem it;
   memcpy(it.mac, mac, 6);
   it.len = (uint8_t)len;
   memcpy(it.data, data, len);
+#ifdef LF_TEST_LOG
+  if (xQueueSend(rxQueue, &it, 0) != pdTRUE) LF_T_RX_DROP();
+#else
   xQueueSend(rxQueue, &it, 0);
+#endif
 }
 
 static void onSent(const uint8_t* mac, esp_now_send_status_t s) {
@@ -227,6 +259,7 @@ static void sendAck(uint16_t seq, uint8_t status) {
   fillHeader(a.h, MSG_ACK, st.ctrl);
   a.acked_seq = seq;
   a.status = status;
+  LF_T_ACK(seq, status);
   esp_now_send(st.ctrl, (uint8_t*)&a, sizeof(a));
 }
 
@@ -352,6 +385,18 @@ static void handlePacket(const RxItem& it) {
   sendAck(h->seq, status);
   Serial.printf("[rx] type %u seq %u -> status %u\n", h->type, h->seq, status);
 }
+
+#ifdef LF_TEST_LOG
+static void handlePacketLogged(const RxItem& it) {
+  bool pairedBefore = st.paired;
+  tlRxBegin();
+  handlePacket(it);
+  tlRxEnd(it.mac, it.data, it.len, pairedBefore);
+}
+#define LF_T_HANDLE(it) handlePacketLogged(it)
+#else
+#define LF_T_HANDLE(it) handlePacket(it)
+#endif
 
 static void radioInit() {
   WiFi.mode(WIFI_STA);
@@ -490,7 +535,7 @@ static void pollSerial() {
     if (c == '\r') continue;
     if (c == '\n') {
       if (tooLong) Serial.println("ERR line too long");
-      else if (n) { buf[n] = 0; handleLine(buf); }
+      else if (n) { buf[n] = 0; LF_T_SERIAL(buf); }
       n = 0;
       tooLong = false;
     }
@@ -544,7 +589,7 @@ static void updateOutputs(uint32_t now) {
     if (pairing) lv = 0.3f * pulse(now);                         // strips pulse during pairing
     else if ((int32_t)(identifyUntil[i] - now) > 0) lv = pulse(now);
     uint32_t d = lf::levelToDuty(lv, PWM_MAX_DUTY);
-    if (d != lastDuty[i]) { ledcWrite(i, d); lastDuty[i] = d; }
+    if (d != lastDuty[i]) { ledcWrite(i, d); lastDuty[i] = d; LF_T_AFTER_WRITE(i, d); }
   }
 }
 
@@ -573,9 +618,11 @@ void setup() {
   }
   updateOutputs(now);
   Serial.println("[boot] state restored");
+  LF_T_INIT();
 
   // 3) radio
   radioInit();
+  LF_T_RADIO_READY();
   char m[18]; macStr(myMac, m);
   Serial.printf("[boot] MAC %s  paired %s\n", m, st.paired ? "yes" : "no");
 
@@ -591,14 +638,15 @@ void loop() {
   esp_task_wdt_reset();
 
   RxItem it;
-  while (xQueueReceive(rxQueue, &it, 0) == pdTRUE) handlePacket(it);
+  while (xQueueReceive(rxQueue, &it, 0) == pdTRUE) LF_T_HANDLE(it);
   pollSerial();
   pollButton(now);
+  LF_T_TICK(now);
 
   if (now - lastTick >= TICK_MS) { lastTick = now; updateOutputs(now); updateLed(now); }
 
   if (pairing) {
-    if (now - pairStart >= PAIR_WINDOW_MS) { pairing = false; Serial.println("[pair] window closed, no controller"); }
+    if (now - pairStart >= PAIR_WINDOW_MS) { pairing = false; Serial.println("[pair] window closed, no controller"); LF_T_PAIR_CLOSED(); }
     else if (now - lastPairReq >= PAIR_REQ_EVERY_MS) { lastPairReq = now; sendPairReq(); }
   }
 

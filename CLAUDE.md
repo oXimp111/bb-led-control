@@ -122,6 +122,35 @@ ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`)
 6. Fill `header.ver = LF_PROTO_VER`. If a node answers `ACK_BAD_VERSION`, that node runs other firmware: tell the user
    to reflash it instead of retrying.
 
+## Node test build (`node_test`) — packet accuracy + output check
+Same node firmware plus logging, built with `-DLF_TEST_LOG` (all code in `src/node/test_log.h`, formatter in `lib/testlog/lf_csv.h`).
+It only observes: same parser, engine and LEDC output. Env `node` compiles to the same machine code as without these hooks.
+Build/flash: `pio run -e node_test -t upload`, then `pio device monitor`. Flash `-e node` again to return to normal.
+Log: LittleFS `/rxlog.csv` (rotated to `/rxlog.old` above 256 KB), counters in NVS (saved every 10 s and at `report`; survive power loss).
+A `report` block prints automatically 5 s after boot. Extra serial commands:
+```
+report        summary block (paste it to Claude)
+log [n|all]   last n CSV lines (default 50) or the whole file
+clear         wipe log + counters
+outtest       each channel 1..8: 0/25/50/75/100 % for 1 s, prints written vs readback vs expected duty (~40 s)
+```
+CSV columns (one row per event; empty = not applicable):
+`ms,event,mac,type,len,exp_len,hdr_ok,seq,gap,dup,rssi,ack,slot,n_steps,loop,crc,ch,level_pct,duty_w,duty_r,duty_exp,mismatch,note`
+- `event`: BOOT, RX (a received packet), OUT (channel check), OUTTEST, PAIR (window open/closed, PAIR_ACK stored the controller MAC).
+- RX: `len` received bytes, `exp_len` struct size for that type (node accepts longer, never shorter), `hdr_ok` magic + `LF_PROTO_VER`,
+  `gap` seqs missing since the previous packet from the controller, `dup` 1 = same seq as previous (a retry), `rssi` dBm
+  (from promiscuous action frames; approximate, empty if unavailable), `ack` status we sent (0 OK, 1 BAD_LEN, 2 BAD_ARG, 3 BAD_VERSION; empty = none),
+  PROG only: `slot` (1-based), `n_steps`, `loop`, `crc` = `programCrc()` of the stored slot (hex).
+- OUT/OUTTEST: `ch` 1-based, `level_pct` engine level, `duty_w` duty we wrote, `duty_r` duty read back from the LEDC peripheral,
+  `duty_exp` duty the engine level should give, `mismatch` 1 if `duty_r != duty_w`. OUT rows are written after every applied
+  PROG/ASSIGN/PLAY/SET/STOP (all channels) and once per second for PLAYING channels. While pairing or identify is active `duty_w` differs from `duty_exp` on purpose.
+Counters (`report`): `raw` frames given to our callback · `taken` packets processed · `queue_drops` rx queue (16) was full ·
+`bad_len` too short for its type · `bad_hdr` too short or wrong magic · `bad_ver` other protocol version · `ignored` valid but not from our controller or not for us ·
+`checked` packets used for seq statistics · `gaps` sum of missing seqs · `dups` repeated seqs · `loss %` = gaps / (checked + gaps) ·
+`acks_sent` · `programs_stored` MSG_PROG applied · `write_mismatch` readback differed right after a duty change · `log_mismatch` same, found in a logged check.
+Limits: the readback is the LEDC register, not the electrical pin (no scope). The control firmware uses ONE seq counter for all nodes and for SYNC,
+so `gaps` equals real loss only with a single node; with several nodes expect gaps even on a perfect link. `outtest` blocks the node for ~40 s (no heartbeats).
+
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
 2. `set 1 100` → strip full. `set 1 0 3000` → smooth 3 s fade out. `set 1 10` → steady dim, no flicker.
