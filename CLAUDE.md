@@ -151,6 +151,54 @@ Counters (`report`): `raw` frames given to our callback · `taken` packets proce
 Limits: the readback is the LEDC register, not the electrical pin (no scope). The control firmware uses ONE seq counter for all nodes and for SYNC,
 so `gaps` equals real loss only with a single node; with several nodes expect gaps even on a perfect link. `outtest` blocks the node for ~40 s (no heartbeats).
 
+## Control test build (`control_test`) — pairs with a node, sends max-size packets, measures
+A second plain ESP32 (same 30-pin board) in `src/control_test/main.cpp`; the test load is in `lib/testload/` (pure C++, host-tested).
+Uses `protocol.h` and the engine unchanged. Build/flash: `pio run -e control_test -t upload`, `pio device monitor` (115200).
+Pair it with a `node_test` board (see "Node test build"). It is NOT the real control center: no web page, one node only.
+**Test load:** 8 programs (slot n = channel n), each exactly 24 steps with loop on = `MSG_PROG` of 231 bytes, the largest real packet.
+Every step type, levels 0/100, fade up and down, blink periods 1 / 100 / 65535 ms, a 0 ms hold, a 1 ms fade, equal-level fade/blink,
+and a 600000 ms step (10 min fade up) at the end. The first ~31 s are easy to watch; channel n starts its pulse n x 500 ms late (chase).
+`progs` prints the programs and their `programCrc`. `load` = 8 x PROG, 8 x ASSIGN (slot n -> channel n), PLAY all (17 commands).
+Pairing: `pair` (or hold BOOT 3 s) opens a 60 s window, accepts `MSG_PAIR_REQ`, answers `MSG_PAIR_ACK`, stores the node MAC in NVS.
+Pairing is confirmed by the node's first heartbeat. BOOT short press (< 3 s) = `load`. LED: double blink = pairing, slow = heartbeats fresh, fast = no node.
+Commands:
+```
+pair | unpair                 open pairing window / forget node MAC (the node stays paired until its BOOT is held 10 s)
+mode raw|reliable             reliable (default) = retry until ACK, 5 tries, 120 ms each; raw = send once, no retry (true loss)
+load | play | stop            send the test load / PLAY all offset 0 / STOP all
+set <ch|all> <0-100>          manual level          progs   print programs + CRC
+stress N [interval_ms] [raw|reliable]   repeat `load` N times (default 100, 200 ms), prints a STRESS RESULT block
+report | log [n|all] | clear | status | help      `report` prints automatically 5 s after boot
+```
+Log `/txlog.csv` (LittleFS, rotated to `/txlog.old` above 256 KB), counters in NVS (every 10 s and at `report`).
+CSV columns: `ms,event,type,len,seq,mode,attempts,ack,rtt_us,total_ms,slot,ch,expected,reported,note`
+- `TX` one row per command: `attempts` transmissions, `ack` status (0 OK, 1 BAD_LEN, 2 BAD_ARG, 3 BAD_VERSION; empty = no ACK), `rtt_us` from the acked
+  attempt to its ACK, `total_ms` from the first send. `TX_ERR` esp_now_send failed. `PAIR`, `BOOT`, `STRESS` (summary), `OUTCHK` (summary of a 60 s window).
+- `CRC_BAD` heartbeat prog_crc differs from expected (`slot`, `expected`, `reported` in decimal). `OUT_BAD` a level outside tolerance (`ch`, `expected`/`reported` %, `total_ms` since PLAY).
+  `HB_GAP` two heartbeats more than 1500 ms apart (`total_ms`).
+Checks (PASS/FAIL in `report`):
+- **Program CRC:** node heartbeat `prog_crc[slot]` == expected `programCrc` for all 8 slots (also counted on every heartbeat after a load).
+- **Output:** for 60 s after PLAY every heartbeat level per channel is compared with the level the control computes from the same program at (now - PLAY time).
+  `strict` = within +-10 % at that instant; `tolerant` = within +-10 % of the program at some moment within +-60 ms (timing jitter; blinks of 1/100 ms can never match strictly).
+  PASS = at least 50 samples and tolerant >= 95 %. The compared level is what the node's engine reports, not the pin (see node test limits).
+- **Heartbeats:** at least 90 % of the ~2/s expected over 10+ s and longest gap <= 1500 ms.
+- **Delivery:** reliable mode: no command failed and none was rejected. Raw mode: read `raw loss %` (command OR its ACK lost).
+`RESULT:` line = PASS only when all four pass; INCOMPLETE until a load ran and its 60 s window ended. MAC-layer counters (`mac_fail`) count frames the
+radio could not deliver even after its own hardware retries. RSSI is approximate (promiscuous action frames).
+
+### Two-board test procedure (node_test + control_test, one strip on node GPIO16)
+1. Flash the node: `pio run -e node_test -t upload` (hold BOOT during the upload if it cannot connect). Flash the second board: `pio run -e control_test -t upload`.
+   Connect the strip MOSFET to node GPIO16. Open a serial monitor on each board (two terminals, 115200).
+2. Control: type `clear`, then `pair`. Node: within 60 s hold BOOT 3 s and release (strips pulse). Control prints `PAIR_REQ ...` then `pairing confirmed`.
+   Node `report`: `not paired` must now say `paired to <control MAC>`.
+3. Node: `outtest` (about 40 s) must end `0 mismatch(es)`.
+4. Control: `load`. Expect `all 17 commands ACKed`. The strip on channel 1 pulses at once, other channels (if wired) chase 0.5 s apart.
+5. Wait 65 s, then control `report`. PASS looks like: ACKed 100 %, failed 0, rejected 0, all 8 slots `PASS`, output check `PASS` (tolerant >= 95 %),
+   heartbeats `PASS` (about 2/s, longest gap < 1500 ms), `RESULT: ... => PASS`. Node `report`: `programs_stored` 8, `bad_len/bad_hdr/bad_ver` 0, `queue_drops` 0, both mismatch counters 0.
+6. `mode raw` then `stress 100 200` for true loss; then `mode reliable` and `stress 100 200`. PASS: reliable `STRESS: PASS`, no CRC mismatches.
+7. Power-cycle the node, wait 10 s, control `report`: CRC must still PASS (programs are in flash); the node resumes the programs from t = 0.
+8. Paste both `report` blocks (and `log 100` on any FAIL) to Claude.
+
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
 2. `set 1 100` → strip full. `set 1 0 3000` → smooth 3 s fade out. `set 1 10` → steady dim, no flicker.
