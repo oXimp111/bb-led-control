@@ -55,6 +55,7 @@ static uint8_t  lastStatus = 0;
 #define LF_T_PAIR_CLOSED()     tlOnPairClosed()
 #define LF_T_AFTER_WRITE(i, d) tlAfterWrite(i, d)
 #define LF_T_SERIAL(line)      tlSerial(line)
+#define LF_T_SENT(ok)          tlOnSent(ok)
 #else
 #define LF_T_INIT()            ((void)0)
 #define LF_T_RADIO_READY()     ((void)0)
@@ -66,6 +67,7 @@ static uint8_t  lastStatus = 0;
 #define LF_T_PAIR_CLOSED()     ((void)0)
 #define LF_T_AFTER_WRITE(i, d) ((void)0)
 #define LF_T_SERIAL(line)      handleLine(line)
+#define LF_T_SENT(ok)          ((void)0)
 #endif
 
 // ------------------------------------------------------------ helpers
@@ -243,6 +245,7 @@ static void onRecv(const uint8_t* mac, const uint8_t* data, int len) {  // WiFi 
 }
 
 static void onSent(const uint8_t* mac, esp_now_send_status_t s) {
+  LF_T_SENT(s == ESP_NOW_SEND_SUCCESS);
   if (s == ESP_NOW_SEND_SUCCESS && st.paired && memcmp(mac, st.ctrl, 6) == 0) lastDelivered = millis();
 }
 

@@ -38,6 +38,10 @@ struct TlCounters {
   uint32_t out_checks;      // channel rows logged with a readback
   uint32_t wr_mismatch;     // LEDC readback != value just written (checked on every duty change)
   uint32_t log_mismatch;    // same, found by a logged readback
+  uint32_t tx_ok;           // frames we sent that the radio delivered (ACKs and heartbeats; MAC-level result)
+  uint32_t tx_fail;         // frames the radio could not deliver
+  uint32_t stalls;          // loop() gaps longer than 100 ms
+  uint32_t stall_max_ms;
 };
 static TlCounters tlC;
 static Preferences tlPrefs;
@@ -124,24 +128,36 @@ static void tlOutRow(const char* event, int i, int shownLevel, const char* note)
 
 // All channels (or only PLAYING ones) with the engine level, duty written and duty read back from the LEDC peripheral.
 static void tlLogOutputs(const char* note, bool playingOnly) {
+  delay(4);   // let the LEDC peripheral latch the last write (one 2 ms period) before reading back
   for (int i = 0; i < NUM_CH; i++) {
     if (playingOnly && !chans[i].playing()) continue;
     tlOutRow("OUT", i, (int)lroundf(chans[i].level() * 100), note);
   }
 }
 
-static void tlAfterWrite(int i, uint32_t d) {   // called right after every ledcWrite in updateOutputs
-  uint32_t back = ledcRead(i);
-  if (back == tlExpectRead(d)) return;
-  tlC.wr_mismatch++; tlCDirty = true;
-  if (tlWrMismatchRows++ < 100) {
-    LfLogRow r;
-    r.ms = millis(); r.event = "OUT"; r.ch = i + 1;
-    r.level_pct = (int)lroundf(chans[i].level() * 100);
-    r.duty_w = (int32_t)d; r.duty_r = (int32_t)back;
-    r.duty_exp = (int32_t)lf::levelToDuty(chans[i].level(), PWM_MAX_DUTY);
-    r.mismatch = 1; r.note = "readback differs right after write";
-    tlRow(r);
+// The LEDC peripheral latches a new duty at the next PWM period (2 ms at 500 Hz): reading back at once returns the old
+// value. So a write is only remembered here and checked a few ms later (tlCheckPending), unless a newer write replaced it.
+static struct { uint32_t at; uint32_t d; bool pend; } tlPend[LF_MAX_CH];
+static void tlAfterWrite(int i, uint32_t d) { tlPend[i].at = millis(); tlPend[i].d = d; tlPend[i].pend = true; }
+
+static void tlCheckPending() {
+  uint32_t now = millis();
+  for (int i = 0; i < NUM_CH; i++) {
+    if (!tlPend[i].pend || now - tlPend[i].at < 5) continue;
+    tlPend[i].pend = false;
+    uint32_t d = tlPend[i].d;
+    uint32_t back = ledcRead(i);
+    if (back == tlExpectRead(d)) continue;
+    tlC.wr_mismatch++; tlCDirty = true;
+    if (tlWrMismatchRows++ < 100) {
+      LfLogRow r;
+      r.ms = millis(); r.event = "OUT"; r.ch = i + 1;
+      r.level_pct = (int)lroundf(chans[i].level() * 100);
+      r.duty_w = (int32_t)d; r.duty_r = (int32_t)back;
+      r.duty_exp = (int32_t)lf::levelToDuty(chans[i].level(), PWM_MAX_DUTY);
+      r.mismatch = 1; r.note = "readback differs 5 ms after write";
+      tlRow(r);
+    }
   }
 }
 
@@ -266,6 +282,7 @@ static void tlReport() {
   Serial.printf("seq: checked %lu  gaps(missing) %lu  dups %lu  loss %.2f%%\n", (unsigned long)tlC.seq_rx, (unsigned long)tlC.gaps, (unsigned long)tlC.dups,
                 good ? 100.0 * tlC.gaps / good : 0.0);
   Serial.printf("acks_sent %lu  programs_stored %lu\n", (unsigned long)tlC.acks_sent, (unsigned long)tlC.progs_stored);
+  Serial.printf("radio tx (ACKs+heartbeats): delivered %lu  failed %lu   loop stalls >100 ms: %lu (longest %lu ms)\n", (unsigned long)tlC.tx_ok, (unsigned long)tlC.tx_fail, (unsigned long)tlC.stalls, (unsigned long)tlC.stall_max_ms);
   Serial.printf("output: checks %lu  write_mismatch %lu  log_mismatch %lu\n", (unsigned long)tlC.out_checks, (unsigned long)tlC.wr_mismatch, (unsigned long)tlC.log_mismatch);
   for (int s = 0; s < LF_MAX_PROGS; s++)
     Serial.printf("slot %d crc %04X steps %u%s\n", s + 1, lf::programCrc(progs[s]), progs[s].n_steps, (progs[s].flags & LF_PROG_LOOP) ? " loop" : "");
@@ -308,7 +325,7 @@ static void tlClear() {
   if (f) { tlWriteHeader(f); f.close(); }
   uint32_t boots = tlC.boots;
   memset(&tlC, 0, sizeof tlC);
-  tlC.layout = 1; tlC.boots = boots;
+  tlC.layout = 2; tlC.boots = boots;
   tlWrMismatchRows = 0;
   tlRx.haveSeq = false;
   tlPersist();
@@ -369,13 +386,13 @@ static void tlSerial(char* line) {
 // ------------------------------------------------------------ lifecycle hooks
 static void tlInit() {   // after state restore, before radio
   memset(&tlC, 0, sizeof tlC);
-  tlC.layout = 1;
+  tlC.layout = 2;
   tlNvs = tlPrefs.begin("lftest", false);
   if (tlNvs) {
     TlCounters tmp;
     if (tlPrefs.getBytesLength("c") == sizeof tmp) {
       tlPrefs.getBytes("c", &tmp, sizeof tmp);
-      if (tmp.layout == 1) tlC = tmp;
+      if (tmp.layout == 2) tlC = tmp;
     }
   }
   tlFs = LittleFS.begin(true);
@@ -399,7 +416,16 @@ static void tlRadioReady() {   // after esp_now_init: RSSI of ESP-NOW action fra
   esp_wifi_set_promiscuous(true);
 }
 
+static void tlOnSent(bool ok) { if (ok) tlC.tx_ok++; else tlC.tx_fail++; }   // WiFi task
+
 static void tlTick(uint32_t now) {   // every loop()
+  static uint32_t prev = 0;
+  if (prev && now - prev > 100) {   // loop() was blocked (flash write, serial output...)
+    tlC.stalls++; if (now - prev > tlC.stall_max_ms) tlC.stall_max_ms = now - prev; tlCDirty = true;
+    LfLogRow r; r.ms = now; r.event = "STALL"; char n[40]; snprintf(n, sizeof n, "loop blocked %lu ms", (unsigned long)(now - prev)); r.note = n; tlRow(r);
+  }
+  prev = now;
+  tlCheckPending();
   if (!tlBootReported && now >= 5000) { tlBootReported = true; tlReport(); }
   if (now - tlLastOut >= 1000) {
     tlLastOut = now;
