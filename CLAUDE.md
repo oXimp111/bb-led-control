@@ -42,6 +42,7 @@ web/control.html          control UI + built-in simulator (single file). Bottom 
                           compileShow() is the single compiler). Run `selfTest()` in the browser console.
 ```
 UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated when the UI changes).
+Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_PINS` in `web/control.html` must match `PWM_PINS` in `src/node/node_config.h`.
 
 ## Rules
 - Never change `protocol.h` struct layouts without bumping `LF_PROTO_VER` and rebuilding BOTH sides.

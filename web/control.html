@@ -978,14 +978,21 @@ const wallOptions = sel => Object.entries(WALLS).map(([w, c]) => `<option value=
 function frameProgOptions(cur) {     // frame dropdown: single-frame programs only (never shows)
   return S.programs.filter(p => p.text).map(p => `<option value="${esc(p.id)}" ${cur === p.id ? 'selected' : ''}>${esc(p.name || 'Untitled')} — ${esc(p.text)}</option>`).join('');
 }
+const CH_PINS = ['RX2 / GPIO16', 'TX2 / GPIO17', 'D18 / GPIO18', 'D19 / GPIO19', 'D21 / GPIO21', 'D22 / GPIO22', 'D23 / GPIO23', 'D25 / GPIO25'];   // = PWM_PINS in src/node/node_config.h
 function frameModal(id) {
   const [w, ch] = pid(id), fs = frameState(id), mac = nodeForWall(w);
   const opts = frameProgOptions(fs.program);
   openModal(`<h2>${WALLS[w].name} · frame ${ch}</h2>
-    <div class="small">${mac ? `Node ${isSim() ? 'Sim ' + w : '<b>' + esc(S.nodes[mac].name) + '</b>'}, channel ${ch}` : 'No node on this wall yet. The choice is saved and sent once a node is added.'}</div>
+    <div class="small">${mac ? `Node ${isSim() ? 'Sim ' + w : '<b>' + esc(S.nodes[mac].name) + '</b>'}, channel ${ch} · board pin ${CH_PINS[ch - 1]}` : 'No node on this wall yet. The choice is saved and sent once a node is added.'}</div>
     <div class="row"><label>Program</label><select id="fProg"><option value="">— none —</option>${opts}</select></div>
+    <div class="row"><label>Find it</label><button id="fIdent" ${mac ? '' : 'disabled'} title="Pulses this frame's strip for 5 seconds">Identify this frame</button><span class="small">pulses only this strip for 5 s</span></div>
     <div class="row" style="justify-content:flex-end"><span class="small" id="fMsg" style="flex:1">Changes save automatically.</span><button class="pri" id="fClose">Done</button></div>`);
   document.getElementById('fClose').onclick = closeModal;
+  document.getElementById('fIdent').onclick = async () => {
+    const msg = document.getElementById('fMsg'); msg.textContent = 'Pulsing…';
+    const r = await request({ cmd: 'identify', node: mac, ch, seconds: 5 });
+    if (document.getElementById('fMsg') === msg) msg.innerHTML = r.ok ? '<span style="color:var(--ok)">Pulsing for 5 s. Watch which strip lights.</span>' : '<span style="color:var(--bad)">Node did not answer: ' + esc(r.err) + '</span>';
+  };
   document.getElementById('fProg').onchange = async e => {
     const v = e.target.value;
     fs.program = v === '' ? null : v; save(); renderControl();

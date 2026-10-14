@@ -28,7 +28,7 @@ Update this file whenever a feature or shortcut changes.
 Frame numbers equal channel numbers, counted left to right while facing the wall.
 
 **Edit mode**
-- Click a frame: popup with a Program dropdown. It lists only single-frame programs (never shows).
+- Click a frame: popup with the node, channel and board pin (see `docs/WIRING.md`), an **Identify this frame** button (pulses only that strip for 5 s) and a Program dropdown. It lists only single-frame programs (never shows).
   The choice saves at once and is sent to the node if one is paired.
 - "Flip view 180°": turns the room drawing round.
 - "Control corner" dropdown: marks which corner the control centre is in (for the drawing only).
