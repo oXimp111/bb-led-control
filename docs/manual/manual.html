@@ -29,6 +29,10 @@ tr{page-break-inside:avoid}
 .cover .bar{height:3mm;background:linear-gradient(90deg,#6aa8ff,#4fd1a1,#ffb15c);margin:10mm 0;border-radius:2mm}
 .sw{display:inline-block;width:3.5mm;height:3.5mm;border-radius:1mm;vertical-align:-0.3mm;margin-right:1mm}
 code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-radius:1mm}
+.nw{display:inline-block;background:#ffd23f;color:#5a4300;font:700 8.5pt/1.5 "Microsoft YaHei",Arial,sans-serif;padding:0 1.8mm;border-radius:1mm;margin-right:1.5mm;vertical-align:1px;white-space:nowrap}
+.u{background:#fff3b0;box-shadow:0 0 0 .8mm #fff3b0;border-radius:1mm}
+tr.u td,tr.u th{background:#fff3b0}
+li.u{background:#fff3b0;border-radius:1mm}
 .steps{counter-reset:s;padding:0;list-style:none}
 .steps>li{counter-increment:s;position:relative;padding:1mm 0 1mm 11mm;margin:2mm 0;page-break-inside:avoid}
 .steps>li::before{content:counter(s);position:absolute;left:0;top:1mm;width:7.5mm;height:7.5mm;border-radius:50%;background:#1f3a68;color:#fff;font:700 11pt/7.5mm Arial;text-align:center}
@@ -42,7 +46,14 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
     ① 第 1 章　界面总览（含基本概念）<br>
     ② 第 2 章　Programs 页 · 整套节目（Entire set）<br>
     ③ 第 3 章　Programs 页 · 单框程序（Single frame）<br>
+    <span class="u">④ 2.8 与 4.4　Cue list（分段节目）· 本版新增</span><br>
     <span style="font-size:10.5pt;color:#555">第 4 章（Control 页）和第 5 章（快捷键与备份）可作为参考，需要时查阅。</span>
+  </div>
+  <div class="tip" style="text-align:left;font-size:11pt;margin:6mm 15mm 0">
+    <b><span class="nw">更新</span>本版更新内容</b>（正文中以<span class="u">黄色底色</span>和 <span class="nw">新增</span> / <span class="nw">更新</span> 标记）<br>
+    <span class="nw">新增</span><b>Cue list（分段节目）</b>：把整套节目切成若干段，演出时每按一次 <span class="en">GO</span> 播放下一段。见 2.8（制作）、4.4（播放）。<br>
+    <span class="nw">新增</span>画框窗口增加 <span class="en">Identify this frame</span>，并显示该画框对应的节点通道与板上引脚。见 4.1。<br>
+    <span class="nw">更新</span>1.1 基本概念、第 2 章说明、2.3 导出、2.7 步数限制、4.2 Run 模式、5.1 快捷键、5.2 备份。
   </div>
   <p style="margin-top:20mm;font-size:10.5pt;color:#666">软件文件：<code>web/control.html</code>（使用 Chrome 或 Edge 打开）<br>界面按钮名称保持英文原样；图中红色编号对应图下同编号的说明。</p>
 </div>
@@ -62,8 +73,9 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <tr><td><b>Loop</b></td><td>勾选后循环播放；未勾选则只播放一遍，并停在最后一步的亮度。</td></tr>
 <tr><td><b>单框程序</b><br>Single frame</td><td>只控制<b>一个画框</b>的效果（最多 24 步），可分配给任意多个画框。</td></tr>
 <tr><td><b>整套节目</b><br>Entire set (show)</td><td>控制<b>全部 24 个画框</b>的时间线，每个画框一行，各画框可在不同时间做不同的事。</td></tr>
+<tr class="u"><td><b><span class="nw">新增</span>分段节目</b><br>Cue list</td><td>整套节目的一种：时间线被分段点切成若干<b>段 (section)</b>。演出时由操作员按 <span class="en">GO</span>，每按一次播放下一段，用于按演员提示触发灯光（见 2.8、4.4）。</td></tr>
 </table>
-<p>两种作品<b>相互独立</b>：节目在 Entire set 中编辑，单框程序在 Single frame 中编辑。</p>
+<p>两种作品<b>相互独立</b>：节目在 Entire set 中编辑，单框程序在 Single frame 中编辑。<span class="u">分段节目与普通节目在同一个 Entire set 页中制作，在节目列表中以 ⏭ 标记。</span></p>
 
 <h3>1.2 顶部栏</h3>
 <img src="img/01_header.png"><div class="cap">图 1-1　顶部栏（所有页面共有）</div>
@@ -78,11 +90,11 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <p>所有修改<b>自动保存</b>在当前电脑的浏览器中。请始终使用<b>同一个浏览器</b>（Chrome 或 Edge），不要使用无痕窗口，也不要清除浏览器数据，否则已做的内容会丢失。建议定期在整套节目页点 <span class="en">Export all</span> 导出备份（见 2.3）。</p>
 
 <h2>第 2 章　Programs 页 · 整套节目（Entire set）</h2>
-<p>点 <span class="en">Programs</span>，再点 <span class="en">Entire set</span>。这是一条类似剪辑软件的时间线：<b>一行 = 一个画框，横向 = 时间，彩色条 = 片段 (clip)</b>。每次修改自动保存。<b>没有片段的空白时间，灯为熄灭状态。</b></p>
+<p>点 <span class="en">Programs</span>，再点 <span class="en">Entire set</span>。这是一条类似剪辑软件的时间线：<b>一行 = 一个画框，横向 = 时间，彩色条 = 片段 (clip)</b>。每次修改自动保存。<b>没有片段的空白时间，灯为熄灭状态。</b><span class="u">（Cue list 分段节目除外：空白时间保持原亮度，见 2.8。）</span></p>
 <img src="img/08_show_editor.png"><div class="cap">图 2-1　整套节目编辑页（示例：Wave around the room，依次亮起再熄灭）</div>
 <ol class="mk">
 <li><span class="en">Entire set</span> / <span class="en">Single frame</span>　切换整套节目与单框程序（软件会记住上次的选择）。</li>
-<li><span class="en">Shows</span>　节目列表。名称后的 <b>↻</b> 表示该节目为循环节目。</li>
+<li><span class="en">Shows</span>　节目列表。名称后的 <b>↻</b> 表示该节目为循环节目，<span class="u"><b>⏭</b> 表示分段节目。</span></li>
 <li>节目管理按钮，见 2.3。</li>
 <li>节目名称，可直接修改。</li>
 <li><span class="en">Loop</span>　节目循环；勾选后出现循环长度 <span class="en">length ... ms</span>（见 2.6）。</li>
@@ -99,6 +111,7 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <li>画框行名。点击选中该行。右侧小数字为该画框已用步数（上限 24，见 2.7）。</li>
 <li>片段。<span class="sw" style="background:#6aa8ff"></span>蓝 = Hold，<span class="sw" style="background:#4fd1a1"></span>绿 = Fade，<span class="sw" style="background:#ffb15c"></span>橙 = Blink。片段上的文字：“0→100”表示由 0 渐变到 100，“100%”表示保持 100%。</li>
 <li><span class="en">Room preview</span>　房间预览，播放时各画框按播放线位置实时发光。</li>
+<li class="u"><span class="nw">新增</span><span class="en">Cue list</span>　勾选后该节目成为分段节目（见 2.8）。勾选后 Loop 自动关闭，工具栏出现 <span class="en">+ Cue at playhead</span>。</li>
 </ol>
 
 <h3>2.1 鼠标操作</h3>
@@ -128,7 +141,7 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <table>
 <tr><th style="width:20%">按钮</th><th>作用</th></tr>
 <tr><td><span class="en">New</span> / <span class="en">Duplicate</span> / <span class="en">Rename</span> / <span class="en">Delete</span></td><td>新建 / 复制 / 重命名 / 删除（删除前会确认；至少保留一个节目）。</td></tr>
-<tr><td><span class="en">Export</span></td><td>将当前节目保存为一个文件（.json）。</td></tr>
+<tr><td><span class="en">Export</span></td><td>将当前节目保存为一个文件（.json）。<span class="u">分段节目的分段点和段名一并保存。</span></td></tr>
 <tr><td><span class="en">Import</span></td><td>从文件导入一个或多个节目，添加到列表中，不覆盖现有节目。</td></tr>
 <tr><td><span class="en">Export all</span></td><td>将所有节目保存为一个文件，建议定期备份。</td></tr>
 </table>
@@ -172,7 +185,35 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <li>行名右侧的小数字为已用步数。</li>
 <li>超过 24 步时该行变<b style="color:#e5322d">红</b>，顶部显示 <b>⚠ N frames over 24 steps</b>。</li>
 <li>超限的节目在 Run 模式下不能播放，会提示 “can't play: W1-3 needs 26 steps (max 24)”。请删减或合并片段后再播放。</li>
+<li class="u"><span class="nw">更新</span><b>分段节目</b>的 24 步限制<b>按每一段分别计算</b>（每个画框、每一段最多 24 步），整套时间线的总步数不受限制。行名右侧的数字为各段中最大的步数。</li>
 </ul>
+
+<h3 class="u">2.8 Cue list（分段节目）<span class="nw">新增</span></h3>
+<p>适合由操作员根据演员提示逐段触发灯光的节目：时间线仍按普通节目制作，再用<b>分段点</b>把它切成若干段。播放时（见 4.4）每按一次 <span class="en">GO</span> 播放下一段，各段之间灯光保持，直到下一次 <span class="en">GO</span>。</p>
+<img src="img/15_cue_editor.png"><div class="cap">图 2-4　分段节目的编辑（示例：3 段，分段点在 20 s 和 45 s）</div>
+<ol class="mk">
+<li><span class="en">Cue list</span>　勾选后该节目成为分段节目。取消勾选会清除分段点（可用 Undo 撤回）。</li>
+<li><span class="en">+ Cue at playhead</span>　在播放线位置新建分段点。先单击时间尺移动播放线；播放线在 0 位置或已有分段点处不能新建。</li>
+<li>橙色标签：各段的起点，显示“段号. 段名”，第 1 段从 0 开始。单击标签打开编辑窗口（图 2-5）。</li>
+<li>第 2 段的分段点（20 s）。</li>
+<li>第 3 段的分段点（45 s）。</li>
+<li>段数提示。只有第 1 段时显示操作提示。</li>
+</ol>
+<img class="m" src="img/16_cue_modal.png"><div class="cap">图 2-5　编辑分段点</div>
+<ol class="mk">
+<li><span class="en">Name</span>　段名，显示在 <span class="en">GO</span> 按钮和段列表中；留空则显示 Section N。第 1 段只有段名可改。</li>
+<li><span class="en">Starts at</span>　该段的起始时间（秒），不能与其他分段点重复。</li>
+<li><span class="en">Delete cue</span>　删除该分段点，前后两段合并。</li>
+<li><span class="en">Save</span>　保存（<span class="en">Cancel</span> 放弃）。</li>
+</ol>
+<table>
+<tr><th style="width:26%">情况</th><th>分段节目中的处理</th></tr>
+<tr class="u"><td>片段之间及片段之前的空隙</td><td><b>保持当前亮度</b>，不熄灭（普通节目为熄灭）。需要熄灭时，放置一个 0% 的片段。</td></tr>
+<tr class="u"><td>某一段中没有任何片段的画框</td><td>该段不对这个画框做任何操作，画框保持原亮度。</td></tr>
+<tr class="u"><td>跨越分段点的片段</td><td>在分段点处自动拆开：Hold 保持不变；Fade 按比例拆成两段，亮度无跳变；Blink 若在周期中间被拆开，后一段先用 Fade 补完该周期，再接续 Blink，波形与原来一致。</td></tr>
+<tr class="u"><td>步数</td><td>每个画框每一段最多 24 步（见 2.7）。</td></tr>
+<tr class="u"><td>预览</td><td>编辑页的 <span class="en">▶ Play</span> 连续播放整条时间线，仅供预览。演出时只能按段 <span class="en">GO</span>，整套时间线不能在灯上连续播放。</td></tr>
+</table>
 
 <h2>第 3 章　Programs 页 · 单框程序（Single frame）</h2>
 <p>点 <span class="en">Programs</span>，再点 <span class="en">Single frame</span>。这里制作<b>只用于一个画框</b>的程序，数量不限，每个程序最多 24 步，每次修改自动保存。修改后的程序会在下次于 Run 模式播放该画框时生效。</p>
@@ -231,16 +272,24 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 </ol>
 <img class="m" src="img/03_frame_modal.png"><div class="cap">图 4-2　点击画框弹出的窗口</div>
 <ol class="mk">
+<li class="u"><span class="nw">更新</span>画框所在节点、通道号和板上引脚（如 channel 2 · board pin TX2 / GPIO17）。通道号 = 画框编号。</li>
 <li><span class="en">Program</span>　选择该画框使用的程序（只列出单框程序）。<span class="en">— none —</span> 表示不分配。选择后立即保存。</li>
+<li class="u"><span class="nw">新增</span><span class="en">Identify this frame</span>　让该画框的灯带单独闪动 5 秒，用于确认这个画框接在哪一路。只影响这一个画框，需要已连接节点。</li>
 <li>状态文字，显示 “Saved”。</li>
 <li><span class="en">Done</span>　关闭窗口。</li>
 </ol>
+<table class="u">
+<tr><th style="width:18%">通道 / 画框</th><th>板上引脚</th></tr>
+<tr><td>1</td><td>RX2 / GPIO16</td></tr><tr><td>2</td><td>TX2 / GPIO17</td></tr><tr><td>3</td><td>D18 / GPIO18</td></tr><tr><td>4</td><td>D19 / GPIO19</td></tr>
+<tr><td>5</td><td>D21 / GPIO21</td></tr><tr><td>6</td><td>D22 / GPIO22</td></tr><tr><td>7</td><td>D23 / GPIO23</td></tr><tr><td>8</td><td>D25 / GPIO25</td></tr>
+</table>
+<p class="u"><span class="nw">更新</span>所有节点使用同一张引脚表。每面墙只用到该墙画框数对应的前几路（W1 用 1–8，W2 用 1–4，W3 用 1–7，W4 用 1–5）。接线与检查步骤见 <code>docs/WIRING.md</code>。</p>
 
 <h3>4.2 Run 模式：播放</h3>
 <img src="img/06_control_run.png"><div class="cap">图 4-3　Control 页（Run 模式）</div>
 <ol class="mk">
-<li>节目下拉框，选择要播放的整套节目（只列出节目）。节目前带 <b>⚠</b> 表示超过步数限制，需先修改（见 2.7）。</li>
-<li><span class="en">▶ Play show</span>　播放所选节目，所有画框同时开始。</li>
+<li>节目下拉框，选择要播放的整套节目（只列出节目）。节目前带 <b>⚠</b> 表示超过步数限制，需先修改（见 2.7）<span class="u">；带 <b>⏭</b> 的是分段节目，选中后出现 Cue list 面板（见 4.4）</span>。</li>
+<li><span class="en">▶ Play show</span>　播放所选节目，所有画框同时开始。<span class="u">选中分段节目时此按钮隐藏，改用 <span class="en">GO</span>（见 4.4）。</span></li>
 <li><span class="en">▶ Play all frames</span>　每个画框播放它自己被分配的程序；未分配程序的画框不动。</li>
 <li><span class="en">■ Stop all</span>　全部停止，<b>保持当前亮度</b>。</li>
 <li><span class="en">All off</span>　全部在 1 秒内渐灭至 0。</li>
@@ -254,6 +303,32 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <li>虚拟房间，直接读取灯光输出，亮度比左侧主画面更准确。</li>
 </ol>
 <div class="note">Control 页主画面显示的亮度来自约每 0.5 秒一次的状态更新，所以快于 1 秒一次的闪烁在主画面上可能显得偏慢或不准，请以模拟器为准。</div>
+
+<h3 class="u">4.4 Cue list 播放（GO）<span class="nw">新增</span></h3>
+<p>在节目下拉框选中带 ⏭ 的分段节目，图 4-3 上方出现 Cue list 面板。选中后软件会提前把前两段发送到各节点，下一段始终保持在准备好的状态，所以按下 <span class="en">GO</span> 时只发送一个很小的指令，几乎没有延迟。</p>
+<img src="img/17_cue_run.png"><div class="cap">图 4-5　Cue list 面板（第 1 段播放中，下一段 Storm 已就绪）</div>
+<ol class="mk">
+<li>节目下拉框，带 ⏭ 为分段节目。</li>
+<li>段列表：当前段为蓝色，下一段为橙色边框，已播段变淡；段名后为该段时长。</li>
+<li>状态行：当前段的播放时间。“next section ready ✓” 表示下一段已发送到全部节点；“preparing next section…” 表示仍在发送。</li>
+<li><span class="en">GO ▶ 段名</span>　播放下一段。也可按键盘 <b>Space</b> 或 <b>Enter</b>。最后一段之后显示 End of show，不可再按。</li>
+<li><span class="en">◀ Previous</span>　重新播放上一段。需要重新发送该段，约 0.3–0.5 秒后开始。</li>
+<li><span class="en">↺ Replay section</span>　从头重播当前段，立即开始。</li>
+<li>段下拉框与 <span class="en">Go to</span>　跳到任意一段。点 <span class="en">Go to</span> 后需确认；该段可能需要重新发送，稍有延迟。</li>
+<li><span class="en">Reset</span>　回到第 1 段之前，需确认。灯保持原样，手动播放过的画框重新交回分段节目。</li>
+<li>进度条：当前段的播放进度。</li>
+</ol>
+<table>
+<tr><th style="width:28%">情况</th><th>结果</th></tr>
+<tr class="u"><td>当前段正在播放时按 GO</td><td>当前段的所有画框<b>停在当前亮度</b>，下一段立即开始。下一段中没有片段的画框保持该亮度；有片段的画框从下一段的第一个片段开始，片段之前的空隙保持当前亮度。</td></tr>
+<tr class="u"><td>当前段已播完、尚未收到提示</td><td>灯<b>保持最后一步的亮度</b>，无论等多久，直到按 GO 才开始下一段。</td></tr>
+<tr class="u"><td>连续快速按 GO</td><td>300 ms 内的重复按键以及正在发送指令时的按键被忽略，不会跳过一段。</td></tr>
+<tr class="u"><td>点击单个画框</td><td>该画框播放自己的程序，并脱离分段节目，直到 Reset。状态行显示脱离的画框数。</td></tr>
+<tr class="u"><td>刷新页面</td><td>软件记住当前段号，状态行提示该段在刷新前已播放；下一次 GO 播放下一段，第一次可能需要重新发送。</td></tr>
+<tr class="u"><td>无线通信中断</td><td>灯保持当前状态，不会熄灭。恢复后可继续按 GO。</td></tr>
+<tr class="u"><td>某段超过 24 步</td><td>状态行显示红字，GO 不可用；请回到 Programs 页修改。</td></tr>
+</table>
+<div class="note u">分段节目的各段是依次发送到节点的两个存储区（每个节点存两段）。因此 Previous 和跳转通常需要先重新发送，而 GO 与 Replay 不需要。</div>
 
 <h2>第 5 章　快捷键与备份</h2>
 <h3>5.1 整套节目页快捷键</h3>
@@ -270,12 +345,13 @@ code{font-family:Consolas,monospace;background:#eef0f5;padding:0 1.2mm;border-ra
 <tr><td>Esc</td><td>取消选择</td></tr>
 <tr><td>Ctrl + 滚轮</td><td>缩放时间线</td></tr>
 <tr><td>Alt + 拖动</td><td>不吸附，精确到 1 ms</td></tr>
+<tr class="u"><td>Space / Enter（Run 模式，Cue list 面板打开时）</td><td><span class="nw">新增</span>GO，播放下一段（输入文字或有弹窗时无效）</td></tr>
 </table>
 <p>单框程序页没有快捷键，也没有撤销功能；修改较大的程序前，建议先用 <span class="en">Duplicate</span> 保留一份副本。</p>
 
 <h3>5.2 备份与迁移</h3>
 <ul>
-<li>整套节目：用 <span class="en">Export</span>（单个）或 <span class="en">Export all</span>（全部）导出为文件，在另一台电脑上用 <span class="en">Import</span> 导入。</li>
+<li>整套节目：用 <span class="en">Export</span>（单个）或 <span class="en">Export all</span>（全部）导出为文件，在另一台电脑上用 <span class="en">Import</span> 导入。<span class="u">分段节目的分段点和段名包含在导出文件中。</span></li>
 <li>单框程序及画框分配保存在浏览器中，没有导出功能；换电脑或换浏览器后需重新制作。</li>
 <li>如果浏览器禁止保存，启动时会提示 “This viewer blocks saving…”，此时请改用 Chrome 或 Edge 打开。</li>
 </ul>

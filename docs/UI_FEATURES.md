@@ -11,8 +11,7 @@ Update this file whenever a feature or shortcut changes.
 - Refreshing the page always returns to the Control tab (the Programs tab remembers Entire set / Single frame).
 - Everything is saved automatically in the browser (localStorage). Use the same browser and profile each time.
   If saving is blocked, a message appears at start-up.
-- Node firmware still limits programs to 10 steps (`LF_MAX_STEPS`). The UI allows 24 (`MAX_STEPS`).
-  Raise the firmware limit to 24 before running shows on hardware.
+- Programs are limited to 24 steps everywhere (`MAX_STEPS` in the page = `LF_MAX_STEPS` in the firmware, protocol v3). Cue-list shows count the limit per section.
 
 ## Header (all pages)
 | Control | What it does |
@@ -131,6 +130,7 @@ starts the offset later.
 | Ctrl+Y or Ctrl+Shift+Z | Redo |
 | Ctrl+A | Select all rows |
 | Esc | Clear selection |
+| Space or Enter (Run mode, cue-list panel open) | GO: play the next section (ignored while typing or with a popup open) |
 | Enter | Confirm in the rename dialog |
 
 (Cmd works in place of Ctrl on Mac.)
@@ -147,4 +147,8 @@ starts the offset later.
 - Programs: `{id, name, text}`. Shows: `{id, name, loop, length_ms, tracks…}`. Frame assignments store the program id.
 - Old saves with index-based assignments are converted on load. Empty preset slots are dropped.
 - Self-test: open the browser console (F12) and run `selfTest()`. It must end with `SELFTEST PASS`.
-- Node-side program text format and serial commands: see `CLAUDE.md`.
+- Cue-list shows are normal shows plus `stepped: true`, `cues: [{t, name}]` and optional `first` (name of section 1). The cue position (`lf-cue`) is kept in localStorage.
+- Cue-list rules in Run mode are tested by `await cueSelfTest()` (simulator) and, on real hardware, by `python tools/fulltest.py` (group T5). Results: docs/TEST_RESULTS.md, raw logs: `test_logs/`.
+- Node-side program text format (`H F B K`) and serial commands: see `CLAUDE.md`.
+- Which firmware goes on which board for production: `CLAUDE.md`, "FLASHING FOR PRODUCTION". Pin-to-frame table: `docs/WIRING.md`.
+- User manual (Chinese, highlighted updates): `docs/manual/manual.html` and the PDF next to it.

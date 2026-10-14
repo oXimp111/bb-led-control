@@ -3,6 +3,11 @@
 For the installer (and her Claude). The mapping is the same on every wall node and is fixed in firmware:
 `PWM_PINS` in `src/node/node_config.h`. Change it there only, rebuild and reflash every node.
 
+## Before installing: flash the production firmware
+- Each wall node board: `pio run -e node -t upload --upload-port COMx` (the same image on all four). Control board: `pio run -e control -t upload --upload-port COMx`.
+- Do NOT leave `node_fulltest` (the test build) on a wall node. Details and how to confirm each board: CLAUDE.md, "FLASHING FOR PRODUCTION".
+- Hold the board's BOOT button before the upload starts and keep holding it until it prints `Writing`, then release and tap EN.
+
 ## Pin per channel (frame)
 Channel n = frame n, counted left to right while facing the wall.
 

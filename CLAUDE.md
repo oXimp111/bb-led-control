@@ -42,6 +42,8 @@ web/control.html          control UI + built-in simulator (single file). Bottom 
                           compileShow() is the single compiler). Run `selfTest()` in the browser console.
 ```
 UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated when the UI changes).
+User manual (Chinese, for the lighting designer): docs/manual/manual.html -> PDF with `python mkpdf.py`; screenshots with `python shots.py` (both run inside docs/manual, need Playwright + Chrome).
+Changed or new passages are marked with the yellow "更新" / "新增" tags; keep that convention for the next revision and keep the neutral, professional tone (see the manual's existing wording, English button names unchanged).
 Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_PINS` in `web/control.html` must match `PWM_PINS` in `src/node/node_config.h`.
 
 ## Rules
@@ -53,6 +55,19 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 - Node must restore saved state to the outputs BEFORE the radio starts. Outputs are set to 0 first.
 - Radio loss: node keeps doing what it was doing. Never turn lights off because the link dropped.
 - Pinned toolchain (`platformio.ini`): uses Arduino core 2.x API (`ledcSetup`/`ledcAttachPin`). Do not upgrade.
+
+## FLASHING FOR PRODUCTION: the right firmware on the right board (read before installing)
+| Board | Env to flash | Command (hold BOOT until it prints `Writing`) | How to confirm |
+|---|---|---|---|
+| Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
+| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | `{"cmd":"hello"}` over USB answers `"proto":3`; the page opens at http://192.168.4.1/ (Wi-Fi `LED-Control` / `ledframes`) |
+- **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
+- Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
+- The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.
+- After flashing a node it may show `not paired`: pair it again (hold its BOOT 3 s, then Find nodes in the page).
+- Each ESP32 gets the same `node` image: identity is its MAC. The wall a node belongs to is chosen in the page, not in firmware. Pin-to-frame table: docs/WIRING.md.
+- Boards in this project do not enter download mode by themselves: hold BOOT before the upload starts and keep holding until `Writing` appears, then release and tap EN.
+- Boards flashed on 2026-10-13 (both on this PC): control board (COM3, MAC ...7C:31) = `control`; node board (COM4, MAC 70:4B:CA:21:4F:EC) = `node_fulltest` (test build, replace before installing).
 
 ## Build / flash (Windows)
 1. CH340 driver: WCH CH341SER.EXE v3.9+ (https://www.wch-ic.com/downloads/CH341SER_EXE.html). Board shows as COMx in Device Manager.
@@ -158,7 +173,8 @@ program CRCs, engine levels over time, pad duty/frequency/cross-talk. Groups: T0
 T5 cue list (GO mid-section freeze, hold after finish, bad GO, replay), T6 persistence over a node reboot, T7 control reset while the node plays, T8 stress + GO latency.
 Run: `pio run -e control -t upload` (control board), `pio run -e node_fulltest -t upload` (node board), then `python tools/fulltest.py` (options `--only pins,single,shows,cues,persist,ctlreset,stress`, `--no-pair`).
 `tools/ft_flash.py <env> <COMx> <label>` flashes while `tools/ft_console.py` (open it in its own window) tells the person what to press. NO keyboard is needed: only hold BOOT while it retries.
-Logs: `test_logs/fulltest_<time>/` (node.log, control.log, checks.txt). Flash the plain `node` firmware back before installing on a wall if the test build is not wanted.
+Logs: `test_logs/fulltest_<time>/` (node.log = every packet and state line the node printed, control.log = every JSON line to/from the control board, checks.txt = PASS/FAIL list).
+They are committed for reference; the reference run is `test_logs/fulltest_20261013_205820/` (614/614). The other folders are earlier runs made while the harness was being debugged (some contain deliberate failures). Paste checks.txt and the relevant node.log lines to Claude when something fails. Flash the plain `node` firmware back before installing on a wall if the test build is not wanted.
 Known quirks seen by the test: the control firmware takes a sequence number before it validates a command, so commands it refuses itself leave a "gap" in the node's seq statistics (harmless);
 PLAY/GO first transmission carries a few ms of offset_ms (late-retry compensation).
 Results: docs/TEST_RESULTS.md.
