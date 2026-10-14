@@ -213,9 +213,11 @@ bool parseProgram(const char* text, LfProgram& out, char* err, size_t errlen) {
     } else {
       setErr(err, errlen, "unknown step (H/F/B)", tok); return false;
     }
-    if (*s++ != ':' || !parseDur(s, st.duration_ms)) {
+    uint32_t dur;  // local: st is packed, a reference to its field is undefined behaviour
+    if (*s++ != ':' || !parseDur(s, dur)) {
       setErr(err, errlen, "bad duration", tok); return false;
     }
+    st.duration_ms = dur;
     if (*s && *s != ' ' && *s != ',' && *s != '\r' && *s != '\n') {
       setErr(err, errlen, "junk after step", tok); return false;
     }

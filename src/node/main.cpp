@@ -139,9 +139,12 @@ static uint8_t doStop(uint8_t mask) {
 
 static uint8_t doProg(uint8_t slot, const LfProgram& p) {
   if (slot >= LF_MAX_PROGS || !lf::validateProgram(p)) return ACK_BAD_ARG;
-  progs[slot] = p;
-  lf::normalizeProgram(progs[slot]);
-  saveProgs();
+  LfProgram np = p;
+  lf::normalizeProgram(np);
+  if (memcmp(&np, &progs[slot], sizeof(np)) != 0) {  // identical re-upload: no flash write
+    progs[slot] = np;
+    saveProgs();
+  }
   // channels currently playing this slot restart from t=0 with the new program
   uint8_t restart = 0;
   for (int i = 0; i < NUM_CH; i++) if (chans[i].playing() && st.assign[i] == slot) restart |= 1 << i;
