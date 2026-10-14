@@ -252,7 +252,11 @@ static void processPending() {
     if (!blocked && (!best || p.order < best->order)) best = &p;
   }
   if (!best) return;
-  if (best->isPlay) ((LfMsgPlay*)best->buf)->offset_ms = best->baseOffset + (now - best->t0);
+  if (best->isPlay) {   // a retry carries the time that has passed since the first send
+    uint32_t off = best->baseOffset + (now - best->t0);
+    if (((LfHeader*)best->buf)->type == MSG_GO) ((LfMsgGo*)best->buf)->offset_ms = off;
+    else ((LfMsgPlay*)best->buf)->offset_ms = off;
+  }
   sendRaw(best->buf, best->len);
   lastSend = now;
   best->tries++;
@@ -453,7 +457,7 @@ static void handleLine(const char* line, int src) {
   Peer* peer = findPeer(mac);
   if (!peer) return (!strcmp(cmd, "unpair")) ? ok() : fail("not_paired");
 
-  union { LfMsgSet set; LfMsgProg prog; LfMsgAssign assign; LfMsgPlay play; LfMsgChMask chm; LfMsgIdentify ident; LfHeader h; uint8_t raw[240]; } m;
+  union { LfMsgSet set; LfMsgProg prog; LfMsgAssign assign; LfMsgPlay play; LfMsgGo go; LfMsgChMask chm; LfMsgIdentify ident; LfHeader h; uint8_t raw[240]; } m;
   memset(&m, 0, sizeof(m));
   uint16_t seq = ++txSeq;
   uint8_t mask;
@@ -494,6 +498,20 @@ static void handleLine(const char* line, int src) {
     m.play.ch_mask = mask;
     m.play.offset_ms = base;
     queued = queueCmd(src, id, mac, &m, sizeof(LfMsgPlay), K_NORMAL, true, base);
+  } else if (!strcmp(cmd, "go")) {   // cue: {bank:0|1, play:[ch..], stop:[ch..], t_ms}  (play/stop: 1-based channel lists)
+    int bank = doc["bank"] | -1;
+    if (bank < 0 || bank > 1) return fail("bad_arg: bank");
+    uint8_t pm = 0, sm = 0;
+    for (JsonVariantConst v : doc["play"].as<JsonArrayConst>()) { int c = v | 0; if (c < 1 || c > LF_MAX_CH) return fail("bad_arg: play"); pm |= 1 << (c - 1); }
+    for (JsonVariantConst v : doc["stop"].as<JsonArrayConst>()) { int c = v | 0; if (c < 1 || c > LF_MAX_CH) return fail("bad_arg: stop"); sm |= 1 << (c - 1); }
+    if ((pm | sm) == 0 || (pm & sm)) return fail("bad_arg: masks");
+    uint32_t base = doc["t_ms"] | 0u;
+    fillHeader(m.go.h, MSG_GO, mac, seq);
+    m.go.bank = bank;
+    m.go.play_mask = pm;
+    m.go.stop_mask = sm;
+    m.go.offset_ms = base;
+    queued = queueCmd(src, id, mac, &m, sizeof(LfMsgGo), K_NORMAL, true, base);
   } else if (!strcmp(cmd, "stop")) {
     if (!chMask(doc["ch"].as<JsonVariantConst>(), mask)) return fail("bad_arg: ch");
     fillHeader(m.chm.h, MSG_STOP, mac, seq);

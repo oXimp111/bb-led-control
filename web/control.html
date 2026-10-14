@@ -137,6 +137,18 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
 .ruler .rlane{cursor:ew-resize;background-image:none;border-bottom:1px solid var(--line)}
 .tk{position:absolute;top:0;bottom:0;border-left:1px solid #ffffff30;padding-left:3px;font-size:10px;color:var(--mute);line-height:24px;pointer-events:none}
 #phm{position:absolute;top:14px;width:0;height:0;margin-left:-5px;border:5px solid transparent;border-top:9px solid #ff4d6d;border-bottom:0;pointer-events:none}
+.cuemark{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--warn);z-index:8;pointer-events:none}
+.cuemark b{position:absolute;top:0;left:0;height:24px;line-height:24px;background:var(--warn);color:#1b1300;font-size:11px;padding:0 6px;border-radius:0 5px 5px 0;white-space:nowrap;cursor:pointer;pointer-events:auto;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+#cuePanel{margin-bottom:12px}
+#cuePanel .cueTop{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.cueList{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.cueChip{padding:3px 9px;border-radius:14px;border:1px solid var(--line);font-size:12px;color:var(--mute)}
+.cueChip small{opacity:.7}
+.cueChip.past{opacity:.45} .cueChip.cur{background:#2c4a73;border-color:var(--acc);color:var(--text)} .cueChip.next{border-color:var(--warn);color:var(--text)}
+.cueBtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button.goBtn{font-size:22px;padding:14px 34px;min-width:260px}
+.cueBar{height:6px;background:var(--panel2);border-radius:3px;margin-top:10px;overflow:hidden}
+.cueBar i{display:block;height:100%;width:0;background:var(--acc)}
 #phead{position:absolute;top:0;bottom:0;width:0;border-left:2px solid #ff4d6d;z-index:4;pointer-events:none}
 .clip{position:absolute;top:2px;bottom:2px;border-radius:4px;font-size:10px;line-height:1;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;color:#071322;cursor:grab;border:1px solid #0007;z-index:1}
 .clip.fxH{background:#6aa8ff} .clip.fxF{background:#4fd1a1} .clip.fxB{background:#ffb15c}
@@ -170,6 +182,19 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
       <button id="btnStopAll">■ Stop all</button>
       <button id="btnAllOff">All off</button>
       <span class="modeHint">Click a frame to play its own program (overrides the show for that frame).</span>
+    </div>
+    <div class="card" id="cuePanel" style="display:none">
+      <div class="cueTop"><b id="cueTitle"></b><span class="small" id="cueStatus"></span></div>
+      <div class="cueList" id="cueList"></div>
+      <div class="cueBtns">
+        <button class="pri goBtn" id="cueGo">GO ▶</button>
+        <button id="cueBack" title="Play the previous section again (needs a re-send, takes a moment)">◀ Previous</button>
+        <button id="cueReplay" title="Play the current section again from its start">↺ Replay section</button>
+        <select id="cueJump" title="Jump to a section"></select><button id="cueJumpBtn">Go to</button>
+        <button id="cueReset" title="Back to before the first section">Reset</button>
+        <span class="small">Space / Enter = GO</span>
+      </div>
+      <div class="cueBar"><i id="cueFill"></i></div>
     </div>
     <div class="toolbar" id="editBar">
       <span class="modeHint">Edit mode: click a frame to assign a program. Frame numbers = channel numbers, counted left→right while facing the wall.</span>
@@ -211,6 +236,7 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
         <div class="edBar">
           <input id="edName" style="width:210px" aria-label="Show name" placeholder="Show name">
           <label class="small"><input type="checkbox" id="edLoop"> Loop</label>
+          <label class="small" title="Cut this show into sections. In Run mode a GO button plays them one by one, on the operator's cue."><input type="checkbox" id="edStepped"> Cue list</label>
           <span id="edLenWrap" class="small" style="display:none">length <input id="edLen" type="number" min="100" step="100"> ms</span>
           <span class="small" id="edTotal"></span>
           <span class="spacer"></span>
@@ -221,6 +247,7 @@ code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:12px}
           <button id="btnUndo">↶ Undo</button><button id="btnRedo">↷ Redo</button><span class="sep"></span>
           <button id="btnSelAll">Select all</button><button id="btnSelNone">Clear</button><span class="sep"></span>
           <button id="btnAddClip" title="Add one clip to every selected row">+ Clip on selected rows</button><span class="sep"></span>
+          <span id="cueTools" style="display:none"><button id="btnCue" title="Start a new section at the playhead (click the ruler to place it)">+ Cue at playhead</button><span class="small" id="edCueInfo"></span><span class="sep"></span></span>
           <span class="small">Stagger</span><input id="stgMs" type="number" step="50" value="200" title="Offset between neighbouring frames, ms"><span class="small">ms</span><button id="btnStagger" title="Chase: each next selected frame starts this much later">Apply</button><span class="sep"></span>
           <button id="btnCopy">Copy</button><button id="btnPaste">Paste</button><button id="btnDup" title="Copy the selected clip(s) right after themselves (Ctrl+D). Repeatable: the copies become the selection.">Duplicate</button><span class="sep"></span>
           <button id="zOut" title="Zoom out (Ctrl+wheel)">−</button><button id="zIn" title="Zoom in (Ctrl+wheel)">+</button><button id="zFit">Fit</button><span class="sep"></span>
@@ -361,7 +388,7 @@ function compileSteps(show) {     // -> { frameId: [step text, ...] }  (no step-
     const clips = (per[id] || []).sort((x, y) => x.t - y.t), steps = [];
     let now = 0;
     for (const c of clips) {
-      if (c.t > now) steps.push(`H0:${c.t - now}ms`);            // gap = off
+      if (c.t > now) steps.push(show.stepped ? `K:${c.t - now}ms` : `H0:${c.t - now}ms`);   // gap = off (cue-list shows: keep the level)
       const start = Math.max(c.t, now), dur = c.t + c.dur - start; // overlap: later clip is trimmed
       if (dur > 0) { steps.push(stepText(c, dur)); now = start + dur; }
     }
@@ -379,9 +406,66 @@ function compileShow(show) {      // -> { frameId: programText }   THE show comp
   }
   return out;
 }
-function overLimit(show) {        // frames whose compiled program has too many steps
+function overLimit(show) {        // frames whose compiled program has too many steps (cue-list shows: in any one section)
+  if (show.stepped) {
+    const worst = {};
+    for (const e of compileSections(show).errors) worst[e.id] = Math.max(worst[e.id] || 0, e.n);
+    return ROOM_ORDER().filter(id => worst[id]).map(id => ({ id, n: worst[id] }));
+  }
   const steps = compileSteps(show);
   return ROOM_ORDER().filter(id => steps[id].length > MAX_STEPS).map(id => ({ id, n: steps[id].length }));
+}
+
+/* ---- Cue-list ("stepped") shows: ONE timeline cut into sections; every GO plays the next section. ----
+   show.stepped = true, show.cues = [{t, name}] = start of section 2, 3, ... (section 1 starts at 0, name show.first).
+   Differences from a plain show: a gap holds the level (KEEP step) instead of going dark, and a frame with no clip in
+   a section is left alone (stopped, holds its level). Each section compiles to one program per frame, starting at t=0. */
+function sectionList(show) {
+  const cues = (show.cues || []).slice().sort((a, b) => a.t - b.t), end = Math.max(contentEnd(show), 0, ...cues.map(c => c.t));
+  const starts = [0, ...cues.map(c => c.t)];
+  return starts.map((s, i) => ({ i, start: s, end: i + 1 < starts.length ? starts[i + 1] : end, name: (i ? cues[i - 1].name : show.first) || `Section ${i + 1}` }));
+}
+function sliceSteps(steps, s, e) {   // parsed steps (contiguous from t=0) -> the part inside [s, e), as steps starting at 0
+  const out = []; let t = 0;
+  for (const st of steps) {
+    const t0 = t, t1 = t + st.dur; t = t1;
+    const a = Math.max(t0, s), b = Math.min(t1, e);
+    if (b <= a) continue;
+    const o = a - t0, len = b - a;
+    if (st.type === 'K' || st.type === 'H') out.push({ ...st, dur: len });
+    else if (st.type === 'F') {
+      const lv = x => Math.round(st.a + (st.b - st.a) * x / st.dur);
+      out.push({ type: 'F', a: lv(o), b: lv(o + len), per: 0, dur: len });
+    } else if (o % st.per === 0) out.push({ ...st, dur: len });   // blink slice that starts on a period boundary: same blink, just shorter
+    else {   // blink cut mid-period: the triangle is piecewise linear, so finish the period with fades, then continue the blink
+      const half = st.per / 2, lvl = x => { const ph = (x % st.per) / st.per; return Math.round(st.a + (st.b - st.a) * (ph < .5 ? 2 * ph : 2 - 2 * ph)); };
+      const boundary = Math.ceil(o / st.per) * st.per, headEnd = Math.min(o + len, boundary), pts = [o];
+      const mid = Math.floor(o / st.per) * st.per + half; if (mid > o && mid < headEnd) pts.push(mid);
+      pts.push(headEnd);
+      for (let i = 0; i + 1 < pts.length; i++) out.push({ type: 'F', a: lvl(pts[i]), b: lvl(pts[i + 1]), per: 0, dur: Math.round(pts[i + 1] - pts[i]) });
+      if (o + len > boundary) out.push({ ...st, dur: o + len - boundary });
+    }
+  }
+  while (out.length && out[out.length - 1].type === 'K') out.pop();   // a trailing keep does nothing: the channel holds anyway
+  return out;
+}
+function compileSections(show) {    // -> { sections: [{i, name, start, end, len, programs: {frameId: text|null}, counts}], errors: [{section, id, n}] }
+  const steps = compileSteps(show), parsed = {}, errors = [];
+  for (const tr of show.tracks) if (tr.clips.length) for (const id of trackFrames(tr.frames)) parsed[id] = Engine.parse(steps[id].join(' '), Infinity).steps;
+  const sections = sectionList(show).map(sec => {
+    const programs = {}, counts = {};
+    for (const id of ROOM_ORDER()) {
+      programs[id] = null; counts[id] = 0;
+      if (!parsed[id]) continue;
+      const piece = sliceSteps(parsed[id], sec.start, sec.end);
+      if (!piece.length || piece.every(p => p.type === 'K')) continue;     // nothing to do for this frame in this section
+      counts[id] = piece.length;
+      if (piece.length > MAX_STEPS) errors.push({ section: sec.i, id, n: piece.length });
+      programs[id] = Engine.format({ loop: false, steps: piece });
+    }
+    return { ...sec, len: sec.end - sec.start, programs, counts };
+  });
+  return { sections, errors };
 }
 
 const PRESETS = [
@@ -405,6 +489,7 @@ const Engine = {
       let m, s;
       if ((m = t.match(/^H(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'H', a: +m[1], b: 0, per: 0, dur: this.dur(m[2], m[3]) };
       else if ((m = t.match(/^F(\d+)-(\d+):([\d.]+)(ms|s)?$/i))) s = { type: 'F', a: +m[1], b: +m[2], per: 0, dur: this.dur(m[3], m[4]) };
+      else if ((m = t.match(/^K:([\d.]+)(ms|s)?$/i))) s = { type: 'K', a: 0, b: 0, per: 0, dur: this.dur(m[1], m[2]) };   // keep the current level
       else if ((m = t.match(/^B(\d+)-(\d+)\/([\d.]+)(ms|s)?:([\d.]+)(ms|s)?$/i))) s = { type: 'B', a: +m[1], b: +m[2], per: this.dur(m[3], m[4]), dur: this.dur(m[5], m[6]) };
       else throw Error('bad step "' + t + '"');
       if (s.a > 100 || s.b > 100) throw Error('level > 100 in "' + t + '"');
@@ -416,7 +501,7 @@ const Engine = {
   fmtDur(ms) { return ms === 0 ? '0' : ms % 100 === 0 && ms >= 1000 ? ms / 1000 + 's' : ms + 'ms'; },   // 10s, 1.5s, 250ms
   format(p) {    // inverse of parse(): parse(format(p)) deep-equals p
     const out = p.loop ? ['loop'] : [];
-    for (const s of p.steps) out.push(s.type === 'H' ? `H${s.a}:${this.fmtDur(s.dur)}` : s.type === 'F' ? `F${s.a}-${s.b}:${this.fmtDur(s.dur)}`
+    for (const s of p.steps) out.push(s.type === 'K' ? `K:${this.fmtDur(s.dur)}` : s.type === 'H' ? `H${s.a}:${this.fmtDur(s.dur)}` : s.type === 'F' ? `F${s.a}-${s.b}:${this.fmtDur(s.dur)}`
       : `B${s.a}-${s.b}/${this.fmtDur(s.per)}:${this.fmtDur(s.dur)}`);
     return out.join(' ');
   },
@@ -428,22 +513,27 @@ const Engine = {
     const ph = (t % s.per) / s.per, tri = ph < .5 ? 2 * ph : 2 - 2 * ph;
     return (s.a + (s.b - s.a) * tri) / 100;
   },
-  levelAt(p, t) {
+  levelAt(p, t, entry = 0) {     // entry = level a leading K (keep) step holds
     if (!p || !p.steps.length) return 0;
-    for (const s of p.steps) { if (t < s.dur) return this.stepAt(s, t); t -= s.dur; }
-    return this.endLevel(p.steps[p.steps.length - 1]);
+    let carry = entry;
+    for (const s of p.steps) {
+      if (t < s.dur) return s.type === 'K' ? carry : this.stepAt(s, t);
+      t -= s.dur;
+      if (s.type !== 'K') carry = this.endLevel(s);
+    }
+    return carry;
   },
 };
 class Channel {            // same behavior as lf::Channel in firmware
-  constructor() { this.mode = 'manual'; this.cur = 0; this.from = 0; this.to = 0; this.fs = 0; this.fd = 0; this.prog = null; this.start = 0; }
+  constructor() { this.mode = 'manual'; this.cur = 0; this.entry = 0; this.from = 0; this.to = 0; this.fs = 0; this.fd = 0; this.prog = null; this.start = 0; }
   setManual(target, fade, now) { this.mode = 'manual'; this.prog = null; this.from = this.cur; this.to = target; this.fs = now; this.fd = fade; if (!fade) this.cur = target; }
-  play(p, now) { if (!p) return; this.mode = 'program'; this.prog = p; this.start = now; }
+  play(p, now) { if (!p) return; this.mode = 'program'; this.prog = p; this.entry = this.cur; this.start = now; }
   stop(now) { if (this.mode === 'program') this.setManual(this.cur, 0, now); }
   update(now) {
     if (this.mode === 'program') {
       let t = now - this.start; const tot = Engine.total(this.prog);
       if (this.prog.loop && tot > 0) t %= tot;
-      this.cur = Engine.levelAt(this.prog, t);
+      this.cur = Engine.levelAt(this.prog, t, this.entry);
     } else if (this.fd > 0) {
       const t = now - this.fs;
       if (t >= this.fd) { this.cur = this.to; this.fd = 0; } else this.cur = this.from + (this.to - this.from) * t / this.fd;
@@ -473,7 +563,7 @@ const CTRL_MAC = 'C0:11:00:00:00:01';
 class VNode {             // one simulated wall node: always powered, always paired
   constructor(mac, wall) {
     this.mac = mac; this.physWall = wall;
-    this.progs = Array(8).fill(null); this.assign = Array(8).fill(null);
+    this.progs = Array(16).fill(null); this.assign = Array(8).fill(null);   // 16 slots = 2 banks of 8 (slot = bank*8 + ch)
     this.identUntil = Array(8).fill(0); this.lastSeq = null; this.lastStatus = null; this.nextHb = 0;
     this.ch = Array.from({ length: 8 }, () => new Channel());
   }
@@ -500,6 +590,17 @@ class VNode {             // one simulated wall node: always powered, always pai
       case 'assign': each(i => this.assign[i] = pkt.slot); break;
       case 'play': each(i => { const s = this.assign[i]; if (s != null && this.progs[s]) this.ch[i].play(this.progs[s], now); }); break;
       case 'stop': each(i => this.ch[i].stop(now)); break;
+      case 'go': {   // cue: all-or-nothing, like the firmware
+        const { bank, pm, sm } = pkt;
+        if ((bank !== 0 && bank !== 1) || !(pm | sm) || (pm & sm)) { st = 'bad_arg'; break; }
+        for (let i = 0; i < 8; i++) if ((pm >> i & 1) && !this.progs[bank * 8 + i]) st = 'bad_arg';
+        if (st !== 'ok') break;
+        for (let i = 0; i < 8; i++) {
+          if (pm >> i & 1) { this.assign[i] = bank * 8 + i; this.ch[i].play(this.progs[bank * 8 + i], now); }
+          else if (sm >> i & 1) this.ch[i].stop(now);
+        }
+        break;
+      }
       case 'identify': each(i => this.identUntil[i] = now + pkt.seconds * 1000); break;
       default: st = 'bad_arg';
     }
@@ -554,6 +655,10 @@ const SimControl = {
       case 'assign': pkt = { type: 'assign', mask: this.maskOf(obj.ch), slot: obj.slot == null ? null : obj.slot - 1 }; break;
       case 'play': case 'stop': pkt = { type: cmd, mask: this.maskOf(obj.ch) }; break;
       case 'set': pkt = { type: 'set', mask: this.maskOf(obj.ch), level: obj.level, fade_ms: obj.fade_ms || 0 }; break;
+      case 'go': {
+        const m = l => (l || []).reduce((a, c) => a | 1 << (c - 1), 0);
+        pkt = { type: 'go', bank: obj.bank, pm: m(obj.play), sm: m(obj.stop) }; break;
+      }
       case 'identify': pkt = { type: 'identify', mask: this.maskOf(obj.ch ?? 'all'), seconds: obj.seconds || 5 }; break;
       default: return done(false, 'unknown_cmd');
     }
@@ -685,7 +790,8 @@ async function runFrame(id) {     // always resend program + assignment, then pl
   const mac = nodeForWall(w);
   if (!mac) { setFrameStatus(id, 'nonode'); return toast('No node on this wall yet.'); }
   if (!(await syncFrame(id))) return;
-  if (showState) showState.override.add(id);   // frame leaves the show; stays on its own program
+  if (showState) showState.override.add(id);
+  if (cue && steppedSel() && cue.showId === steppedSel().id) { cue.override.add(id); cueTick(); }   // frame leaves the cue list   // frame leaves the show; stays on its own program
   setFrameStatus(id, 'sending');
   const r = await request({ cmd: 'play', node: mac, ch });
   setFrameStatus(id, r.ok ? 'ok' : 'fail');
@@ -694,12 +800,14 @@ async function runFrame(id) {     // always resend program + assignment, then pl
 async function playAll() {
   const ids = ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
   if (!ids.some(id => frameProg(id))) return toast('No frames have programs yet.');
-  showState = null;
+  showState = null; cueInvalidate();
   await Promise.all(ids.map(id => syncFrame(id, true)));
   allNodes({ cmd: 'play' }, 'Play all frames');
 }
 let showState = null;   // { id (show id), name, override: Set of frame ids }
 async function playShow() {
+  if (steppedSel()) return toast('This show is a cue list: use the GO button.');
+  cueInvalidate();
   const idx = document.getElementById('showSel').value, show = S.shows.find(x => x.id === idx);
   if (!show) return toast('No show selected.');
   const over = overLimit(show);
@@ -1012,6 +1120,12 @@ function normalizeShow(raw) {       // any valid show -> one track per frame, st
   const len = Math.round(+raw.length_ms) || 0;
   if (sh.loop) sh.length_ms = Math.max(len, contentEnd(sh)) || 10000;
   else if (len > 0) sh.length_ms = len;
+  if (raw.stepped) {
+    sh.stepped = true; sh.loop = false; delete sh.length_ms;
+    const seen = new Set(); sh.cues = (Array.isArray(raw.cues) ? raw.cues : []).map(c => ({ t: Math.round(+c.t) || 0, name: String(c.name || '').slice(0, 40) }))
+      .filter(c => c.t > 0 && c.t <= MAXT && !seen.has(c.t) && seen.add(c.t)).sort((a, b) => a.t - b.t);
+    if (raw.first) sh.first = String(raw.first).slice(0, 40);
+  }
   return sh;
 }
 function ensureShows() {
@@ -1031,6 +1145,7 @@ function uniqueName(base) {
 function buildPreview(sh) {
   const steps = compileSteps(sh), progs = {}, counts = {};
   for (const id of ROOM_ORDER()) { counts[id] = steps[id].length; progs[id] = Engine.parse((sh.loop ? 'loop ' : '') + steps[id].join(' '), Infinity); }
+  if (sh.stepped) { const cs = compileSections(sh); for (const id of ROOM_ORDER()) counts[id] = Math.max(0, ...cs.sections.map(s => s.counts[id])); }   // limit applies per section
   return { progs, counts };
 }
 const preview = () => ED.cache || (ED.cache = buildPreview(curShow()));
@@ -1072,12 +1187,14 @@ function renderEditor() {
 }
 function renderShowList() {
   byId('shList').innerHTML = S.shows.map((s, i) =>
-    `<div class="shItem${i === ED.idx ? ' on' : ''}" data-i="${i}" title="${esc(s.name)}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name)}</span><span class="small">${overLimit(s).length ? '<span style="color:var(--bad)">⚠</span> ' : ''}${s.loop ? '↻' : ''}</span></div>`).join('');
+    `<div class="shItem${i === ED.idx ? ' on' : ''}" data-i="${i}" title="${esc(s.name)}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name)}</span><span class="small">${overLimit(s).length ? '<span style="color:var(--bad)">⚠</span> ' : ''}${s.loop ? '↻' : ''}${s.stepped ? '⏭' : ''}</span></div>`).join('');
 }
 function renderTop() {
   const sh = curShow(), pre = preview();
   const nm = byId('edName'); if (document.activeElement !== nm) nm.value = sh.name;
-  byId('edLoop').checked = sh.loop;
+  byId('edLoop').checked = sh.loop; byId('edLoop').disabled = !!sh.stepped; byId('edStepped').checked = !!sh.stepped;
+  byId('cueTools').style.display = sh.stepped ? '' : 'none';
+  if (sh.stepped) { const n = sectionList(sh).length; byId('edCueInfo').textContent = n + (n === 1 ? ' section · click the ruler, then + Cue at playhead' : ' sections'); }
   byId('edLenWrap').style.display = sh.loop ? '' : 'none';
   const ln = byId('edLen'); if (document.activeElement !== ln) ln.value = sh.length_ms || '';
   byId('edTotal').textContent = 'Total ' + fmtT(showLen(sh));
@@ -1108,6 +1225,7 @@ function renderTimeline() {
       h += `</div></div>`;
     }
   }
+  if (sh.stepped) for (const sec of sectionList(sh)) h += `<div class="cuemark" style="left:${LABEL_W + sec.start * ED.ppm}px"><b data-cue="${sec.i}" title="${esc(sec.name)} · starts ${fmtT(sec.start)} · length ${fmtT(sec.end - sec.start)} · click to edit">${sec.i + 1}. ${esc(sec.name)}</b></div>`;
   h += `<div id="phead"></div>`;
   const inner = byId('tlInner');
   inner.style.width = (LABEL_W + laneW) + 'px'; inner.style.setProperty('--gs', step * ED.ppm + 'px'); inner.innerHTML = h;
@@ -1131,8 +1249,9 @@ function syncSel() {      // cheap selection refresh (no full timeline rebuild)
 }
 function refreshShowSel() {     // Run mode dropdown reads S.shows
   const sel = byId('showSel'), keep = sel.value;
-  sel.innerHTML = S.shows.map(s => `<option value="${esc(s.id)}">${overLimit(s).length ? '⚠ ' : ''}${esc(s.name)}</option>`).join('');
+  sel.innerHTML = S.shows.map(s => `<option value="${esc(s.id)}">${overLimit(s).length ? '⚠ ' : ''}${s.stepped ? '⏭ ' : ''}${esc(s.name)}</option>`).join('');
   sel.value = S.shows.some(s => s.id === keep) ? keep : (S.shows[0] ? S.shows[0].id : '');
+  cueSync();
 }
 
 /* ---- preview transport ---- */
@@ -1448,6 +1567,25 @@ function textModal(title, value, okLabel, onOk) {
   const go = () => { const v = inp.value.trim(); if (v) { closeModal(); onOk(v); } };
   byId('tmOk').onclick = go; byId('tmNo').onclick = closeModal; inp.onkeydown = e => { if (e.key === 'Enter') go(); };
 }
+function cueModal(i) {      // edit one section marker (i = 0 is the start of the show: name only)
+  const sh = curShow(), list = sectionList(sh), sec = list[i]; if (!sec) return;
+  const cue = i ? sh.cues.slice().sort((a, b) => a.t - b.t)[i - 1] : null;
+  openModal(`<h2>${i ? 'Cue ' + i + ' · section ' + (i + 1) : 'Section 1 · start of the show'}</h2>
+    <div class="row"><label class="small" style="width:70px">Name</label><input id="cuName" value="${esc(i ? cue.name : sh.first || '')}" placeholder="Section ${i + 1}" maxlength="40" style="min-width:220px"></div>
+    ${i ? `<div class="row"><label class="small" style="width:70px">Starts at</label><input id="cuT" type="number" step="0.1" min="0.1" value="${cue.t / 1000}" style="width:90px"> s</div>` : ''}
+    <div class="row" style="justify-content:space-between">${i ? '<button class="danger" id="cuDel">Delete cue</button>' : '<span></span>'}<span><button id="cuNo">Cancel</button> <button class="pri" id="cuOk">Save</button></span></div>`);
+  byId('cuName').focus();
+  byId('cuNo').onclick = closeModal;
+  if (i) byId('cuDel').onclick = () => { closeModal(); edit(s => { s.cues.sort((a, b) => a.t - b.t); s.cues.splice(i - 1, 1); }); };
+  byId('cuOk').onclick = () => {
+    const name = byId('cuName').value.trim().slice(0, 40);
+    if (!i) { closeModal(); return edit(s => { if (name) s.first = name; else delete s.first; }); }
+    const t = Math.round((+byId('cuT').value || 0) * 1000);
+    if (t <= 0 || t > MAXT) return toast('Start time must be between 0.1 s and ' + MAXT / 1000 + ' s');
+    if (sh.cues.some(c => c !== cue && c.t === t)) return toast('Another cue is already at this time.');
+    closeModal(); edit(s => { s.cues.sort((a, b) => a.t - b.t); const c = s.cues[i - 1]; c.name = name; c.t = t; s.cues.sort((a, b) => a.t - b.t); });
+  };
+}
 function download(name, text) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -1494,6 +1632,16 @@ function initEditor() {
   byId('shFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) f.text().then(importShows); };
 
   byId('edName').onchange = e => { const v = e.target.value.trim(); if (v && v !== curShow().name) edit(s => s.name = v.slice(0, 60)); else e.target.value = curShow().name; };
+  byId('edStepped').onchange = e => edit(s => {
+    if (e.target.checked) { s.stepped = true; s.loop = false; delete s.length_ms; s.cues = s.cues || []; }
+    else { delete s.stepped; delete s.cues; delete s.first; }
+  });
+  byId('btnCue').onclick = () => {
+    const sh = curShow(), t = Math.round(ED.pos / SNAP) * SNAP;
+    if (t <= 0) return toast('Click the ruler to place the playhead first. A cue marks where the next section starts.');
+    if (sh.cues.some(c => c.t === t)) return toast('There is already a cue at this time.');
+    edit(s => { s.cues.push({ t, name: '' }); s.cues.sort((a, b) => a.t - b.t); });
+  };
   byId('edLoop').onchange = e => edit(s => { s.loop = e.target.checked; if (s.loop) s.length_ms = Math.max(s.length_ms || 0, contentEnd(s), 1000); });
   byId('edLen').onchange = e => {
     const sh = curShow(), end = contentEnd(sh); let v = Math.round(+e.target.value) || 0;
@@ -1511,6 +1659,7 @@ function initEditor() {
 
   sc.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom(ED.ppm * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX - sc.getBoundingClientRect().left); }, { passive: false });
   sc.addEventListener('click', e => {      // row / wall labels
+    const cm = e.target.closest('[data-cue]'); if (cm) return cueModal(+cm.dataset.cue);
     const car = e.target.closest('[data-car]');
     if (car) { ED.collapsed[car.dataset.car] = !ED.collapsed[car.dataset.car]; return renderTimeline(); }
     const wl = e.target.closest('[data-wall]'); if (wl) { selectWall(wl.dataset.wall, e); return renderEditor(); }
@@ -1523,6 +1672,7 @@ function initEditor() {
   sc.addEventListener('mousedown', e => {
     if (e.button !== 0) return;
     const sh = curShow();
+    if (e.target.closest('[data-cue]')) return;
     if (e.target.closest('#ruler')) { e.preventDefault(); drag = { kind: 'scrub' }; return seek(snapT(tAt(e), e)); }
     const clipEl = e.target.closest('.clip');
     if (clipEl) {
@@ -1703,8 +1853,228 @@ function selfTest() {
     check('frame dropdown lists only frame programs (no shows)', fv.every(v => pids.includes(v)) && !fv.some(v => sids.includes(v)), fv.join());
     check('show dropdown lists only shows, all of them (no frame programs)', sv.length === sids.length && sv.every(v => sids.includes(v)) && !sv.some(v => pids.includes(v)), sv.join());
   }
+  { // 6) cue-list shows: sections compile from ONE timeline; every section level must equal the full timeline level
+    const mk = (cues, tracks) => normalizeShow({ name: 'cues', stepped: true, cues, tracks });
+    const one = (id, ...clips) => ({ frames: [id], clips });
+    let sh = mk([{ t: 2000, name: 'B' }, { t: 5000, name: 'C' }], [
+      one('W1-1', { t: 0, fx: 'F', a: 0, b: 100, dur: 4000 }, { t: 4000, fx: 'H', a: 100, dur: 2000 }),
+      one('W1-2', { t: 3000, fx: 'H', a: 100, dur: 1000 }),
+      one('W1-3', { t: 0, fx: 'B', a: 0, b: 100, per: 1000, dur: 4000 }),
+      one('W1-4', { t: 0, fx: 'B', a: 20, b: 80, per: 700, dur: 6100 })]);
+    let cs = compileSections(sh), P = id => cs.sections.map(s => s.programs[id]);
+    check('cue list: 3 sections from 2 cues', cs.sections.length === 3 && sh.cues.length === 2, cs.sections.length);
+    check('fade is split exactly at the cut (0→50 | 50→100 then hold | hold)', P('W1-1')[0] === 'F0-50:2s' && P('W1-1')[1] === 'F50-100:2s H100:1s' && P('W1-1')[2] === 'H100:1s', P('W1-1').join(' | '));
+    check('a gap before the first clip holds the level (K), and a section with no clip gets no program', P('W1-2')[0] === null && P('W1-2')[1] === 'K:1s H100:1s' && P('W1-2')[2] === null, P('W1-2').join(' | '));
+    check('trailing keep steps are dropped', !P('W1-2').some(t => t && /K:\S+$/.test(t)), '');
+    const full = compileSteps(sh);
+    let bad = [];
+    for (const id of ['W1-1', 'W1-2', 'W1-3', 'W1-4']) {
+      const whole = Engine.parse(full[id].join(' '), Infinity);
+      for (const sec of cs.sections) {
+        const txt = sec.programs[id]; if (!txt) continue;
+        const pr = Engine.parse(txt), entry = Engine.levelAt(whole, sec.start);
+        for (let t = 0; t < sec.len; t += 37) { const a = Engine.levelAt(pr, t, entry), b = Engine.levelAt(whole, sec.start + t); if (Math.abs(a - b) > 0.02) bad.push(`${id} sec${sec.i + 1} @${t}: ${a.toFixed(3)} vs ${b.toFixed(3)}`); }
+      }
+    }
+    check('every section reproduces the full timeline (fades, holds, blinks cut mid-period), within 2 %', !bad.length, bad.slice(0, 3).join('; '));
+    const many = mk([], [one('W1-1', ...Array.from({ length: 13 }, (_, i) => ({ t: i * 2000, fx: 'H', a: 50, dur: 1000 })))]);
+    check('25 steps in one section is over the limit', overLimit(many).length === 1, JSON.stringify(overLimit(many)));
+    many.cues = [{ t: 12000, name: 'x' }];
+    check('...but cut into two sections it fits', overLimit(many).length === 0, JSON.stringify(overLimit(many)));
+    const rt = normalizeShow(JSON.parse(JSON.stringify(sh)));
+    check('stepped flag, cue names and times survive normalize/export', rt.stepped && rt.cues.length === 2 && rt.cues[0].name === 'B' && rt.cues[1].t === 5000 && !rt.loop, JSON.stringify(rt.cues));
+    check('K step parse/format round trip', Engine.format(Engine.parse('K:1s F0-50:2s K:500ms')) === 'K:1s F0-50:2s K:500ms', Engine.format(Engine.parse('K:1s F0-50:2s K:500ms')));
+  }
   lines.forEach(l => console.log(l));
   console.log(ok ? 'SELFTEST PASS' : 'SELFTEST FAIL');
+  return ok;
+}
+
+/* ============================ CUE LIST (Run mode, stepped shows) ============================
+   Every node holds two program banks (slot = bank*8 + channel, 1-based in the JSON). Section k lives in bank k%2.
+   While section k plays, section k+1 is uploaded into the other bank, so a GO is ONE small "go" packet per node:
+   switch the channels to the new bank and play, and stop the frames that have nothing in the new section (they keep
+   their level). GO while a section plays: those frames freeze where they are and the next section takes over.
+   GO after a section finished: nothing moved meanwhile, the lights simply hold their last level until the press.      */
+const CUE_DEBOUNCE_MS = 300;
+let cue = null;      // state of the selected cue-list show (runtime only; only the section index is saved)
+const steppedSel = () => { const sh = S.shows.find(x => x.id === byId('showSel').value); return sh && sh.stepped ? sh : null; };
+const cueNodes = () => ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
+const cueSave = c => Store.set('lf-cue', { showId: c.showId, sig: c.sig, k: c.k });
+function cueFor(show) {
+  const sig = JSON.stringify([show.tracks, show.cues, show.first]);
+  if (cue && cue.showId === show.id && cue.sig === sig) return cue;
+  const saved = Store.get('lf-cue', null), same = !!(saved && saved.showId === show.id && saved.sig === sig && saved.k >= 0);
+  cue = { showId: show.id, sig, comp: compileSections(show), k: same ? saved.k : -1, resumed: same, tStart: 0, loaded: [null, null],
+    jobs: {}, chain: Promise.resolve(), busy: false, last: 0, preparing: false, override: new Set() };
+  return cue;
+}
+function cueLoad(c, j) {      // make sure section j is in its bank on every node; one upload job at a time
+  if (j < 0 || j >= c.comp.sections.length) return Promise.resolve(true);
+  const bank = j % 2;
+  if (c.loaded[bank] === j) return Promise.resolve(true);
+  if (c.jobs[j]) return c.jobs[j];
+  const job = c.chain = c.chain.then(async () => {
+    if (c !== cue) return false;
+    if (c.loaded[bank] === j) return true;
+    c.loaded[bank] = null; renderCue();
+    const sec = c.comp.sections[j];
+    const rs = await Promise.all(cueNodes().filter(id => sec.programs[id] && !c.override.has(id)).map(id => {
+      const [w, ch] = pid(id);
+      return request({ cmd: 'prog', node: nodeForWall(w), slot: bank * 8 + ch, text: sec.programs[id] }).then(r => r.ok);
+    }));
+    const ok = rs.every(Boolean);
+    if (ok && c === cue) c.loaded[bank] = j;
+    delete c.jobs[j]; renderCue(); return ok;
+  }).catch(() => false);
+  c.jobs[j] = job;
+  return job;
+}
+function cuePrefetch(c) {     // keep the next section ready (before the first GO: sections 1 and 2)
+  if (c !== cue || mode !== 'run' || !cueNodes().length || c.comp.errors.length) return;
+  (c.k < 0 ? [0, 1] : [c.k + 1]).forEach(j => cueLoad(c, j));
+}
+async function cueGo(target) {
+  const show = steppedSel(); if (!show || mode !== 'run') return;
+  const c = cueFor(show), n = c.comp.sections.length;
+  if (target === undefined) target = c.k + 1;
+  if (c.comp.errors.length) { const e = c.comp.errors[0]; return toast(`Can't play: ${e.id} needs ${e.n} steps in section ${e.section + 1} (max ${MAX_STEPS}). Fix it in Programs.`, 7000); }
+  if (target >= n) return toast('End of show: there is no next section.');
+  if (!cueNodes().length) return toast('No nodes yet.');
+  const now = performance.now();
+  if (c.busy || now - c.last < CUE_DEBOUNCE_MS) return;       // a second press during the first never skips a section
+  c.busy = true; c.last = now;
+  try {
+    const bank = target % 2, sec = c.comp.sections[target];
+    if (c.loaded[bank] !== target) {                           // rare: not ready yet (jump, previous, fast presses)
+      c.preparing = true; renderCue();
+      const ok = await cueLoad(c, target);
+      c.preparing = false;
+      if (!ok || c !== cue) { renderCue(); return toast('Could not send the section to every node. Press GO again.'); }
+    }
+    const per = {};
+    for (const id of cueNodes()) {
+      if (c.override.has(id)) continue;                        // the operator took this frame over
+      const [w, ch] = pid(id), mac = nodeForWall(w), e = per[mac] || (per[mac] = { play: [], stop: [] });
+      (sec.programs[id] ? e.play : e.stop).push(ch);
+    }
+    const t0 = performance.now();
+    c.k = target; c.tStart = t0; c.resumed = false; cueSave(c); renderCue();
+    const send = (mac, e, t_ms) => request({ cmd: 'go', node: mac, bank, play: e.play, stop: e.stop, t_ms });
+    const rs = await Promise.all(Object.entries(per).map(async ([mac, e]) => {
+      let r = await send(mac, e, 0);
+      if (!r.ok && /bad/.test(r.err || '')) {                  // node lost the section (reboot, reflash): send it again, then cue
+        c.loaded[bank] = null; await cueLoad(c, target); r = await send(mac, e, Math.round(performance.now() - t0));
+      } else if (!r.ok) r = await send(mac, e, Math.round(performance.now() - t0));   // late retry starts as if the time had passed
+      return r.ok;
+    }));
+    const bad = rs.filter(x => !x).length;
+    if (bad) toast(`${bad} node(s) did not confirm the cue. Check power and radio.`, 6000);
+  } finally { c.busy = false; renderCue(); }
+  cuePrefetch(c);
+}
+function cueInvalidate() { if (cue) cue.loaded = [null, null]; }     // something else wrote to the program slots
+function confirmModal(title, msg, label, onOk) {
+  openModal(`<h2>${esc(title)}</h2><p>${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button id="cfNo">Cancel</button><button class="pri" id="cfYes">${esc(label)}</button></div>`);
+  byId('cfNo').onclick = closeModal; byId('cfYes').onclick = () => { closeModal(); onOk(); };
+}
+function cueSync() {          // show/hide the panel and keep the next section ready
+  const sh = steppedSel(), on = !!sh && mode === 'run' && byId('page-control').classList.contains('on');
+  byId('cuePanel').style.display = on ? '' : 'none';
+  byId('btnPlayShow').style.display = sh ? 'none' : '';
+  if (!on) return;
+  cuePrefetch(cueFor(sh)); renderCue();
+}
+function renderCue() {
+  const sh = steppedSel(), panel = byId('cuePanel'); if (!sh || panel.style.display === 'none') return;
+  const c = cueFor(sh), secs = c.comp.sections, next = secs[c.k + 1];
+  byId('cueTitle').textContent = sh.name;
+  byId('cueList').innerHTML = secs.map(s => `<span class="cueChip${s.i === c.k ? ' cur' : s.i < c.k ? ' past' : s.i === c.k + 1 ? ' next' : ''}">${s.i + 1}. ${esc(s.name)} <small>${fmtT(s.len)}</small></span>`).join('');
+  const go = byId('cueGo');
+  go.disabled = !next || !!c.comp.errors.length;
+  go.textContent = next ? `GO ▶ ${next.name}` : 'End of show';
+  byId('cueBack').disabled = c.k < 1; byId('cueReplay').disabled = c.k < 0;
+  const jump = byId('cueJump'), want = secs.map(s => `${s.i}|${s.name}`).join('\n');
+  if (jump.dataset.k !== want) { jump.dataset.k = want; jump.innerHTML = secs.map(s => `<option value="${s.i}">${s.i + 1}. ${esc(s.name)}</option>`).join(''); }
+  cueTick();
+}
+function cueTick() {
+  const sh = steppedSel(), panel = byId('cuePanel'); if (!sh || panel.style.display === 'none' || !cue || cue.showId !== sh.id) return;
+  const c = cue, secs = c.comp.sections, st = byId('cueStatus'), fill = byId('cueFill');
+  let txt = '', pct = 0;
+  const nextReady = c.k + 1 < secs.length && c.loaded[(c.k + 1) % 2] === c.k + 1;
+  if (c.comp.errors.length) { const e = c.comp.errors[0]; txt = `⚠ ${e.id} needs ${e.n} steps in section ${e.section + 1} (max ${MAX_STEPS}). Fix it in Programs.`; }
+  else if (c.preparing) txt = 'Sending the section… it starts as soon as it is ready.';
+  else if (c.k < 0) txt = 'Ready. Nothing has played yet.';
+  else if (c.resumed) txt = `Section ${c.k + 1} (“${secs[c.k].name}”) was playing before this page was reloaded.`;
+  else {
+    const sec = secs[c.k], el = performance.now() - c.tStart;
+    pct = sec.len > 0 ? Math.min(100, 100 * el / sec.len) : 100;
+    txt = el < sec.len ? `Section ${c.k + 1} playing  ${fmtT(el)} / ${fmtT(sec.len)}` : `Section ${c.k + 1} finished · lights hold their last level until the next GO`;
+  }
+  if (!c.comp.errors.length && c.k + 1 < secs.length) txt += nextReady ? '  ·  next section ready ✓' : '  ·  preparing next section…';
+  if (c.override.size) txt += `  ·  ${c.override.size} frame(s) played manually (Reset releases them)`;
+  st.textContent = txt; st.style.color = c.comp.errors.length ? 'var(--bad)' : '';
+  fill.style.width = pct + '%';
+}
+byId('cueGo').onclick = e => { e.currentTarget.blur(); cueGo(); };
+byId('cueBack').onclick = () => cue && cueGo(cue.k - 1);
+byId('cueReplay').onclick = () => cue && cueGo(cue.k);
+byId('cueJumpBtn').onclick = () => { const j = +byId('cueJump').value, s = steppedSel(); if (!s) return; confirmModal('Jump to section ' + (j + 1) + '?', 'The current section stops where it is and “' + cueFor(s).comp.sections[j].name + '” starts.', 'Jump', () => cueGo(j)); };
+byId('cueReset').onclick = () => confirmModal('Reset the cue list?', 'The next GO starts at section 1 again. Lights stay as they are. Frames you played by hand are released.', 'Reset', () => {
+  if (!cue) return; cue.k = -1; cue.override.clear(); cue.resumed = false; cueSave(cue); cuePrefetch(cue); renderCue();
+});
+byId('showSel').onchange = cueSync;
+setInterval(cueTick, 200);
+window.addEventListener('keydown', e => {
+  if (e.code !== 'Space' && e.key !== 'Enter') return;
+  const t = e.target, tag = t && t.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || byId('modalBg').classList.contains('on')) return;
+  if (mode !== 'run' || byId('cuePanel').style.display === 'none') return;
+  e.preventDefault(); if (!e.repeat) cueGo();
+});
+window.addEventListener('keyup', e => { if (e.code === 'Space' && byId('cuePanel').style.display !== 'none' && mode === 'run') e.preventDefault(); });
+
+/* ---- cue list on the simulator: run  await cueSelfTest()  in the console (takes ~12 s, adds and removes a scratch show) ---- */
+async function cueSelfTest() {
+  const out = []; let ok = true;
+  const check = (name, cond, detail) => { out.push((cond ? 'PASS  ' : 'FAIL  ') + name + (cond ? '' : '  -> ' + detail)); if (!cond) ok = false; };
+  const lvl = id => { const [w, ch] = pid(id), n = Sim.nodes.find(x => x.physWall === w); return Math.round(n.ch[ch - 1].update(performance.now()) * 100); };
+  const one = (id, ...clips) => ({ frames: [id], clips });
+  const keepT = transport, keepMode = mode, keepSel = byId('showSel').value;
+  if (transport !== SimTransport) return console.log('cueSelfTest needs the simulator transport');
+  const sh = normalizeShow({ name: 'cue self test', stepped: true, cues: [{ t: 2000, name: 'two' }, { t: 4000, name: 'three' }], tracks: [
+    one('W1-1', { t: 0, fx: 'F', a: 0, b: 100, dur: 2000 }),                                  // sec 1 only
+    one('W1-2', { t: 0, fx: 'H', a: 50, dur: 2000 }, { t: 4000, fx: 'H', a: 20, dur: 1000 }),  // sec 1 + 3 (sec 2: nothing -> holds)
+    one('W2-1', { t: 2000, fx: 'H', a: 80, dur: 2000 }),                                       // sec 2 only (leading gap in sec 1 = keep)
+    one('W3-1', { t: 3000, fx: 'F', a: 0, b: 100, dur: 1000 })] });                           // sec 2, starts after a 1 s keep
+  S.shows.push(sh); refreshShowSel(); byId('showSel').value = sh.id; setMode('run'); cue = null; cueSync();
+  const c = cueFor(sh);
+  await sleep(2500);                                                                          // prefetch of sections 1 and 2
+  check('sections 1 and 2 were sent before the first GO', c.loaded[0] === 0 && c.loaded[1] === 1, JSON.stringify(c.loaded));
+  const first = cueGo(); await cueGo(); await first;                                         // double press: the second one must not skip a section
+  check('a double press plays only section 1', c.k === 0, c.k);
+  await sleep(1000);
+  check('GO starts section 1 (W1-1 ~50 %, W1-2 50 %)', Math.abs(lvl('W1-1') - 50) < 12 && lvl('W1-2') === 50, lvl('W1-1') + ',' + lvl('W1-2'));
+  await sleep(350);
+  const frozen = lvl('W1-1');
+  await cueGo(); await sleep(150);                                                            // GO while section 1 is still playing
+  check('GO mid-section moves to section 2', c.k === 1, c.k);
+  check('frames with nothing in section 2 freeze at their level (W1-1 holds, W1-2 holds)', Math.abs(lvl('W1-1') - frozen) <= 3 && lvl('W1-2') === 50, `${frozen} -> ${lvl('W1-1')}, ${lvl('W1-2')}`);
+  await sleep(500);
+  check('...and stay frozen', Math.abs(lvl('W1-1') - frozen) <= 3, `${frozen} -> ${lvl('W1-1')}`);
+  check('section 2 frame W2-1 plays its 80 %', lvl('W2-1') === 80, lvl('W2-1'));
+  await sleep(2200);                                                                          // section 2 (2 s) has finished, no GO yet
+  check('finished section holds: W2-1 still 80 %, W3-1 reached 100 % and stays', lvl('W2-1') === 80 && lvl('W3-1') === 100, lvl('W2-1') + ',' + lvl('W3-1'));
+  await sleep(1000);
+  check('...and keeps holding while waiting for the cue', lvl('W2-1') === 80 && lvl('W3-1') === 100 && lvl('W1-2') === 50, lvl('W2-1') + ',' + lvl('W3-1'));
+  await cueGo(); await sleep(300);
+  check('GO after the wait starts section 3 (W1-2 -> 20 %), W2-1 holds', c.k === 2 && lvl('W1-2') === 20 && lvl('W2-1') === 80, c.k + ',' + lvl('W1-2'));
+  await sleep(400);
+  await cueGo(); check('GO past the last section changes nothing', c.k === 2, c.k);
+  S.shows.splice(S.shows.indexOf(sh), 1); cue = null; refreshShowSel(); byId('showSel').value = keepSel; setMode(keepMode); cueSync();
+  out.forEach(l => console.log(l));
+  console.log(ok ? 'CUE SELFTEST PASS' : 'CUE SELFTEST FAIL');
   return ok;
 }
 
@@ -1724,6 +2094,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + b.dataset.tab));
   if (b.dataset.tab === 'programs') setProgView(ED.view);
   else { ED.playing = false; SP.playing = false; }     // previews only run while their editor is on screen
+  cueSync();
 });
 function setMode(m) {
   mode = m;
@@ -1731,7 +2102,7 @@ function setMode(m) {
   document.getElementById('runBar').style.display = m === 'run' ? 'flex' : 'none';
   document.getElementById('editBar').style.display = m === 'edit' ? 'flex' : 'none';
   if (m === 'edit') showSim(false);          // simulator is only for running
-  renderControl();
+  renderControl(); cueSync();
 }
 function showSim(on) {
   document.getElementById('sim').classList.toggle('on', on);
@@ -1795,6 +2166,9 @@ setInterval(() => Sim.tick(), 50);
                                                               only if off by > 20 ms. Best effort: no ACK, no "result" event.
                                                               "node" may be "all" (broadcast). Control ESP32 sends it every 2 s during a show,
                                                               excluding overridden frames. See CLAUDE.md "Control center must send".
+     {"id":11,"cmd":"go","node":MAC,"bank":0|1,"play":[1,2],"stop":[3],"t_ms":0}
+                                                              cue (stepped shows): play_mask channels switch to slot bank*8+ch and play from t_ms,
+                                                              stop channels hold their level, others untouched. All-or-nothing; ACKed + retried.
      {"id":8,"cmd":"set","node":MAC,"ch":"all","level":0,"fade_ms":1000}
      {"id":9,"cmd":"identify","node":MAC,"ch":"all","seconds":5}
    control -> UI:

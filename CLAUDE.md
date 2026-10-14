@@ -23,8 +23,8 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
   `web/control.html` at http://192.168.4.1/ and bridging the same JSON lines (WebSocket port 81, or USB 115200)
   to ESP-NOW. Tested on hardware (pairing, Run-mode play, link loss, reboot) with one node; multi-node and RSSI survey still open.
 - **Radio**: ESP-NOW on Wi-Fi channel `LF_WIFI_CHANNEL` (1). No router.
-- **Programs**: up to 24 steps (HOLD / FADE / BLINK, each with a duration), optional loop. Node stores 8
-  slots; each channel is assigned a slot. Without loop, the channel holds the last step's end level.
+- **Programs**: up to 24 steps (HOLD / FADE / BLINK / KEEP, each with a duration), optional loop. Node stores 16
+  slots (two banks of 8: bank b, channel c -> slot b*8+c); each channel is assigned a slot. Without loop, the channel holds the last step's end level.
   Channels are fully independent: a whole-room show is one program per frame (slot n = channel n),
   started together with `MSG_PLAY` and kept aligned with `MSG_SYNC` (see "Control center must send").
 
@@ -45,7 +45,7 @@ UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated 
 
 ## Rules
 - Never change `protocol.h` struct layouts without bumping `LF_PROTO_VER` and rebuilding BOTH sides.
-  Current: `LF_PROTO_VER` 2, `LF_MAX_STEPS` 24 (`LfProgram` 218 bytes, `LfMsgProg` 231 bytes, ESP-NOW v1 limit 250).
+  Current: `LF_PROTO_VER` 3 (v3 = 16 slots, `STEP_KEEP`, `MSG_GO`), `LF_MAX_STEPS` 24 (`LfProgram` 218 bytes, `LfMsgProg` 231 bytes, ESP-NOW v1 limit 250).
   A packet with another version is NOT applied; the node ACKs `ACK_BAD_VERSION` (3) and prints a warning.
   Flash saved by older firmware with the 10-step layout is discarded at boot (`[boot] old program format discarded`).
 - PWM pins: avoid GPIO 0,2,5,12,15 (strapping), 6–11 (flash), 34–39 (input only).
@@ -68,6 +68,7 @@ set <ch|all> <0-100> [fade_ms]          manual level (stops program on those cha
 prog <slot> [loop] <steps>              write program
 assign <ch|all> <slot|none>
 play <ch|all> | stop <ch|all> | identify <ch|all> [seconds]
+go <bank 0|1> <play mask> <stop mask> [offset_ms]   cue test: masks are numbers (bit0 = ch1); slot = bank*8+ch
 pair | unpair | reset | reboot
 ```
 Extra commands for testing the show features without a control center:
@@ -77,7 +78,8 @@ sync <ch|all> <t_ms>          PLAYING channels: jump so elapsed == t_ms, only if
 ```
 Serial lines up to 1023 characters are accepted (a 24-step program is ~700). Longer lines are rejected with
 `ERR line too long` and nothing is applied.
-Program text: `H<lvl>:<dur>` hold · `F<a>-<b>:<dur>` fade · `B<a>-<b>/<period>:<dur>` blink (triangle a→b→a).
+Program text: `H<lvl>:<dur>` hold · `F<a>-<b>:<dur>` fade · `B<a>-<b>/<period>:<dur>` blink (triangle a→b→a) · `K:<dur>` keep the current level
+(level when the program started, or the previous step's end; used for gaps in cue-list sections).
 Durations `500ms`, `1.5s`, or bare ms. Example: `prog 1 H100:10s B0-100/1s:5s H0:0`
 (100 % for 10 s, blink 0↔100 % with 1 s period for 5 s, then off.)
 
@@ -91,7 +93,7 @@ Durations `500ms`, `1.5s`, or bare ms. Example: `prog 1 H100:10s B0-100/1s:5s H0
   broadcast with the node MAC in `header.target` (avoids the ESP-NOW 20-peer limit) or target FF:FF.. for all nodes.
 - State is saved to flash 1 s after the last change; programs immediately. Playing channels auto-resume at boot.
 - Task watchdog (5 s) reboots on hang.
-- Every command is validated before anything changes: packet length >= struct size, slot < 8, `ch_mask` only
+- Every command is validated before anything changes: packet length >= struct size, slot < 16, `ch_mask` only
   existing channels (and not 0; `0xFF` = all), level <= 100, blink period > 0, <= 24 steps. Bad input -> `ACK_BAD_ARG`
   (or `ACK_BAD_LEN`), state untouched.
 
@@ -121,6 +123,24 @@ ESP32 turns each text into an `LfProgram` (same text format, `lf::parseProgram`)
 5. After a node reboot its playing channels restart from t=0; the next SYNC (<= 2 s) pulls them back into the show.
 6. Fill `header.ver = LF_PROTO_VER`. If a node answers `ACK_BAD_VERSION`, that node runs other firmware: tell the user
    to reflash it instead of retrying.
+
+## Cue lists (stepped shows): one timeline, cut into sections, one GO per section
+Purpose: a 15 min show whose parts are triggered by the operator on the actors' cues instead of by a clock.
+- **Editor** (`web/control.html`, Programs → Entire set): tick "Cue list", click the ruler, "+ Cue at playhead". `show.stepped`, `show.cues = [{t,name}]`
+  (start of section 2, 3, ...; section 1 starts at 0, name `show.first`). `compileSections()` slices the compiled steps at the cuts, each section starts at t=0.
+  Gaps are `K` (hold the level) instead of off. A fade cut at a boundary is split exactly; a blink cut mid-period becomes fades + the rest of the blink.
+  A frame with no clip in a section has no program there. The 24-step limit applies per section.
+- **Radio**: section k is uploaded into bank k%2 (`MSG_PROG` slot = bank*8+ch). While section k plays the page uploads k+1 into the other bank, so a cue is ONE small
+  `MSG_GO { bank, play_mask, stop_mask, offset_ms }` per node (control JSON `{"cmd":"go","node","bank","play":[..],"stop":[..],"t_ms"}`).
+  Node `doGo`: all-or-nothing (bad bank/masks or an empty program in play_mask -> `ACK_BAD_ARG`, nothing changes). play_mask channels: assign slot bank*8+ch and play;
+  stop_mask channels: stop and hold the level; channels in neither mask (frames the operator took over) are untouched.
+- **Rules (tested in `cueSelfTest()` on the simulator)**: GO while a section plays -> its frames freeze where they are, the next section starts (frames with nothing in the
+  new section are stopped and hold their level, the others start with a leading `K` step from the level they had). A finished section just holds its last level until the next GO.
+  Press during the 300 ms debounce or while a GO is being sent is ignored. GO after the last section does nothing. Space/Enter = GO.
+  A `go` that fails is retried by the control firmware (6 sends) and once more by the page with `t_ms` = time elapsed.
+- Previous / jump / first GO after a reload may need a re-upload ("preparing", about 0.3-0.5 s). Replay of the current section is instant (its bank is still loaded).
+- The page keeps only the section index in localStorage (`lf-cue`); after a reload it shows "was playing before the page was reloaded" and the next GO continues with the next section.
+- Not possible: playing a whole cue-list show in one go on the nodes (it would exceed 24 steps); the editor preview plays it continuously.
 
 ## Node test build (`node_test`) — packet accuracy + output check
 Same node firmware plus logging, built with `-DLF_TEST_LOG` (all code in `src/node/test_log.h`, formatter in `lib/testlog/lf_csv.h`).
@@ -237,12 +257,12 @@ radio could not deliver even after its own hardware retries. RSSI is approximate
 
 ## Decisions waiting for Sean (REMIND HIM at the start of the next session, with the recommendation)
 Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a choice about improving the firmware; none is started.
-1. **Skip identical program writes on the node** (`saveProgs()` in `src/node/main.cpp` rewrites the 1.7 KB store on every MSG_PROG). Gain: less flash wear, faster repeat uploads. Risk: very low. Recommend: yes.
+1. DONE (commit 7fd436b) **Skip identical program writes on the node** (`saveProgs()` in `src/node/main.cpp` rewrites the 1.7 KB store on every MSG_PROG). Gain: less flash wear, faster repeat uploads. Risk: very low. Recommend: yes.
 2. **Control center sends only changed slots** (compare heartbeat `prog_crc`; same as the planned latency fix). Gain: a repeat load drops from 17 packets to about 1. Recommend: yes, with the real control center work.
 3. **Acknowledge first, save to flash after** on the node (like the state, which is saved 1 s later). Gain: heartbeats and the next command are not delayed by a flash write. Cost: a power cut between ACK and save loses that program
    (the control can detect it via `prog_crc`). With decision 1 the benefit is small. Recommend: skip unless uploads must be faster.
 4. **ACK timeout in the real control center**: measured PROG ACK max 45 ms, current 120 ms is adequate. Keep, or raise to about 150 ms for margin when the node also runs sync. Recommend: keep.
-5. **Fix the packed-struct reference in `parseProgram`** (`lib/engine/engine.cpp`, `parseDur(s, st.duration_ms)`): undefined behaviour that works on ESP32. Tiny change (local variable), engine tests must still pass. Recommend: yes.
+5. DONE (commit 7fd436b) **Fix the packed-struct reference in `parseProgram`** (`lib/engine/engine.cpp`, `parseDur(s, st.duration_ms)`): undefined behaviour that works on ESP32. Tiny change (local variable), engine tests must still pass. Recommend: yes.
 6. **`node_test` watchdog reboots under repeated loads**: fix by logging to RAM and writing the file only when idle, or accept the limitation (stress is run on the plain `node`). Recommend: accept unless a stress test with logging is needed.
 7. **Per-node sequence numbers in the real control center** so loss statistics stay valid with several nodes. Low value; the node already de-duplicates by the last seq. Recommend: only if a loss survey is ever possible.
 8. **Restore the production control firmware** on the control board before real use: it currently runs `control_test` (`pio run -e control -t upload`, BOOT held). The node board currently runs the plain `node` firmware.
@@ -251,8 +271,7 @@ Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a c
 ## Open decisions / roadmap
 - DECIDED, not implemented: after a power cycle, a FINISHED non-loop program must hold its end level, not replay.
   Needs a saved "finished" flag per channel.
-- PLANNED: third program type "stepped show" — a show cut into steps; in Run mode a button plays step 1 and stops,
-  each press plays the next step. Design: upload once, each press = one small broadcast "go to step N".
+- DONE (2026-10-13, needs hardware test): cue lists / stepped shows, see "Cue lists". Protocol v3 must be flashed on EVERY node and the control board (they refuse each other's packets otherwise).
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
 - Skipped (not possible with the current setup): multi-node test of control firmware; site survey (packet loss/RSSI at each wall).

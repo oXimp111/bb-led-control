@@ -40,6 +40,11 @@ Frame numbers equal channel numbers, counted left to right while facing the wall
 - **Stop all**; **All off** (fades to 0 over 1 s).
 - Click a frame: resends its program and plays it. That frame then leaves the running show.
   A frame with no program shows a message.
+- A show marked ⏭ is a **cue list**: the Play show button is replaced by a panel with a big **GO ▶ <next section>** button (Space or Enter also work).
+  Each press starts the next section. If the current section is still playing, its frames freeze at their present level and the next section takes over;
+  if it has finished, the lights hold their last level until the press. Also: **Previous**, **Replay section**, **Go to** (asks first), **Reset** (asks first).
+  The panel shows the sections, the playing section's time, and "next section ready ✓" once it has been sent to the nodes (GO is instant then).
+  Clicking a frame takes that frame out of the cue list until Reset.
 
 **Side panel**
 - Nodes list: click a node for its popup (rename, change wall, Identify = pulse 5 s, Remove node).
@@ -129,6 +134,14 @@ starts the offset later.
 | Enter | Confirm in the rename dialog |
 
 (Cmd works in place of Ctrl on Mac.)
+
+### Cue lists in the show editor
+- Tick **Cue list** next to the show name (Loop is switched off). Click the ruler to place the playhead, then **+ Cue at playhead**.
+  Orange flags mark where each section starts; click a flag to rename it, change its time or delete it (the first flag only has a name).
+- In a cue-list show a gap between clips holds the level instead of going dark. To switch a frame off, place a 0 % clip.
+- A frame with no clip inside a section is left alone: it keeps its level.
+- The 24-step limit applies per section, not to the whole show. The Play button in the editor plays the whole timeline as a preview (the nodes cannot play it in one go).
+- Console tests: `selfTest()` and, with the simulator selected, `await cueSelfTest()` (about 12 s).
 
 ## Data and testing
 - Programs: `{id, name, text}`. Shows: `{id, name, loop, length_ms, tracks…}`. Frame assignments store the program id.
