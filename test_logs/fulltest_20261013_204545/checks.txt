@@ -1,0 +1,42 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+PASS  control hears the node's pair request
+PASS  pairing confirmed by the first heartbeat
+PASS  node reports paired
+PASS  heartbeats arrive about 2 per second (10 s window)
+      heartbeat fw field 2, n_ch 8
+
+=== T2 pad levels and pin mapping (node serial 'set', no radio) ===
+PASS  all 8 pads low at level 0
+PASS  each of the 8 pins alone at 10%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 25%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 50%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 75%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 100%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+
+=== final node counters ===
+      acks = 0
+      acks_bad = 0
+      heartbeats_sent = 50
+      loop_max_ms = 111
+      prog_flash_writes = 0
+      prog_writes_skipped = 0
+      queue_drops = 0
+      queue_max = 1
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 0
+      rx_noack = 1
+      rx_total = 1
+      rx_type_2 = 1
+      state_saves = 43
+
+14 checks, 14 passed, 0 FAILED  (27 s)

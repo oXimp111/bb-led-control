@@ -1,0 +1,115 @@
+{
+ "shows": [
+  {
+   "name": "Wave around the room",
+   "loop": false,
+   "length_ms": 11900,
+   "programs": {
+    "W1-1": "F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-2": "H0:300ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-3": "H0:600ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-4": "H0:900ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-5": "H0:1200ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-6": "H0:1500ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-7": "H0:1800ms F0-100:1000ms H100:3000ms F100-0:1000ms",
+    "W1-8": "H0:2100ms F0-100:1000ms H100:3000ms F100-0:1000ms"
+   }
+  },
+  {
+   "name": "Wall by wall, blink, fade out",
+   "loop": false,
+   "length_ms": 20400,
+   "programs": {
+    "W1-1": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-2": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-3": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-4": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-5": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-6": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-7": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms",
+    "W1-8": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms"
+   }
+  },
+  {
+   "name": "Alternating breath (loop)",
+   "loop": true,
+   "length_ms": 8000,
+   "programs": {
+    "W1-1": "loop F0-100:2000ms F100-0:2000ms H0:4000ms",
+    "W1-2": "loop H0:4000ms F0-100:2000ms F100-0:2000ms",
+    "W1-3": "loop F0-100:2000ms F100-0:2000ms H0:4000ms",
+    "W1-4": "loop H0:4000ms F0-100:2000ms F100-0:2000ms",
+    "W1-5": "loop F0-100:2000ms F100-0:2000ms H0:4000ms",
+    "W1-6": "loop H0:4000ms F0-100:2000ms F100-0:2000ms",
+    "W1-7": "loop F0-100:2000ms F100-0:2000ms H0:4000ms",
+    "W1-8": "loop H0:4000ms F0-100:2000ms F100-0:2000ms"
+   }
+  }
+ ],
+ "cue": {
+  "name": "cue fulltest",
+  "errors": [],
+  "sections": [
+   {
+    "name": "Opening",
+    "start": 0,
+    "len": 3000,
+    "programs": {
+     "W1-1": "F0-100:3s",
+     "W1-2": "H50:2s",
+     "W1-3": "B0-100/1s:3s",
+     "W1-4": "B10-90/700ms:3s",
+     "W1-5": null,
+     "W1-6": null,
+     "W1-7": "H30:1s",
+     "W1-8": null
+    }
+   },
+   {
+    "name": "Two",
+    "start": 3000,
+    "len": 3000,
+    "programs": {
+     "W1-1": "H100:3s",
+     "W1-2": "K:1s H80:1s",
+     "W1-3": "B0-100/1s:3s",
+     "W1-4": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s",
+     "W1-5": null,
+     "W1-6": null,
+     "W1-7": null,
+     "W1-8": null
+    }
+   },
+   {
+    "name": "Three",
+    "start": 6000,
+    "len": 3000,
+    "programs": {
+     "W1-1": "F100-0:3s",
+     "W1-2": null,
+     "W1-3": "B0-100/1s:3s",
+     "W1-4": "F79-10:300ms B10-90/700ms:2.7s",
+     "W1-5": "F0-100:2s",
+     "W1-6": null,
+     "W1-7": null,
+     "W1-8": null
+    }
+   },
+   {
+    "name": "Four",
+    "start": 9000,
+    "len": 3000,
+    "programs": {
+     "W1-1": null,
+     "W1-2": null,
+     "W1-3": null,
+     "W1-4": null,
+     "W1-5": null,
+     "W1-6": "H60:3s",
+     "W1-7": "K:500ms H90:1s",
+     "W1-8": null
+    }
+   }
+  ]
+ }
+}

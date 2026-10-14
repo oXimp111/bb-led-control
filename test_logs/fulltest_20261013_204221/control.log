@@ -1,0 +1,18 @@
+1791949342.414 ets Jul 29 2019 12:21:46
+1791949342.414 
+1791949342.414 rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+1791949342.414 configsip: 0, SPIWP:0xee
+1791949342.414 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+1791949342.414 mode:DIO, clock div:2
+1791949342.414 load:0x3fff0030,len:1184
+1791949342.414 load:0x40078000,len:13232
+1791949342.414 load:0x40080400,len:3028
+1791949342.414 entry 0x400805e4
+1791949343.009 
+1791949343.009 [boot] LED frame control center fw 1, protocol 3
+1791949343.147 [boot] Wi-Fi "LED-Control" password "ledframes" -> open http://192.168.4.1/   (controller MAC 70:4B:CA:25:7C:31)
+1791949343.147 [boot] USB: type 'help' for text commands; the page also speaks JSON lines here.
+1791949358.301 >>> {"cmd": "hello", "id": 101}
+1791949358.425 {"evt":"hello","id":101,"fw":1,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+1791949359.807 >>> {"id": 1, "cmd": "hello"}
+1791949359.932 {"evt":"hello","id":1,"fw":1,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}

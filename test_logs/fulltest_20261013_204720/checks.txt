@@ -1,0 +1,125 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+PASS  node reports paired
+PASS  heartbeats arrive about 2 per second (10 s window)
+      heartbeat fw field 2, n_ch 8
+
+=== T3 single actions through the control center ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: set ch1 50
+PASS  node received a SET packet: set ch1 50
+PASS  packet header/length ok: set ch1 50
+PASS  packet payload bytes exact: set ch1 50
+PASS  node ACKed OK: set ch1 50
+PASS  ch1 engine level 50
+PASS  pad sample returned: set ch1 50
+PASS  pad level == written duty on all 8 pads, ~500 Hz: set ch1 50
+PASS  pad duty matches the gamma curve for 50%
+PASS  result ok: set ch2 100 fade 2s
+PASS  node received a SET packet: set ch2 100 fade 2s
+PASS  packet header/length ok: set ch2 100 fade 2s
+PASS  packet payload bytes exact: set ch2 100 fade 2s
+PASS  node ACKed OK: set ch2 100 fade 2s
+PASS  fade 0->100 over 2 s: level at +1196 ms follows the straight line
+PASS  fade: ch2 reaches 100 and stops
+PASS  result ok: prog slot 3
+PASS  node received a PROG packet: prog slot 3
+PASS  packet header/length ok: prog slot 3
+PASS  packet payload bytes exact: prog slot 3
+PASS  node ACKed OK: prog slot 3
+PASS  node stored the program with the same CRC as the model
+PASS  result ok: assign ch3 slot3
+PASS  node received a ASSIGN packet: assign ch3 slot3
+PASS  packet header/length ok: assign ch3 slot3
+PASS  packet payload bytes exact: assign ch3 slot3
+PASS  node ACKed OK: assign ch3 slot3
+PASS  result ok: play ch3
+PASS  node received a PLAY packet: play ch3
+PASS  packet header/length ok: play ch3
+PASS  packet payload bytes exact: play ch3
+PASS  node ACKed OK: play ch3
+PASS  program level at +400 ms (engine vs model)
+PASS  program level at +1500 ms (engine vs model)
+PASS  program level at +2200 ms (engine vs model)
+PASS  program level at +3600 ms (engine vs model)
+PASS  pad sample returned: after program end (hold 20%)
+PASS  pad level == written duty on all 8 pads, ~500 Hz: after program end (hold 20%)
+PASS  result ok: replay ch3
+PASS  node received a PLAY packet: replay ch3
+PASS  packet header/length ok: replay ch3
+PASS  packet payload bytes exact: replay ch3
+PASS  node ACKed OK: replay ch3
+PASS  result ok: stop ch3
+PASS  node received a STOP packet: stop ch3
+PASS  packet header/length ok: stop ch3
+PASS  packet payload bytes exact: stop ch3
+PASS  node ACKed OK: stop ch3
+PASS  stop holds the level (no change over 0.8 s) and channel is no longer playing
+PASS  result ok: identify ch4 3 s
+PASS  node received a IDENTIFY packet: identify ch4 3 s
+PASS  packet header/length ok: identify ch4 3 s
+PASS  packet payload bytes exact: identify ch4 3 s
+PASS  node ACKed OK: identify ch4 3 s
+PASS  only ch4 is identifying
+PASS  identify pulses ch4 (duty varies) while other pads stay as set
+PASS  identify ends by itself
+PASS  result ok: set all 30
+PASS  node received a SET packet: set all 30
+PASS  packet header/length ok: set all 30
+PASS  packet payload bytes exact: set all 30
+PASS  node ACKed OK: set all 30
+PASS  set all: every channel 30
+PASS  pad sample returned: set all 30
+PASS  pad level == written duty on all 8 pads, ~500 Hz: set all 30
+PASS  result ok: prog slot 3 again (identical)
+PASS  node received a PROG packet: prog slot 3 again (identical)
+PASS  packet header/length ok: prog slot 3 again (identical)
+PASS  packet payload bytes exact: prog slot 3 again (identical)
+PASS  node ACKed OK: prog slot 3 again (identical)
+PASS  result ok: prog slot 3 changed
+PASS  node received a PROG packet: prog slot 3 changed
+PASS  packet header/length ok: prog slot 3 changed
+PASS  packet payload bytes exact: prog slot 3 changed
+PASS  node ACKed OK: prog slot 3 changed
+PASS  identical re-upload skipped the flash write
+PASS  changed program did write flash exactly once
+PASS  level 101 is refused by the control center
+PASS  ...and nothing reached the node
+PASS  slot 17 is refused by the control center
+PASS  a malformed program text is refused
+PASS  no sequence gaps, queue never overflowed (single actions)
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== final node counters ===
+      acks = 31
+      acks_bad = 0
+      heartbeats_sent = 67
+      loop_max_ms = 111
+      prog_flash_writes = 2
+      prog_writes_skipped = 1
+      queue_drops = 0
+      queue_max = 1
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 3
+      rx_noack = 0
+      rx_total = 31
+      rx_type_10 = 5
+      rx_type_11 = 3
+      rx_type_12 = 17
+      rx_type_13 = 2
+      rx_type_14 = 3
+      rx_type_15 = 1
+      state_saves = 5
+
+92 checks, 92 passed, 0 FAILED  (35 s)

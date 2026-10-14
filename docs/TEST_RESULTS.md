@@ -1,3 +1,36 @@
+# Full capability node test (2026-10-13, evening) — protocol v3, real control firmware
+
+Setup: control board = real `control` firmware (MAC 70:4B:CA:25:7C:31, AP side), node = `node_fulltest` (production node source + LF_FULLTEST hooks, MAC 70:4B:CA:21:4F:EC),
+boards side by side on one PC, all 8 pins unloaded. Driver `tools/fulltest.py`, logs in `test_logs/fulltest_20261013_205820/`. Method: see CLAUDE.md "Full capability node test".
+Shows and cue sections were compiled by the real page code (`tools/export_fixtures.py`).
+
+**Result: 614 checks, 614 passed** (final run, 140 s).
+
+| Group | Checks | What it proves |
+|---|---|---|
+| T0 preflight | 4 | node + control boot, protocol 3 on both |
+| T1 pairing | 4 | pair request heard, pairing confirmed by first heartbeat, ~2 heartbeats/s |
+| T2 pin map | 6 | each of the 8 pins alone at 10/25/50/75/100 %: pad duty within 1.2 % of the gamma curve and of the written duty, 470-530 Hz, the other 7 pins low (GPIO16,17,18,19,21,22,23,25 = channels 1-8) |
+| T3 single actions | 86 | set (instant, fade follows the line), prog/assign/play/stop/identify/set all: packet bytes exact, ACK 0, engine level vs model, pad vs gamma, identical re-upload skips the flash write, control refuses bad level/slot/text |
+| T4 shows | 319 | 3 shows from the page compiler (wave, wall-by-wall + blink, loop): program CRCs equal, all 8 channels vs model every 1.3 s, SYNC re-anchors (loop show), no seq gaps, no queue drops |
+| T5 cue list | 133 | 4 sections (fades and blinks cut mid-period): sections in banks 0/1, GO mid-section freezes the frames that are not in the next section, a leading gap keeps the level (K), uploading into the idle bank does not disturb the playing one, finished section holds until the next GO, bad GO rejected and changes nothing, bank 2 / overlapping / empty masks refused, replay |
+| T6 persistence | 28 | node reboot: programs, assignment, manual level and the playing loop come back, stays paired |
+| T7 control reset | 23 | control board reset on purpose: the node keeps playing correctly for 7 s, control sees it online again without re-pairing, commands work |
+| T8 stress | 11 | 40 cycles of 4-5 section uploads + GO (190 commands) all ACKed, no loss, no queue overflow, longest node loop stall 49 ms, no watchdog reset |
+
+Latency (page -> control -> radio -> node ACK -> page, USB included): GO avg 30 ms, max 54 ms (40 preloaded cues); all commands avg 35 ms, max 82 ms. Operator target is < 500 ms.
+Counters at the end: 293 packets received, 0 bad header, 0 duplicates, 0 sequence gaps (outside the 3 commands the control refused itself), 0 queue drops; PROG writes to flash 43, skipped as identical 117.
+
+Bugs found and fixed by this test:
+- **Node pairing window closed immediately** when `pair` (serial) or the BOOT button ran a few ms after the loop's `now` was read: `now - pairStart` went negative (unsigned) and the 60 s check fired at once. Fixed in `src/node/main.cpp` with a signed comparison.
+- Test-side only (not firmware): pad sampling with `gpio_set_direction` re-routed the pins away from the LEDC (fixed with `PIN_INPUT_ENABLE`); pyserial `read(4096)` added ~100 ms to measured latencies.
+
+Not covered (no hardware): multiple nodes, wall-to-wall range/RSSI, the MOSFET boards and strips (pad level only), long soak runs, a duplicate GO sequence number (the control firmware cannot be made to repeat one on demand).
+
+---
+
+(Older results below were taken with the `node_test` / `control_test` builds, which have been removed from the repo after this test; see git history before commit "Remove old test builds".)
+
 # Two-board radio test results (2026-10-13)
 
 Setup: node = ESP32 30-pin (MAC 70:4B:CA:21:4F:EC), control test board = ESP32 30-pin (MAC 70:4B:CA:25:7C:30),

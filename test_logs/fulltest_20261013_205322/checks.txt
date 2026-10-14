@@ -1,0 +1,52 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+PASS  node reports paired
+PASS  heartbeats arrive about 2 per second (10 s window)
+      heartbeat fw field 2, n_ch 8
+
+=== T8 stress: 40 prefetch+GO cycles ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+      GO only (preloaded): avg 157 ms, max 269 ms, min 128 ms over 40 cues
+PASS  GO round trip stays well under the 500 ms operator target (max)
+PASS  all 40 cycles (190 commands) ACKed
+      command round trips (page -> control -> radio -> ACK -> control -> page): avg 165 ms, max 266 ms, 190 commands in 37.3 s
+PASS  no packets lost between control and node (sequence gaps)
+PASS  receive queue never overflowed
+PASS  node main loop never stalled more than 200 ms
+PASS  node still answers and heartbeats continue
+      node boots seen during the whole run: 1 (1 initial + 1 for the deliberate reboot test)
+PASS  no unexpected node resets (watchdog)
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== final node counters ===
+      acks = 259
+      acks_bad = 0
+      heartbeats_sent = 139
+      loop_max_ms = 50
+      prog_flash_writes = 42
+      prog_writes_skipped = 117
+      queue_drops = 0
+      queue_max = 1
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 0
+      rx_noack = 0
+      rx_total = 259
+      rx_type_10 = 2
+      rx_type_11 = 159
+      rx_type_12 = 16
+      rx_type_14 = 2
+      rx_type_18 = 80
+      state_saves = 17
+
+17 checks, 17 passed, 0 FAILED  (71 s)

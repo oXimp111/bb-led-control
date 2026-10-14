@@ -1,0 +1,10 @@
+
+=== T0 preflight ===
+FAIL  node booted with the FULL CAPABILITY NODE TEST firmware   -> 
+FAIL  node MAC read   -> None
+      node MAC None
+PASS  control center answers hello
+
+3 checks, 1 passed, 2 FAILED  (18 s)
+  FAIL [T0 preflight] node booted with the FULL CAPABILITY NODE TEST firmware -> 
+  FAIL [T0 preflight] node MAC read -> None

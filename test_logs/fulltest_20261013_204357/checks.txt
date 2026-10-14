@@ -1,0 +1,50 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+FAIL  control hears the node's pair request   -> no found event
+FAIL  pairing confirmed by the first heartbeat   -> {'evt': 'result', 'id': 103, 'node': '70:4B:CA:21:4F:EC', 'ok': False, 'err': 'no_heartbeat', 'rtt': 4.119525671005249}
+PASS  node reports paired
+FAIL  heartbeats arrive about 2 per second (10 s window)   -> 0 heartbeats
+      heartbeat fw field None, n_ch None
+
+=== T2 pad levels and pin mapping (node serial 'set', no radio) ===
+PASS  all 8 pads low at level 0
+FAIL  each of the 8 pins alone at 10%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)   -> ch1 freq 0.0; ch2 freq 0.0; ch3 freq 0.0; ch4 freq 0.0
+FAIL  each of the 8 pins alone at 25%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)   -> ch1 @25%: pad 0.00% want 4.74%; ch1 freq 0.0; ch1 pad 0.00 vs written 4.74; ch2 @25%: pad 0.00% want 4.74%
+FAIL  each of the 8 pins alone at 50%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)   -> ch1 @50%: pad 0.00% want 21.77%; ch1 freq 0.0; ch1 pad 0.00 vs written 21.77; ch2 @50%: pad 0.00% want 21.77%
+FAIL  each of the 8 pins alone at 75%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)   -> ch1 @75%: pad 0.00% want 53.10%; ch1 freq 0.0; ch1 pad 0.00 vs written 53.10; ch2 @75%: pad 0.00% want 53.10%
+FAIL  each of the 8 pins alone at 100%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)   -> ch1 @100%: pad 0.00% want 100.00%; ch1 pad 0.00 vs written 100.00; ch2 @100%: pad 0.00% want 100.00%; ch2 pad 0.00 vs written 100.00
+
+=== final node counters ===
+      acks = 0
+      acks_bad = 0
+      heartbeats_sent = 74
+      loop_max_ms = 111
+      prog_flash_writes = 0
+      prog_writes_skipped = 0
+      queue_drops = 0
+      queue_max = 1
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 0
+      rx_noack = 14
+      rx_total = 14
+      rx_type_2 = 14
+      state_saves = 42
+
+14 checks, 6 passed, 8 FAILED  (39 s)
+  FAIL [T1 pairing and heartbeats] control hears the node's pair request -> no found event
+  FAIL [T1 pairing and heartbeats] pairing confirmed by the first heartbeat -> {'evt': 'result', 'id': 103, 'node': '70:4B:CA:21:4F:EC', 'ok': False, 'err': 'no_heartbeat', 'rtt': 4.119525671005249}
+  FAIL [T1 pairing and heartbeats] heartbeats arrive about 2 per second (10 s window) -> 0 heartbeats
+  FAIL [T2 pad levels and pin mapping (node serial 'set', no radio)] each of the 8 pins alone at 10%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map) -> ch1 freq 0.0; ch2 freq 0.0; ch3 freq 0.0; ch4 freq 0.0
+  FAIL [T2 pad levels and pin mapping (node serial 'set', no radio)] each of the 8 pins alone at 25%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map) -> ch1 @25%: pad 0.00% want 4.74%; ch1 freq 0.0; ch1 pad 0.00 vs written 4.74; ch2 @25%: pad 0.00% want 4.74%
+  FAIL [T2 pad levels and pin mapping (node serial 'set', no radio)] each of the 8 pins alone at 50%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map) -> ch1 @50%: pad 0.00% want 21.77%; ch1 freq 0.0; ch1 pad 0.00 vs written 21.77; ch2 @50%: pad 0.00% want 21.77%
+  FAIL [T2 pad levels and pin mapping (node serial 'set', no radio)] each of the 8 pins alone at 75%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map) -> ch1 @75%: pad 0.00% want 53.10%; ch1 freq 0.0; ch1 pad 0.00 vs written 53.10; ch2 @75%: pad 0.00% want 53.10%
+  FAIL [T2 pad levels and pin mapping (node serial 'set', no radio)] each of the 8 pins alone at 100%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map) -> ch1 @100%: pad 0.00% want 100.00%; ch1 pad 0.00 vs written 100.00; ch2 @100%: pad 0.00% want 100.00%; ch2 pad 0.00 vs written 100.00

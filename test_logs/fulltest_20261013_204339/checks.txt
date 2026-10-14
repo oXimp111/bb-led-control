@@ -1,0 +1,32 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+PASS  node reports paired
+FAIL  heartbeats arrive about 2 per second (10 s window)   -> 0 heartbeats
+      heartbeat fw field None, n_ch None
+
+=== final node counters ===
+      acks = 0
+      acks_bad = 0
+      heartbeats_sent = 26
+      loop_max_ms = 5
+      prog_flash_writes = 0
+      prog_writes_skipped = 0
+      queue_drops = 0
+      queue_max = 0
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 0
+      rx_noack = 0
+      rx_total = 0
+      state_saves = 0
+
+6 checks, 5 passed, 1 FAILED  (14 s)
+  FAIL [T1 pairing and heartbeats] heartbeats arrive about 2 per second (10 s window) -> 0 heartbeats

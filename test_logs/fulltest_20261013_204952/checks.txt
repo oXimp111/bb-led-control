@@ -1,0 +1,658 @@
+
+=== T0 preflight ===
+PASS  node booted with the FULL CAPABILITY NODE TEST firmware
+PASS  node MAC read
+      node MAC 70:4B:CA:21:4F:EC
+PASS  control center answers hello
+PASS  control center speaks protocol 3
+      control MAC 70:4B:CA:25:7C:31 fw 1
+
+=== T1 pairing and heartbeats ===
+PASS  node reports paired
+PASS  heartbeats arrive about 2 per second (10 s window)
+      heartbeat fw field 2, n_ch 8
+
+=== T2 pad levels and pin mapping (node serial 'set', no radio) ===
+PASS  all 8 pads low at level 0
+PASS  each of the 8 pins alone at 10%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 25%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 50%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 75%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+PASS  each of the 8 pins alone at 100%: correct duty, ~500 Hz, the other 7 pins low (pin-to-channel map)
+
+=== T3 single actions through the control center ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: set ch1 50
+PASS  node received a SET packet: set ch1 50
+PASS  packet header/length ok: set ch1 50
+PASS  packet payload bytes exact: set ch1 50
+PASS  node ACKed OK: set ch1 50
+PASS  ch1 engine level 50
+PASS  pad sample returned: set ch1 50
+PASS  pad level == written duty on all 8 pads, ~500 Hz: set ch1 50
+PASS  pad duty matches the gamma curve for 50%
+PASS  result ok: set ch2 100 fade 2s
+PASS  node received a SET packet: set ch2 100 fade 2s
+PASS  packet header/length ok: set ch2 100 fade 2s
+PASS  packet payload bytes exact: set ch2 100 fade 2s
+PASS  node ACKed OK: set ch2 100 fade 2s
+PASS  fade 0->100 over 2 s: level at +1186 ms follows the straight line
+PASS  fade: ch2 reaches 100 and stops
+PASS  result ok: prog slot 3
+PASS  node received a PROG packet: prog slot 3
+PASS  packet header/length ok: prog slot 3
+PASS  packet payload bytes exact: prog slot 3
+PASS  node ACKed OK: prog slot 3
+PASS  node stored the program with the same CRC as the model
+PASS  result ok: assign ch3 slot3
+PASS  node received a ASSIGN packet: assign ch3 slot3
+PASS  packet header/length ok: assign ch3 slot3
+PASS  packet payload bytes exact: assign ch3 slot3
+PASS  node ACKed OK: assign ch3 slot3
+PASS  result ok: play ch3
+PASS  node received a PLAY packet: play ch3
+PASS  packet header/length ok: play ch3
+PASS  packet payload bytes exact (offset_ms 0 is small): play ch3
+PASS  node ACKed OK: play ch3
+PASS  program level at +400 ms (engine vs model)
+PASS  program level at +1500 ms (engine vs model)
+PASS  program level at +2200 ms (engine vs model)
+PASS  program level at +3600 ms (engine vs model)
+PASS  pad sample returned: after program end (hold 20%)
+PASS  pad level == written duty on all 8 pads, ~500 Hz: after program end (hold 20%)
+PASS  result ok: replay ch3
+PASS  node received a PLAY packet: replay ch3
+PASS  packet header/length ok: replay ch3
+PASS  packet payload bytes exact (offset_ms 0 is small): replay ch3
+PASS  node ACKed OK: replay ch3
+PASS  result ok: stop ch3
+PASS  node received a STOP packet: stop ch3
+PASS  packet header/length ok: stop ch3
+PASS  packet payload bytes exact: stop ch3
+PASS  node ACKed OK: stop ch3
+PASS  stop holds the level (no change over 0.8 s) and channel is no longer playing
+PASS  result ok: identify ch4 3 s
+PASS  node received a IDENTIFY packet: identify ch4 3 s
+PASS  packet header/length ok: identify ch4 3 s
+PASS  packet payload bytes exact: identify ch4 3 s
+PASS  node ACKed OK: identify ch4 3 s
+PASS  only ch4 is identifying
+PASS  identify pulses ch4 (duty varies) while other pads stay as set
+PASS  identify ends by itself
+PASS  result ok: set all 30
+PASS  node received a SET packet: set all 30
+PASS  packet header/length ok: set all 30
+PASS  packet payload bytes exact: set all 30
+PASS  node ACKed OK: set all 30
+PASS  set all: every channel 30
+PASS  pad sample returned: set all 30
+PASS  pad level == written duty on all 8 pads, ~500 Hz: set all 30
+PASS  result ok: prog slot 3 again (identical)
+PASS  node received a PROG packet: prog slot 3 again (identical)
+PASS  packet header/length ok: prog slot 3 again (identical)
+PASS  packet payload bytes exact: prog slot 3 again (identical)
+PASS  node ACKed OK: prog slot 3 again (identical)
+PASS  result ok: prog slot 3 changed
+PASS  node received a PROG packet: prog slot 3 changed
+PASS  packet header/length ok: prog slot 3 changed
+PASS  packet payload bytes exact: prog slot 3 changed
+PASS  node ACKed OK: prog slot 3 changed
+PASS  identical re-upload skipped the flash write
+PASS  changed program did write flash exactly once
+PASS  level 101 is refused by the control center
+PASS  ...and nothing reached the node
+PASS  slot 17 is refused by the control center
+PASS  a malformed program text is refused
+PASS  no sequence gaps, queue never overflowed (single actions)
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== T4 show programs (compiled by the real page code, frames W1-1..W1-8 = channels 1..8) ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: show 'Wave around the room' slot 1
+PASS  node received a PROG packet: show 'Wave around the room' slot 1
+PASS  packet header/length ok: show 'Wave around the room' slot 1
+PASS  packet payload bytes exact: show 'Wave around the room' slot 1
+PASS  node ACKed OK: show 'Wave around the room' slot 1
+PASS  result ok: assign ch1
+PASS  node received a ASSIGN packet: assign ch1
+PASS  packet header/length ok: assign ch1
+PASS  packet payload bytes exact: assign ch1
+PASS  node ACKed OK: assign ch1
+PASS  result ok: show 'Wave around the room' slot 2
+PASS  node received a PROG packet: show 'Wave around the room' slot 2
+PASS  packet header/length ok: show 'Wave around the room' slot 2
+PASS  packet payload bytes exact: show 'Wave around the room' slot 2
+PASS  node ACKed OK: show 'Wave around the room' slot 2
+PASS  result ok: assign ch2
+PASS  node received a ASSIGN packet: assign ch2
+PASS  packet header/length ok: assign ch2
+PASS  packet payload bytes exact: assign ch2
+PASS  node ACKed OK: assign ch2
+PASS  result ok: show 'Wave around the room' slot 3
+PASS  node received a PROG packet: show 'Wave around the room' slot 3
+PASS  packet header/length ok: show 'Wave around the room' slot 3
+PASS  packet payload bytes exact: show 'Wave around the room' slot 3
+PASS  node ACKed OK: show 'Wave around the room' slot 3
+PASS  result ok: assign ch3
+PASS  node received a ASSIGN packet: assign ch3
+PASS  packet header/length ok: assign ch3
+PASS  packet payload bytes exact: assign ch3
+PASS  node ACKed OK: assign ch3
+PASS  result ok: show 'Wave around the room' slot 4
+PASS  node received a PROG packet: show 'Wave around the room' slot 4
+PASS  packet header/length ok: show 'Wave around the room' slot 4
+PASS  packet payload bytes exact: show 'Wave around the room' slot 4
+PASS  node ACKed OK: show 'Wave around the room' slot 4
+PASS  result ok: assign ch4
+PASS  node received a ASSIGN packet: assign ch4
+PASS  packet header/length ok: assign ch4
+PASS  packet payload bytes exact: assign ch4
+PASS  node ACKed OK: assign ch4
+PASS  result ok: show 'Wave around the room' slot 5
+PASS  node received a PROG packet: show 'Wave around the room' slot 5
+PASS  packet header/length ok: show 'Wave around the room' slot 5
+PASS  packet payload bytes exact: show 'Wave around the room' slot 5
+PASS  node ACKed OK: show 'Wave around the room' slot 5
+PASS  result ok: assign ch5
+PASS  node received a ASSIGN packet: assign ch5
+PASS  packet header/length ok: assign ch5
+PASS  packet payload bytes exact: assign ch5
+PASS  node ACKed OK: assign ch5
+PASS  result ok: show 'Wave around the room' slot 6
+PASS  node received a PROG packet: show 'Wave around the room' slot 6
+PASS  packet header/length ok: show 'Wave around the room' slot 6
+PASS  packet payload bytes exact: show 'Wave around the room' slot 6
+PASS  node ACKed OK: show 'Wave around the room' slot 6
+PASS  result ok: assign ch6
+PASS  node received a ASSIGN packet: assign ch6
+PASS  packet header/length ok: assign ch6
+PASS  packet payload bytes exact: assign ch6
+PASS  node ACKed OK: assign ch6
+PASS  result ok: show 'Wave around the room' slot 7
+PASS  node received a PROG packet: show 'Wave around the room' slot 7
+PASS  packet header/length ok: show 'Wave around the room' slot 7
+PASS  packet payload bytes exact: show 'Wave around the room' slot 7
+PASS  node ACKed OK: show 'Wave around the room' slot 7
+PASS  result ok: assign ch7
+PASS  node received a ASSIGN packet: assign ch7
+PASS  packet header/length ok: assign ch7
+PASS  packet payload bytes exact: assign ch7
+PASS  node ACKed OK: assign ch7
+PASS  result ok: show 'Wave around the room' slot 8
+PASS  node received a PROG packet: show 'Wave around the room' slot 8
+PASS  packet header/length ok: show 'Wave around the room' slot 8
+PASS  packet payload bytes exact: show 'Wave around the room' slot 8
+PASS  node ACKed OK: show 'Wave around the room' slot 8
+PASS  result ok: assign ch8
+PASS  node received a ASSIGN packet: assign ch8
+PASS  packet header/length ok: assign ch8
+PASS  packet payload bytes exact: assign ch8
+PASS  node ACKed OK: assign ch8
+PASS  'Wave around the room': all 8 programs stored (CRC equal to model)
+PASS  result ok: play all ('Wave around the room')
+PASS  node received a PLAY packet: play all ('Wave around the room')
+PASS  packet header/length ok: play all ('Wave around the room')
+PASS  packet payload bytes exact (offset_ms 0 is small): play all ('Wave around the room')
+PASS  node ACKed OK: play all ('Wave around the room')
+PASS  'Wave around the room' +489 ms: all 8 channels match the model
+PASS  'Wave around the room' +1788 ms: all 8 channels match the model
+PASS  'Wave around the room' +3086 ms: all 8 channels match the model
+PASS  'Wave around the room' +4390 ms: all 8 channels match the model
+PASS  'Wave around the room' +5698 ms: all 8 channels match the model
+PASS  'Wave around the room' +6995 ms: all 8 channels match the model
+PASS  pad sample returned: 'Wave around the room' mid-show
+PASS  pad level == written duty on all 8 pads, ~500 Hz: 'Wave around the room' mid-show
+PASS  'Wave around the room' +8298 ms: all 8 channels match the model
+PASS  'Wave around the room' +9595 ms: all 8 channels match the model
+PASS  'Wave around the room' +10887 ms: all 8 channels match the model
+PASS  'Wave around the room' +12190 ms: all 8 channels match the model
+PASS  'Wave around the room': checkpoints passed
+PASS  'Wave around the room': no seq gaps, no queue drops
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: show 'Wall by wall, blink,' slot 1
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 1
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 1
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 1
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 1
+PASS  result ok: assign ch1
+PASS  node received a ASSIGN packet: assign ch1
+PASS  packet header/length ok: assign ch1
+PASS  packet payload bytes exact: assign ch1
+PASS  node ACKed OK: assign ch1
+PASS  result ok: show 'Wall by wall, blink,' slot 2
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 2
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 2
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 2
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 2
+PASS  result ok: assign ch2
+PASS  node received a ASSIGN packet: assign ch2
+PASS  packet header/length ok: assign ch2
+PASS  packet payload bytes exact: assign ch2
+PASS  node ACKed OK: assign ch2
+PASS  result ok: show 'Wall by wall, blink,' slot 3
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 3
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 3
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 3
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 3
+PASS  result ok: assign ch3
+PASS  node received a ASSIGN packet: assign ch3
+PASS  packet header/length ok: assign ch3
+PASS  packet payload bytes exact: assign ch3
+PASS  node ACKed OK: assign ch3
+PASS  result ok: show 'Wall by wall, blink,' slot 4
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 4
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 4
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 4
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 4
+PASS  result ok: assign ch4
+PASS  node received a ASSIGN packet: assign ch4
+PASS  packet header/length ok: assign ch4
+PASS  packet payload bytes exact: assign ch4
+PASS  node ACKed OK: assign ch4
+PASS  result ok: show 'Wall by wall, blink,' slot 5
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 5
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 5
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 5
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 5
+PASS  result ok: assign ch5
+PASS  node received a ASSIGN packet: assign ch5
+PASS  packet header/length ok: assign ch5
+PASS  packet payload bytes exact: assign ch5
+PASS  node ACKed OK: assign ch5
+PASS  result ok: show 'Wall by wall, blink,' slot 6
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 6
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 6
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 6
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 6
+PASS  result ok: assign ch6
+PASS  node received a ASSIGN packet: assign ch6
+PASS  packet header/length ok: assign ch6
+PASS  packet payload bytes exact: assign ch6
+PASS  node ACKed OK: assign ch6
+PASS  result ok: show 'Wall by wall, blink,' slot 7
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 7
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 7
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 7
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 7
+PASS  result ok: assign ch7
+PASS  node received a ASSIGN packet: assign ch7
+PASS  packet header/length ok: assign ch7
+PASS  packet payload bytes exact: assign ch7
+PASS  node ACKed OK: assign ch7
+PASS  result ok: show 'Wall by wall, blink,' slot 8
+PASS  node received a PROG packet: show 'Wall by wall, blink,' slot 8
+PASS  packet header/length ok: show 'Wall by wall, blink,' slot 8
+PASS  packet payload bytes exact: show 'Wall by wall, blink,' slot 8
+PASS  node ACKed OK: show 'Wall by wall, blink,' slot 8
+PASS  result ok: assign ch8
+PASS  node received a ASSIGN packet: assign ch8
+PASS  packet header/length ok: assign ch8
+PASS  packet payload bytes exact: assign ch8
+PASS  node ACKed OK: assign ch8
+PASS  'Wall by wall, blink, fade out': all 8 programs stored (CRC equal to model)
+PASS  result ok: play all ('Wall by wall, blink,')
+PASS  node received a PLAY packet: play all ('Wall by wall, blink,')
+PASS  packet header/length ok: play all ('Wall by wall, blink,')
+PASS  packet payload bytes exact (offset_ms 0 is small): play all ('Wall by wall, blink,')
+PASS  node ACKed OK: play all ('Wall by wall, blink,')
+PASS  'Wall by wall, blink, f' +486 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +1789 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +3090 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +4390 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +5687 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +6990 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +8291 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +9585 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +10883 ms: all 8 channels match the model
+PASS  pad sample returned: 'Wall by wall, blink,' mid-show
+PASS  pad level == written duty on all 8 pads, ~500 Hz: 'Wall by wall, blink,' mid-show
+PASS  'Wall by wall, blink, f' +12191 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +13488 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +14789 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +16092 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +17394 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +18694 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +19996 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, f' +21294 ms: all 8 channels match the model
+PASS  'Wall by wall, blink, fade out': checkpoints passed
+PASS  'Wall by wall, blink, fade out': no seq gaps, no queue drops
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: show 'Alternating breath (' slot 1
+PASS  node received a PROG packet: show 'Alternating breath (' slot 1
+PASS  packet header/length ok: show 'Alternating breath (' slot 1
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 1
+PASS  node ACKed OK: show 'Alternating breath (' slot 1
+PASS  result ok: assign ch1
+PASS  node received a ASSIGN packet: assign ch1
+PASS  packet header/length ok: assign ch1
+PASS  packet payload bytes exact: assign ch1
+PASS  node ACKed OK: assign ch1
+PASS  result ok: show 'Alternating breath (' slot 2
+PASS  node received a PROG packet: show 'Alternating breath (' slot 2
+PASS  packet header/length ok: show 'Alternating breath (' slot 2
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 2
+PASS  node ACKed OK: show 'Alternating breath (' slot 2
+PASS  result ok: assign ch2
+PASS  node received a ASSIGN packet: assign ch2
+PASS  packet header/length ok: assign ch2
+PASS  packet payload bytes exact: assign ch2
+PASS  node ACKed OK: assign ch2
+PASS  result ok: show 'Alternating breath (' slot 3
+PASS  node received a PROG packet: show 'Alternating breath (' slot 3
+PASS  packet header/length ok: show 'Alternating breath (' slot 3
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 3
+PASS  node ACKed OK: show 'Alternating breath (' slot 3
+PASS  result ok: assign ch3
+PASS  node received a ASSIGN packet: assign ch3
+PASS  packet header/length ok: assign ch3
+PASS  packet payload bytes exact: assign ch3
+PASS  node ACKed OK: assign ch3
+PASS  result ok: show 'Alternating breath (' slot 4
+PASS  node received a PROG packet: show 'Alternating breath (' slot 4
+PASS  packet header/length ok: show 'Alternating breath (' slot 4
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 4
+PASS  node ACKed OK: show 'Alternating breath (' slot 4
+PASS  result ok: assign ch4
+PASS  node received a ASSIGN packet: assign ch4
+PASS  packet header/length ok: assign ch4
+PASS  packet payload bytes exact: assign ch4
+PASS  node ACKed OK: assign ch4
+PASS  result ok: show 'Alternating breath (' slot 5
+PASS  node received a PROG packet: show 'Alternating breath (' slot 5
+PASS  packet header/length ok: show 'Alternating breath (' slot 5
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 5
+PASS  node ACKed OK: show 'Alternating breath (' slot 5
+PASS  result ok: assign ch5
+PASS  node received a ASSIGN packet: assign ch5
+PASS  packet header/length ok: assign ch5
+PASS  packet payload bytes exact: assign ch5
+PASS  node ACKed OK: assign ch5
+PASS  result ok: show 'Alternating breath (' slot 6
+PASS  node received a PROG packet: show 'Alternating breath (' slot 6
+PASS  packet header/length ok: show 'Alternating breath (' slot 6
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 6
+PASS  node ACKed OK: show 'Alternating breath (' slot 6
+PASS  result ok: assign ch6
+PASS  node received a ASSIGN packet: assign ch6
+PASS  packet header/length ok: assign ch6
+PASS  packet payload bytes exact: assign ch6
+PASS  node ACKed OK: assign ch6
+PASS  result ok: show 'Alternating breath (' slot 7
+PASS  node received a PROG packet: show 'Alternating breath (' slot 7
+PASS  packet header/length ok: show 'Alternating breath (' slot 7
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 7
+PASS  node ACKed OK: show 'Alternating breath (' slot 7
+PASS  result ok: assign ch7
+PASS  node received a ASSIGN packet: assign ch7
+PASS  packet header/length ok: assign ch7
+PASS  packet payload bytes exact: assign ch7
+PASS  node ACKed OK: assign ch7
+PASS  result ok: show 'Alternating breath (' slot 8
+PASS  node received a PROG packet: show 'Alternating breath (' slot 8
+PASS  packet header/length ok: show 'Alternating breath (' slot 8
+PASS  packet payload bytes exact: show 'Alternating breath (' slot 8
+PASS  node ACKed OK: show 'Alternating breath (' slot 8
+PASS  result ok: assign ch8
+PASS  node received a ASSIGN packet: assign ch8
+PASS  packet header/length ok: assign ch8
+PASS  packet payload bytes exact: assign ch8
+PASS  node ACKed OK: assign ch8
+PASS  'Alternating breath (loop)': all 8 programs stored (CRC equal to model)
+PASS  result ok: play all ('Alternating breath (')
+PASS  node received a PLAY packet: play all ('Alternating breath (')
+PASS  packet header/length ok: play all ('Alternating breath (')
+PASS  packet payload bytes exact (offset_ms 0 is small): play all ('Alternating breath (')
+PASS  node ACKed OK: play all ('Alternating breath (')
+PASS  'Alternating breath (lo' +495 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +1797 ms: all 8 channels match the model
+PASS  SYNC packet received (17 bytes, mask 0xFF, t_ms as sent)
+PASS  'Alternating breath (lo' +3095 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +4393 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +5697 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +6997 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +8297 ms: all 8 channels match the model
+PASS  pad sample returned: 'Alternating breath (' mid-show
+PASS  pad level == written duty on all 8 pads, ~500 Hz: 'Alternating breath (' mid-show
+PASS  'Alternating breath (lo' +9596 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +10896 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +12186 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +13487 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +14787 ms: all 8 channels match the model
+PASS  'Alternating breath (lo' +16085 ms: all 8 channels match the model
+PASS  'Alternating breath (loop)': checkpoints passed
+PASS  'Alternating breath (loop)': no seq gaps, no queue drops
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== T5 cue list: sections, GO, freeze, hold, bad GO, replay ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: section 1 ch1 -> slot 1
+PASS  node received a PROG packet: section 1 ch1 -> slot 1
+PASS  packet header/length ok: section 1 ch1 -> slot 1
+PASS  packet payload bytes exact: section 1 ch1 -> slot 1
+PASS  node ACKed OK: section 1 ch1 -> slot 1
+PASS  result ok: section 1 ch2 -> slot 2
+PASS  node received a PROG packet: section 1 ch2 -> slot 2
+PASS  packet header/length ok: section 1 ch2 -> slot 2
+PASS  packet payload bytes exact: section 1 ch2 -> slot 2
+PASS  node ACKed OK: section 1 ch2 -> slot 2
+PASS  result ok: section 1 ch3 -> slot 3
+PASS  node received a PROG packet: section 1 ch3 -> slot 3
+PASS  packet header/length ok: section 1 ch3 -> slot 3
+PASS  packet payload bytes exact: section 1 ch3 -> slot 3
+PASS  node ACKed OK: section 1 ch3 -> slot 3
+PASS  result ok: section 1 ch4 -> slot 4
+PASS  node received a PROG packet: section 1 ch4 -> slot 4
+PASS  packet header/length ok: section 1 ch4 -> slot 4
+PASS  packet payload bytes exact: section 1 ch4 -> slot 4
+PASS  node ACKed OK: section 1 ch4 -> slot 4
+PASS  result ok: section 1 ch7 -> slot 7
+PASS  node received a PROG packet: section 1 ch7 -> slot 7
+PASS  packet header/length ok: section 1 ch7 -> slot 7
+PASS  packet payload bytes exact: section 1 ch7 -> slot 7
+PASS  node ACKed OK: section 1 ch7 -> slot 7
+PASS  result ok: section 2 ch1 -> slot 9
+PASS  node received a PROG packet: section 2 ch1 -> slot 9
+PASS  packet header/length ok: section 2 ch1 -> slot 9
+PASS  packet payload bytes exact: section 2 ch1 -> slot 9
+PASS  node ACKed OK: section 2 ch1 -> slot 9
+PASS  result ok: section 2 ch2 -> slot 10
+PASS  node received a PROG packet: section 2 ch2 -> slot 10
+PASS  packet header/length ok: section 2 ch2 -> slot 10
+PASS  packet payload bytes exact: section 2 ch2 -> slot 10
+PASS  node ACKed OK: section 2 ch2 -> slot 10
+PASS  result ok: section 2 ch3 -> slot 11
+PASS  node received a PROG packet: section 2 ch3 -> slot 11
+PASS  packet header/length ok: section 2 ch3 -> slot 11
+PASS  packet payload bytes exact: section 2 ch3 -> slot 11
+PASS  node ACKed OK: section 2 ch3 -> slot 11
+PASS  result ok: section 2 ch4 -> slot 12
+PASS  node received a PROG packet: section 2 ch4 -> slot 12
+PASS  packet header/length ok: section 2 ch4 -> slot 12
+PASS  packet payload bytes exact: section 2 ch4 -> slot 12
+PASS  node ACKed OK: section 2 ch4 -> slot 12
+PASS  sections 1 and 2 stored in banks 0 and 1 (slot CRCs equal to model)
+PASS  result ok: go section 1 (bank 0)
+PASS  node received a GO packet: go section 1 (bank 0)
+PASS  packet header/length ok: go section 1 (bank 0)
+PASS  packet payload bytes exact (offset_ms 0 is small): go section 1 (bank 0)
+PASS  node ACKed OK: go section 1 (bank 0)
+PASS  GO 1: assigned slots are bank 0 (slot = channel) for the channels that play
+PASS  GO 1: channels with nothing in section 1 are not playing
+PASS  section 1 at +1.4 s matches the model
+PASS  pad sample returned: section 1 playing
+PASS  pad level == written duty on all 8 pads, ~500 Hz: section 1 playing
+PASS  result ok: go section 2 while section 1 is still playing
+PASS  node received a GO packet: go section 2 while section 1 is still playing
+PASS  packet header/length ok: go section 2 while section 1 is still playing
+PASS  packet payload bytes exact (offset_ms 1 is small): go section 2 while section 1 is still playing
+PASS  node ACKed OK: go section 2 while section 1 is still playing
+PASS  GO 2 mid-section: frames with nothing in section 2 keep their level (ch5,6,7,8)
+PASS  GO 2: ch2 (leading gap) keeps its level instead of dropping to 0
+PASS  GO 2: ch1 continues from the new program (100 %)
+PASS  result ok: section 3 ch1 -> slot 1
+PASS  node received a PROG packet: section 3 ch1 -> slot 1
+PASS  packet header/length ok: section 3 ch1 -> slot 1
+PASS  packet payload bytes exact: section 3 ch1 -> slot 1
+PASS  node ACKed OK: section 3 ch1 -> slot 1
+PASS  result ok: section 3 ch3 -> slot 3
+PASS  node received a PROG packet: section 3 ch3 -> slot 3
+PASS  packet header/length ok: section 3 ch3 -> slot 3
+PASS  packet payload bytes exact: section 3 ch3 -> slot 3
+PASS  node ACKed OK: section 3 ch3 -> slot 3
+PASS  result ok: section 3 ch4 -> slot 4
+PASS  node received a PROG packet: section 3 ch4 -> slot 4
+PASS  packet header/length ok: section 3 ch4 -> slot 4
+PASS  packet payload bytes exact: section 3 ch4 -> slot 4
+PASS  node ACKed OK: section 3 ch4 -> slot 4
+PASS  result ok: section 3 ch5 -> slot 5
+PASS  node received a PROG packet: section 3 ch5 -> slot 5
+PASS  packet header/length ok: section 3 ch5 -> slot 5
+PASS  packet payload bytes exact: section 3 ch5 -> slot 5
+PASS  node ACKed OK: section 3 ch5 -> slot 5
+PASS  uploading section 3 into the idle bank does not disturb the playing section
+PASS  section 2 at +2.2 s matches the model
+PASS  finished section holds its last levels while waiting for the next cue (1.7 s after the end)
+PASS  held levels equal the end level of each program
+PASS  result ok: go section 3 after the wait
+PASS  node received a GO packet: go section 3 after the wait
+PASS  packet header/length ok: go section 3 after the wait
+PASS  packet payload bytes exact (offset_ms 1 is small): go section 3 after the wait
+PASS  node ACKed OK: go section 3 after the wait
+PASS  GO 3: ch2 holds 80 (not in section 3)
+PASS  result ok: section 4 ch6 -> slot 14
+PASS  node received a PROG packet: section 4 ch6 -> slot 14
+PASS  packet header/length ok: section 4 ch6 -> slot 14
+PASS  packet payload bytes exact: section 4 ch6 -> slot 14
+PASS  node ACKed OK: section 4 ch6 -> slot 14
+PASS  result ok: section 4 ch7 -> slot 15
+PASS  node received a PROG packet: section 4 ch7 -> slot 15
+PASS  packet header/length ok: section 4 ch7 -> slot 15
+PASS  packet payload bytes exact: section 4 ch7 -> slot 15
+PASS  node ACKed OK: section 4 ch7 -> slot 15
+PASS  section 3 at +1.5 s matches the model (blinks cut mid-period, fades)
+PASS  GO that plays an empty slot is rejected by the node (bad_arg)
+PASS  ...and changed nothing (slots, playing flags)
+PASS  bank 2 is refused
+PASS  overlapping masks are refused
+PASS  empty masks are refused
+PASS  result ok: go section 4 while section 3 is still playing
+PASS  node received a GO packet: go section 4 while section 3 is still playing
+PASS  packet header/length ok: go section 4 while section 3 is still playing
+PASS  packet payload bytes exact (offset_ms 0 is small): go section 4 while section 3 is still playing
+PASS  node ACKed OK: go section 4 while section 3 is still playing
+PASS  GO 4: frames not in section 4 freeze (ch1,3,4,5 hold their level)
+PASS  ...and stay frozen
+PASS  GO 4: ch7 keeps 30 for 0.5 s (K step) then goes to 90
+PASS  section 4 at +1.8 s matches the model
+PASS  result ok: replay section 4 (same bank)
+PASS  node received a GO packet: replay section 4 (same bank)
+PASS  packet header/length ok: replay section 4 (same bank)
+PASS  packet payload bytes exact (offset_ms 1 is small): replay section 4 (same bank)
+PASS  node ACKed OK: replay section 4 (same bank)
+PASS  replay: ch7 holds its level for the 0.5 s K step again
+PASS  pad sample returned: section 4 replay
+PASS  pad level == written duty on all 8 pads, ~500 Hz: section 4 replay
+PASS  cue run: no lost packets (the 3 gaps are the 3 commands the control center refused itself: it burns a sequence number before validating), no queue drops
+PASS  cue run: every GO was ACKed
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== T6 persistence across a node reboot ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: loop program slot 1
+PASS  node received a PROG packet: loop program slot 1
+PASS  packet header/length ok: loop program slot 1
+PASS  packet payload bytes exact: loop program slot 1
+PASS  node ACKed OK: loop program slot 1
+PASS  result ok: assign ch1 slot1
+PASS  node received a ASSIGN packet: assign ch1 slot1
+PASS  packet header/length ok: assign ch1 slot1
+PASS  packet payload bytes exact: assign ch1 slot1
+PASS  node ACKed OK: assign ch1 slot1
+PASS  result ok: bank 1 program slot 9 (ch1)
+PASS  node received a PROG packet: bank 1 program slot 9 (ch1)
+PASS  packet header/length ok: bank 1 program slot 9 (ch1)
+PASS  packet payload bytes exact: bank 1 program slot 9 (ch1)
+PASS  node ACKed OK: bank 1 program slot 9 (ch1)
+PASS  result ok: set ch2 70
+PASS  result ok: play ch1
+PASS  node came back
+PASS  programs survived (same slots and CRCs)
+PASS  assignment survived
+PASS  manual level 70 on ch2 survived
+PASS  playing loop program resumed on ch1
+PASS  ch1 is animating (level changed over 1 s)
+PASS  node is still paired and heartbeats reach the control center
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== T7 control center reset: the lights must keep going ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  result ok: prog slot 1
+PASS  node received a PROG packet: prog slot 1
+PASS  packet header/length ok: prog slot 1
+PASS  packet payload bytes exact: prog slot 1
+PASS  node ACKed OK: prog slot 1
+PASS  result ok: assign ch1 slot1
+PASS  result ok: play ch1
+PASS  node received a PLAY packet: play ch1
+PASS  packet header/length ok: play ch1
+PASS  node ACKed OK: play ch1
+PASS  node kept playing the loop correctly for 7 s while the control center rebooted
+PASS  control center is back (hello)
+PASS  control center sees the node online again without re-pairing
+PASS  result ok: set ch2 70 after the reset
+PASS  node received a SET packet: set ch2 70 after the reset
+PASS  packet header/length ok: set ch2 70 after the reset
+PASS  packet payload bytes exact: set ch2 70 after the reset
+PASS  node ACKed OK: set ch2 70 after the reset
+PASS  command works after the reset (ch2 = 70, ch1 still playing)
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== T8 stress: 40 prefetch+GO cycles ===
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+PASS  all 40 cycles (190 commands) ACKed
+      command round trips (page -> control -> radio -> ACK -> control -> page): avg 163 ms, max 269 ms, 190 commands in 37.0 s
+PASS  no packets lost between control and node (sequence gaps)
+PASS  receive queue never overflowed
+PASS  node main loop never stalled more than 200 ms
+PASS  node still answers and heartbeats continue
+      node boots seen during the whole run: 2 (1 initial + 1 for the deliberate reboot test)
+PASS  no unexpected node resets (watchdog)
+PASS  result ok: clean stop
+PASS  result ok: clean set 0
+
+=== final node counters ===
+      acks = 244
+      acks_bad = 0
+      heartbeats_sent = 121
+      loop_max_ms = 47
+      prog_flash_writes = 41
+      prog_writes_skipped = 110
+      queue_drops = 0
+      queue_max = 1
+      rx_badhdr = 0
+      rx_dup = 0
+      rx_gap_sum = 0
+      rx_noack = 0
+      rx_total = 244
+      rx_type_10 = 6
+      rx_type_11 = 151
+      rx_type_12 = 41
+      rx_type_13 = 1
+      rx_type_14 = 5
+      rx_type_18 = 40
+      state_saves = 17
+
+611 checks, 611 passed, 0 FAILED  (197 s)

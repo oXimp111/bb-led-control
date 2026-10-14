@@ -143,108 +143,25 @@ Purpose: a 15 min show whose parts are triggered by the operator on the actors' 
 - The page keeps only the section index in localStorage (`lf-cue`); after a reload it shows "was playing before the page was reloaded" and the next GO continues with the next section.
 - Not possible: playing a whole cue-list show in one go on the nodes (it would exceed 24 steps); the editor preview plays it continuously.
 
-## Node test build (`node_test`) — packet accuracy + output check
-Same node firmware plus logging, built with `-DLF_TEST_LOG` (all code in `src/node/test_log.h`, formatter in `lib/testlog/lf_csv.h`).
-It only observes: same parser, engine and LEDC output. Env `node` compiles to the same machine code as without these hooks.
-Build/flash: `pio run -e node_test -t upload`, then `pio device monitor`. Flash `-e node` again to return to normal.
-Log: LittleFS `/rxlog.csv` (rotated to `/rxlog.old` above 256 KB), counters in NVS (saved every 10 s and at `report`; survive power loss).
-A `report` block prints automatically 5 s after boot. Extra serial commands:
-```
-report        summary block (paste it to Claude)
-log [n|all]   last n CSV lines (default 50) or the whole file
-clear         wipe log + counters
-outtest       each channel 1..8: 0/25/50/75/100 % for 1 s, prints written vs readback vs expected duty (~40 s)
-```
-CSV columns (one row per event; empty = not applicable):
-`ms,event,mac,type,len,exp_len,hdr_ok,seq,gap,dup,rssi,ack,slot,n_steps,loop,crc,ch,level_pct,duty_w,duty_r,duty_exp,mismatch,note`
-- `event`: BOOT, RX (a received packet), OUT (channel check), OUTTEST, PAIR (window open/closed, PAIR_ACK stored the controller MAC).
-- RX: `len` received bytes, `exp_len` struct size for that type (node accepts longer, never shorter), `hdr_ok` magic + `LF_PROTO_VER`,
-  `gap` seqs missing since the previous packet from the controller, `dup` 1 = same seq as previous (a retry), `rssi` dBm
-  (from promiscuous action frames; approximate, empty if unavailable), `ack` status we sent (0 OK, 1 BAD_LEN, 2 BAD_ARG, 3 BAD_VERSION; empty = none),
-  PROG only: `slot` (1-based), `n_steps`, `loop`, `crc` = `programCrc()` of the stored slot (hex).
-- OUT/OUTTEST: `ch` 1-based, `level_pct` engine level, `duty_w` duty we wrote, `duty_r` duty read back from the LEDC peripheral,
-  `duty_exp` duty the engine level should give, `mismatch` 1 if the readback is not what was written (at 100 % the core writes 16383 and the register reads 16384 = constant high; that counts as OK). OUT rows are written after every applied
-  PROG/ASSIGN/PLAY/SET/STOP (all channels) and once per second for PLAYING channels. While pairing or identify is active `duty_w` differs from `duty_exp` on purpose.
-Counters (`report`): `raw` frames given to our callback · `taken` packets processed · `queue_drops` rx queue (16) was full ·
-`bad_len` too short for its type · `bad_hdr` too short or wrong magic · `bad_ver` other protocol version · `ignored` valid but not from our controller or not for us ·
-`checked` packets used for seq statistics · `gaps` sum of missing seqs · `dups` repeated seqs · `loss %` = gaps / (checked + gaps) ·
-`acks_sent` · `programs_stored` MSG_PROG applied · `write_mismatch` readback differed right after a duty change · `log_mismatch` same, found in a logged check.
-Limits: the readback is the LEDC register, not the electrical pin (no scope). The control firmware uses ONE seq counter for all nodes and for SYNC,
-so `gaps` equals real loss only with a single node; with several nodes expect gaps even on a perfect link. `outtest` blocks the node for ~40 s (no heartbeats).
-
-## Control test build (`control_test`) — pairs with a node, sends max-size packets, measures
-A second plain ESP32 (same 30-pin board) in `src/control_test/main.cpp`; the test load is in `lib/testload/` (pure C++, host-tested).
-Uses `protocol.h` and the engine unchanged. Build/flash: `pio run -e control_test -t upload`, `pio device monitor` (115200).
-Pair it with a `node_test` board (see "Node test build"). It is NOT the real control center: no web page, one node only.
-**Test load:** 8 programs (slot n = channel n), each exactly 24 steps with loop on = `MSG_PROG` of 231 bytes, the largest real packet.
-Every step type, levels 0/100, fade up and down, blink periods 1 / 100 / 65535 ms, a 0 ms hold, a 1 ms fade, equal-level fade/blink,
-and a 600000 ms step (10 min fade up) at the end. The first ~31 s are easy to watch; channel n starts its pulse n x 500 ms late (chase).
-`progs` prints the programs and their `programCrc`. `load` = 8 x PROG, 8 x ASSIGN (slot n -> channel n), PLAY all (17 commands).
-Pairing: `pair` (or hold BOOT 3 s) opens a 60 s window, accepts `MSG_PAIR_REQ`, answers `MSG_PAIR_ACK`, stores the node MAC in NVS.
-Pairing is confirmed by the node's first heartbeat. BOOT short press (< 3 s) = `load`. LED: double blink = pairing, slow = heartbeats fresh, fast = no node.
-Commands:
-```
-pair | unpair                 open pairing window / forget node MAC (the node stays paired until its BOOT is held 10 s)
-mode raw|reliable             reliable (default) = retry until ACK, 5 tries, 120 ms each; raw = send once, no retry (true loss)
-load | play | stop            send the test load / PLAY all offset 0 / STOP all
-set <ch|all> <0-100>          manual level          progs   print programs + CRC
-stress N [interval_ms] [raw|reliable]   repeat `load` N times (default 100, 200 ms), prints a STRESS RESULT block
-report | log [n|all] | clear | status | help      `report` prints automatically 5 s after boot
-```
-Log `/txlog.csv` (LittleFS, rotated to `/txlog.old` above 256 KB), counters in NVS (every 10 s and at `report`).
-CSV columns: `ms,event,type,len,seq,mode,attempts,ack,rtt_us,total_ms,slot,ch,expected,reported,note`
-- `TX` one row per command: `attempts` transmissions, `ack` status (0 OK, 1 BAD_LEN, 2 BAD_ARG, 3 BAD_VERSION; empty = no ACK), `rtt_us` from the acked
-  attempt to its ACK, `total_ms` from the first send. `TX_ERR` esp_now_send failed. `PAIR`, `BOOT`, `STRESS` (summary), `OUTCHK` (summary of a 60 s window).
-- `CRC_BAD` heartbeat prog_crc differs from expected (`slot`, `expected`, `reported` in decimal). `OUT_BAD` a level outside tolerance (`ch`, `expected`/`reported` %, `total_ms` since PLAY).
-  `HB_GAP` two heartbeats more than 1500 ms apart (`total_ms`).
-Checks (PASS/FAIL in `report`):
-- **Program CRC:** node heartbeat `prog_crc[slot]` == expected `programCrc` for all 8 slots (also counted on every heartbeat after a load).
-- **Output:** for 60 s after PLAY every heartbeat level per channel is compared with the level the control computes from the same program at (now - PLAY time).
-  `strict` = within +-10 % at that instant; `tolerant` = within +-10 % of the program at some moment within +-60 ms (timing jitter; blinks of 1/100 ms can never match strictly).
-  PASS = at least 50 samples and tolerant >= 95 %. The compared level is what the node's engine reports, not the pin (see node test limits).
-- **Heartbeats:** at least 90 % of the ~2/s expected over 10+ s and longest gap <= 1500 ms.
-- **Delivery:** reliable mode: no command failed and none was rejected. Raw mode: read `raw loss %` (command OR its ACK lost).
-`RESULT:` line = PASS only when all four pass; INCOMPLETE until a load ran and its 60 s window ended. MAC-layer counters (`mac_fail`) count frames the
-radio could not deliver even after its own hardware retries. RSSI is approximate (promiscuous action frames).
-
-### Two-board test procedure (node_test + control_test, one strip on node GPIO16)
-1. Flash the node: `pio run -e node_test -t upload` (hold BOOT during the upload if it cannot connect). Flash the second board: `pio run -e control_test -t upload`.
-   Connect the strip MOSFET to node GPIO16. Open a serial monitor on each board (two terminals, 115200).
-2. Control: type `clear`, then `pair`. Node: within 60 s hold BOOT 3 s and release (strips pulse). Control prints `PAIR_REQ ...` then `pairing confirmed`.
-   Node `report`: `not paired` must now say `paired to <control MAC>`.
-3. Node: `outtest` (about 40 s) must end `0 mismatch(es)`.
-4. Control: `load`. Expect `all 17 commands ACKed`. The strip on channel 1 pulses at once, other channels (if wired) chase 0.5 s apart.
-5. Wait 65 s, then control `report`. PASS looks like: ACKed 100 %, failed 0, rejected 0, all 8 slots `PASS`, output check `PASS` (tolerant >= 95 %),
-   heartbeats `PASS` (about 2/s, longest gap < 1500 ms), `RESULT: ... => PASS`. Node `report`: `programs_stored` 8, `bad_len/bad_hdr/bad_ver` 0, `queue_drops` 0, both mismatch counters 0.
-6. Stress: flash the plain node (`pio run -e node -t upload`) first - `node_test` can hit the task watchdog when loads repeat. `mode raw`, `stress 100 200`, then `mode reliable`, `stress 100 200`. PASS: reliable `STRESS: PASS`, no CRC mismatches.
-7. Power-cycle the node, wait 10 s, control `report`: CRC must still PASS (programs are in flash); the node resumes the programs from t = 0.
-8. Paste both `report` blocks (and `log 100` on any FAIL) to Claude.
-
-### Test results so far (details: docs/TEST_RESULTS.md)
-- 2026-10-13, node_test + control_test, boards side by side: single load PASS (17/17 ACKed, node saw all packets with correct lengths, no seq gaps, 8/8 program CRCs,
-  output 100 % within tolerance, outtest 40/40). Stress on the plain `node` firmware: 50 loads PASS (850/850 ACKed, 0 retries, no reboots, ACK RTT avg 20 ms, max 45 ms).
-  Stress on `node_test` FAILED (task watchdog reboots caused by the test logging) - known limitation, not a node firmware problem.
-- Not possible with the current setup (skipped, do not remind): node power-cycle check, strip on GPIO16, wall-to-wall RSSI/loss survey, multi-node.
-
-### Findings for future firmware (from the 2026-10-13 two-board tests)
-- **Flashing these boards:** they do not enter download mode by themselves. Hold BOOT BEFORE starting the upload and keep holding until it prints `Writing`;
-  release, then tap EN. (Hold, tap EN, release before the command does not work: esptool resets the chip again.)
-- **Opening the serial port from a PC resets the board** (DTR). A node then restarts its saved playing programs from t=0; counters/log in flash survive.
-- **LEDC readback lags one PWM period** (2 ms at 500 Hz): a duty read right after `ledcWrite` is the previous value. Wait >= 4 ms. Core 2.x also turns duty `max`
-  (16383) into 16384 (constant high, no 1-tick low per period), so 100 % reads back 16384; `ledcReadFreq()` returns 0 while duty is 0.
-- **Large packet timing (plain node, 231-byte MSG_PROG):** ACK round trip 3-45 ms, a full 17-command load takes about 0.4 s, heartbeats stay at 2/s.
-  The 120 ms ACK timeout is adequate. Node reset reason 6 = task watchdog (5 s).
-- **Never put file or flash logging on the node's radio path.** A LittleFS append after every packet made the node trip the 5 s task watchdog when loads repeated
-  back to back (reboot every 13-29 s; playing channels restart at t=0 until the next SYNC). Keep flash writes deferred and rare; log from RAM and flush when idle.
-- **Flash writes per PROG:** `saveProgs()` rewrites the whole 8-slot blob (1.7 KB) for every MSG_PROG, even when the program is identical. Idea (not done): skip
-  the write when the slot already holds the same program; control sends a slot only when the heartbeat `prog_crc` differs (see planned latency fixes).
-- **Seq numbers:** control firmware uses one counter for all nodes and for SYNC, so a node sees gaps by design with several nodes. Per-node loss statistics need per-node seq.
-- **Pairing survives reboots and a control reflash** (verified: control NVS holds the node MAC, node NVS holds the control MAC). After the very first `node_test` flash a node showed
-  `not paired`; cause not found - re-pair after reflashing a node if it does not heartbeat.
-- **ESP-NOW MAC send success is not delivery to the app:** use the application ACK; the send callback only says the radio got a frame-level ack.
-- **Host tests on a PC without g++:** `pip install --target <dir> ziglang`, then `PYTHONPATH=<dir> python -m ziglang c++ -std=c++17 -fno-sanitize=undefined ...` (see test file headers).
-  `-fno-sanitize=undefined` is needed because `parseProgram` passes `st.duration_ms` (a field of a packed struct) by reference (`lib/engine/engine.cpp`, parseDur call): works on ESP32,
-  but it is undefined behaviour; fix by parsing into a local `uint32_t` and copying.
+## Full capability node test (`node_fulltest`) + `tools/fulltest.py`  — the hardware test
+Two boards on one PC: the control board runs the REAL `control` firmware, the node board runs `node_fulltest` = the production `src/node/main.cpp` compiled with
+`-DLF_FULLTEST` (hooks in `src/node/fulltest.h`; the plain `node` image is byte-identical with or without the hooks, checked by comparing the .text/.rodata/.data hashes).
+It never writes flash on the radio path and prints at 460800 baud. Serial lines starting with `@` are machine-readable:
+`@RX` every received packet (node ms, ISR us, source MAC, length, header ok, ver, type, target, seq, gap, dup, ACK status, raw hex),
+`ft state` -> `@ST/@CH/@PRG/@END` (engine level, mode, slot, written duty per channel, program CRCs),
+`ft sample <ms>` -> `@SMP` per channel: duty measured ON THE PAD (all 8 pads read at once from the GPIO input register), edges, frequency, written duty,
+`ft report` -> counters (rx by type, dup, gap sum, queue drops/max, ACKs, flash writes vs skipped, heartbeats, longest loop gap), `ft clear`, `ft ping`.
+The pad is the ESP32 pin, not the MOSFET board output (no scope). Only the input buffer is enabled (`PIN_INPUT_ENABLE`); `gpio_set_direction` would re-route the pin away from the LEDC.
+`tools/fulltest.py` acts as the page: it sends the same JSON lines to the control board that web/control.html sends (shows and cue sections compiled by the real page code via
+`tools/export_fixtures.py` -> `tools/fixtures/compiled.json`) and checks everything against an independent Python model (`tools/ftlib.py`): packet bytes (header, length, payload),
+program CRCs, engine levels over time, pad duty/frequency/cross-talk. Groups: T0 preflight, T1 pairing + heartbeats, T2 pin map, T3 single actions, T4 shows (+SYNC),
+T5 cue list (GO mid-section freeze, hold after finish, bad GO, replay), T6 persistence over a node reboot, T7 control reset while the node plays, T8 stress + GO latency.
+Run: `pio run -e control -t upload` (control board), `pio run -e node_fulltest -t upload` (node board), then `python tools/fulltest.py` (options `--only pins,single,shows,cues,persist,ctlreset,stress`, `--no-pair`).
+`tools/ft_flash.py <env> <COMx> <label>` flashes while `tools/ft_console.py` (open it in its own window) tells the person what to press. NO keyboard is needed: only hold BOOT while it retries.
+Logs: `test_logs/fulltest_<time>/` (node.log, control.log, checks.txt). Flash the plain `node` firmware back before installing on a wall if the test build is not wanted.
+Known quirks seen by the test: the control firmware takes a sequence number before it validates a command, so commands it refuses itself leave a "gap" in the node's seq statistics (harmless);
+PLAY/GO first transmission carries a few ms of offset_ms (late-retry compensation).
+Results: docs/TEST_RESULTS.md.
 
 ## Node test checklist (single board + Seloky MOSFET on GPIO16, strip on ch1)
 1. Boot log shows MAC, `state restored`, help text. LED fast-blinks (unpaired).
@@ -264,9 +181,9 @@ Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a c
    (the control can detect it via `prog_crc`). With decision 1 the benefit is small. Recommend: skip unless uploads must be faster.
 4. **ACK timeout in the real control center**: measured PROG ACK max 45 ms, current 120 ms is adequate. Keep, or raise to about 150 ms for margin when the node also runs sync. Recommend: keep.
 5. DONE (commit 7fd436b) **Fix the packed-struct reference in `parseProgram`** (`lib/engine/engine.cpp`, `parseDur(s, st.duration_ms)`): undefined behaviour that works on ESP32. Tiny change (local variable), engine tests must still pass. Recommend: yes.
-6. **`node_test` watchdog reboots under repeated loads**: fix by logging to RAM and writing the file only when idle, or accept the limitation (stress is run on the plain `node`). Recommend: accept unless a stress test with logging is needed.
+6. DONE: `node_test` and `control_test` were removed; the full capability node test logs to RAM/serial only and survived the stress run (614/614 checks).
 7. **Per-node sequence numbers in the real control center** so loss statistics stay valid with several nodes. Low value; the node already de-duplicates by the last seq. Recommend: only if a loss survey is ever possible.
-8. **Restore the production control firmware** on the control board before real use: it currently runs `control_test` (`pio run -e control -t upload`, BOOT held). The node board currently runs the plain `node` firmware.
+8. DONE (2026-10-13): control board runs the production `control` firmware; node board runs `node_fulltest`. Flash plain `node` (`pio run -e node -t upload`, BOOT held) before putting it on a wall if the test build is not wanted.
 9. Still open from before: after a power cycle a FINISHED non-loop program must hold its end level (DECIDED, not implemented); one-broadcast start for shows and steps (PLANNED).
 
 ## Open decisions / roadmap

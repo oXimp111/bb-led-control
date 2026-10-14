@@ -49,6 +49,14 @@ static void macStr(const uint8_t* m, char* out) {
 
 static void markDirty() { dirty = true; dirtyAt = millis(); }
 
+#ifdef LF_FULLTEST   // test instrumentation (src/node/fulltest.h); not part of the production build
+enum { FTC_PROG_WRITE, FTC_PROG_SKIP, FTC_STATE_SAVE, FTC_HB_SENT, FTC_QDROP };
+static void ft_count(int what);
+#define FT(x) x
+#else
+#define FT(x)
+#endif
+
 static void saveState() {
   if (!nvsOk) return;
   for (int i = 0; i < NUM_CH; i++) {
@@ -56,12 +64,14 @@ static void saveState() {
     if (chans[i].playing()) st.playing_mask |= (1 << i); else st.playing_mask &= ~(1 << i);
   }
   prefs.putBytes("state", &st, sizeof(st));
+  FT(ft_count(FTC_STATE_SAVE));
   dirty = false;
   Serial.println("[save] state saved");
 }
 
 static void saveProgs() {
   if (nvsOk) prefs.putBytes("progs", progs, sizeof(progs));
+  FT(ft_count(FTC_PROG_WRITE));
 }
 
 static void loadAll() {
@@ -144,7 +154,7 @@ static uint8_t doProg(uint8_t slot, const LfProgram& p) {
   if (memcmp(&np, &progs[slot], sizeof(np)) != 0) {  // identical re-upload: no flash write
     progs[slot] = np;
     saveProgs();
-  }
+  } else FT(ft_count(FTC_PROG_SKIP));
   // channels currently playing this slot restart from t=0 with the new program
   uint8_t restart = 0;
   for (int i = 0; i < NUM_CH; i++) if (chans[i].playing() && st.assign[i] == slot) restart |= 1 << i;
@@ -217,8 +227,15 @@ static void startPairing() {
 }
 
 // ------------------------------------------------------------ radio
-struct RxItem { uint8_t mac[6]; uint8_t len; uint8_t data[250]; };
+struct RxItem { uint8_t mac[6]; uint8_t len; uint8_t data[250];
+#ifdef LF_FULLTEST
+  uint32_t t_us;   // arrival time (WiFi task)
+#endif
+};
 static QueueHandle_t rxQueue;
+#ifdef LF_FULLTEST
+#include "fulltest.h"
+#endif
 
 static void onRecv(const uint8_t* mac, const uint8_t* data, int len) {  // WiFi task: copy only
   if (len <= 0 || len > 250) return;
@@ -226,7 +243,8 @@ static void onRecv(const uint8_t* mac, const uint8_t* data, int len) {  // WiFi 
   memcpy(it.mac, mac, 6);
   it.len = (uint8_t)len;
   memcpy(it.data, data, len);
-  xQueueSend(rxQueue, &it, 0);
+  FT(it.t_us = (uint32_t)esp_timer_get_time());
+  if (xQueueSend(rxQueue, &it, 0) != pdTRUE) FT(ft_count(FTC_QDROP));
 }
 
 static void onSent(const uint8_t* mac, esp_now_send_status_t s) {
@@ -246,6 +264,7 @@ static void sendAck(uint16_t seq, uint8_t status) {
   fillHeader(a.h, MSG_ACK, st.ctrl);
   a.acked_seq = seq;
   a.status = status;
+  FT(ft_ack(seq, status));
   esp_now_send(st.ctrl, (uint8_t*)&a, sizeof(a));
 }
 
@@ -263,6 +282,7 @@ static void sendHeartbeat() {
     }
   }
   for (int s = 0; s < LF_MAX_PROGS; s++) hb.prog_crc[s] = lf::programCrc(progs[s]);
+  FT(ft_count(FTC_HB_SENT));
   esp_now_send(st.ctrl, (uint8_t*)&hb, sizeof(hb));
 }
 
@@ -454,6 +474,9 @@ static const char* HELP =
   "  pair | unpair | reset (factory) | reboot\n";
 
 static void handleLine(char* line) {
+#ifdef LF_FULLTEST
+  if (ft_cmd(line)) return;
+#endif
   char* cmd = strtok(line, " ");
   if (!cmd) return;
   char* a1 = strtok(nullptr, " ");
@@ -590,12 +613,18 @@ void setup() {
     ledcWrite(i, 0);
     lastDuty[i] = 0;
   }
+  FT(ft_padsEnable());
   pinMode(STATUS_LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   Serial.setRxBufferSize(2048);  // before begin(): a pasted 24-step line must not overflow while flash is written
+#ifdef LF_FULLTEST
+  Serial.begin(460800);
+#else
   Serial.begin(115200);
+#endif
   delay(50);
   Serial.printf("\n[boot] LED frame node fw %d, reset reason %d\n", FW_VERSION, (int)esp_reset_reason());
+  FT(Serial.println("[boot] FULL CAPABILITY NODE TEST build (LF_FULLTEST): packets and pad levels are logged on serial, 460800 baud"));
 
   // 2) restore saved state BEFORE radio
   loadAll();
@@ -624,14 +653,20 @@ void loop() {
   esp_task_wdt_reset();
 
   RxItem it;
-  while (xQueueReceive(rxQueue, &it, 0) == pdTRUE) handlePacket(it);
+  FT(ft_loop(now));
+  while (xQueueReceive(rxQueue, &it, 0) == pdTRUE) {
+    FT(ft_pre(it));
+    handlePacket(it);
+    FT(ft_post(it));
+  }
   pollSerial();
   pollButton(now);
 
   if (now - lastTick >= TICK_MS) { lastTick = now; updateOutputs(now); updateLed(now); }
 
   if (pairing) {
-    if (now - pairStart >= PAIR_WINDOW_MS) { pairing = false; Serial.println("[pair] window closed, no controller"); }
+    if ((int32_t)(now - pairStart) >= (int32_t)PAIR_WINDOW_MS)   // signed: pairStart can be a few ms newer than this loop's `now`
+       { pairing = false; Serial.println("[pair] window closed, no controller"); }
     else if (now - lastPairReq >= PAIR_REQ_EVERY_MS) { lastPairReq = now; sendPairReq(); }
   }
 
