@@ -1,3 +1,18 @@
+# On-site test at the venue (2026-10-14) — reported by the installer, not logged
+
+Setup: production firmware (`control` on the control board, `node` on the wall nodes), flashed from the installer's own clone of the repo without Claude (unstable VPN).
+Control board in the venue, nodes paired through the page (Find nodes, hold BOOT 3 s, Add).
+
+| Check | Result |
+|---|---|
+| Pairing through the page (Find nodes -> Add) | Works. Nodes paired without problems. |
+| Longest communication distance in the venue (control center to the farthest node) | Works. Node shows connected and online in the page. |
+
+Not recorded (no log was taken): RSSI / dBm values, packet loss, which wall was farthest, how many nodes were tested together, the distance in metres.
+Still open: a measured RSSI/loss survey per wall, strips and MOSFET boards under load on site, a long soak run.
+
+---
+
 # Full capability node test (2026-10-13, evening) — protocol v3, real control firmware
 
 Setup: control board = real `control` firmware (MAC 70:4B:CA:25:7C:31, AP side), node = `node_fulltest` (production node source + LF_FULLTEST hooks, MAC 70:4B:CA:21:4F:EC),

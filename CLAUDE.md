@@ -208,4 +208,5 @@ Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a c
 - DONE (2026-10-13, needs hardware test): cue lists / stepped shows, see "Cue lists". Protocol v3 must be flashed on EVERY node and the control board (they refuse each other's packets otherwise).
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
-- Skipped (not possible with the current setup): multi-node test of control firmware; site survey (packet loss/RSSI at each wall).
+- DONE (2026-10-14, installer on site, see docs/TEST_RESULTS.md): pairing via the page works; the longest control-to-node distance in the venue works (node connected and online).
+- Still open: logged RSSI/packet-loss survey per wall; multi-node test of the control firmware with logs.
