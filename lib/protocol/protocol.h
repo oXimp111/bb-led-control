@@ -6,10 +6,10 @@
 #include <stddef.h>
 
 #define LF_MAGIC        0x464C   // bytes 'L','F' little-endian
-#define LF_PROTO_VER    2
+#define LF_PROTO_VER    3
 #define LF_MAX_CH       8        // PWM channels per node
 #define LF_MAX_STEPS    24       // steps per program (a compiled show needs up to 24 per frame)
-#define LF_MAX_PROGS    8        // program slots stored on each node
+#define LF_MAX_PROGS    16       // program slots per node: 2 banks of LF_MAX_CH (bank b, channel c (0-based) -> slot b*LF_MAX_CH + c)
 #define LF_WIFI_CHANNEL 1        // all devices must use the same 2.4 GHz channel
 #define LF_NO_PROGRAM   0xFF     // "no program assigned"
 #define LF_ALL_CH       0xFF     // channel mask: every channel
@@ -28,12 +28,14 @@ enum LfMsgType : uint8_t {
   MSG_IDENTIFY  = 15,  // pulse channels so a person can find the frame
   MSG_UNPAIR    = 16,  // node forgets its controller
   MSG_SYNC      = 17,  // re-anchor playing channels to show time t_ms (best effort: NO ACK, may be broadcast)
+  MSG_GO        = 18,  // cue: switch channels to a program bank and play, stop others (ACKed; same seq on repeats = applied once)
 };
 
 enum LfStepType : uint8_t {
   STEP_HOLD  = 0,  // level a for duration
   STEP_FADE  = 1,  // a -> b over duration
   STEP_BLINK = 2,  // a -> b -> a triangle, period_ms per cycle, for duration
+  STEP_KEEP  = 3,  // keep the level the channel has at this moment (end of previous step, or level when the program started) for duration
 };
 
 enum LfAckStatus : uint8_t {
@@ -76,6 +78,9 @@ struct LfMsgAssign   { LfHeader h; uint8_t ch_mask; uint8_t slot; };   // slot L
 struct LfMsgChMask   { LfHeader h; uint8_t ch_mask; };                 // STOP
 struct LfMsgPlay     { LfHeader h; uint8_t ch_mask; uint32_t offset_ms; }; // start as if offset_ms already elapsed
 struct LfMsgSync     { LfHeader h; uint8_t ch_mask; uint32_t t_ms; };      // playing channels: elapsed := t_ms
+// Cue. For every channel in play_mask: assign slot bank*LF_MAX_CH + ch, play it from offset_ms.
+// Channels in stop_mask: stop, hold current level. Channels in neither mask are untouched. Masks must not overlap.
+struct LfMsgGo       { LfHeader h; uint8_t bank; uint8_t play_mask; uint8_t stop_mask; uint32_t offset_ms; };
 struct LfMsgIdentify { LfHeader h; uint8_t ch_mask; uint8_t seconds; };
 struct LfMsgAck      { LfHeader h; uint16_t acked_seq; uint8_t status; };
 struct LfMsgPairReq  { LfHeader h; uint16_t fw_ver; uint8_t n_ch; };
@@ -99,5 +104,7 @@ static_assert(sizeof(LfProgram) == 2 + LF_MAX_STEPS * 9, "program size");
 static_assert(sizeof(LfProgram) == 218, "program size");
 static_assert(sizeof(LfMsgPlay) == 17, "play size");
 static_assert(sizeof(LfMsgSync) == 17, "sync size");
+static_assert(sizeof(LfMsgGo) == 19, "go size");
+static_assert(LF_MAX_PROGS == 2 * LF_MAX_CH, "two banks");
 static_assert(sizeof(LfMsgProg) <= 250, "must fit one ESP-NOW v1 packet");
 static_assert(sizeof(LfMsgHeartbeat) <= 250, "must fit one ESP-NOW v1 packet");

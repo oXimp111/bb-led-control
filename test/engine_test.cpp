@@ -62,7 +62,7 @@ int main() {
   CHECK(near(programLevelAt(p, 100), 0.0f));
 
   // ---------- 24 steps ----------
-  static_assert(LF_MAX_STEPS == 24 && LF_PROTO_VER == 2, "limits");
+  static_assert(LF_MAX_STEPS == 24 && LF_PROTO_VER == 3, "limits");
   static_assert(sizeof(LfProgram) == 218 && sizeof(LfMsgProg) == 231, "wire sizes");
   static_assert(sizeof(LfMsgHeartbeat) <= 250 && sizeof(LfMsgPlay) == 17 && sizeof(LfMsgSync) == 17, "wire sizes");
   {
@@ -77,7 +77,7 @@ int main() {
     LfProgram bad = p; bad.n_steps = 25; CHECK(!validateProgram(bad));
     bad = p; bad.steps[3].type = STEP_BLINK; bad.steps[3].period_ms = 0; CHECK(!validateProgram(bad));
     bad = p; bad.steps[3].a = 101; CHECK(!validateProgram(bad));
-    bad = p; bad.steps[3].type = 3; CHECK(!validateProgram(bad));
+    bad = p; bad.steps[3].type = 4; CHECK(!validateProgram(bad));
     // worst-case text: 24 max-size blink steps must fit LF_PROG_TEXT_MAX
     std::string w = "loop ";
     for (int i = 0; i < 24; i++) w += "B100-100/65535ms:4294967295ms ";
@@ -220,6 +220,30 @@ int main() {
     CHECK(!d.playing() && !d.sync(1, 0));            // stopped channels ignore sync
     Channel s; s.play(&show24, 100);                 // 24-step show, mid-show resync
     CHECK(s.sync(5250, 600) && near(s.update(600), programLevelAt(show24, 5250)));
+  }
+
+  // KEEP step: hold whatever level the channel has
+  {
+    LfProgram k; char e2[64];
+    CHECK(parseProgram("K:2s F0-100:1s K:1s H20:0", k, e2, sizeof e2) && k.n_steps == 4 && k.steps[0].type == STEP_KEEP);
+    char fb[100]; formatProgram(k, fb, sizeof fb);
+    CHECK(!strcmp(fb, "K:2s F0-100:1s K:1s H20:0ms"));
+    CHECK(near(programLevelAt(k, 500, 0.7f), 0.7f));      // leading KEEP = entry level
+    CHECK(near(programLevelAt(k, 2500, 0.7f), 0.5f));     // fade runs as normal
+    CHECK(near(programLevelAt(k, 3500, 0.7f), 1.0f));     // KEEP after the fade = the fade's end
+    CHECK(near(programLevelAt(k, 99999, 0.7f), 0.2f));
+    CHECK(!parseProgram("K", k, e2, sizeof e2));          // needs a duration
+    LfProgram bad; parseProgram("K:1s", bad, e2, sizeof e2); bad.steps[0].type = 4; CHECK(!validateProgram(bad));
+    Channel c; c.setManual(0.4f, 0, 0); c.update(0);
+    LfProgram lead; parseProgram("K:1s F0-100:1s", lead, e2, sizeof e2);
+    c.play(&lead, 100);                                    // starts from the level the channel had
+    CHECK(near(c.update(600), 0.4f));
+    CHECK(near(c.update(1100 + 500), 0.5f));
+    Channel mid; LfProgram a; parseProgram("F0-100:10s", a, e2, sizeof e2);   // frozen mid-fade, then a KEEP program
+    mid.play(&a, 0); mid.update(5000); mid.stop(5000);
+    CHECK(near(mid.level(), 0.5f));
+    mid.play(&lead, 6000);
+    CHECK(near(mid.update(6500), 0.5f));
   }
 
   // gamma

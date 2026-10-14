@@ -154,6 +154,22 @@ static uint8_t doProg(uint8_t slot, const LfProgram& p) {
   return ACK_OK;
 }
 
+// Cue: play_mask channels switch to bank `bank` and play from offset_ms; stop_mask channels stop and hold their level.
+// All-or-nothing: a bad argument or a missing program changes nothing (the controller then uploads and retries).
+static uint8_t doGo(uint8_t bank, uint8_t play_mask, uint8_t stop_mask, uint32_t offset_ms) {
+  const uint8_t valid = (uint8_t)((1u << NUM_CH) - 1);
+  if (bank > 1 || (play_mask | stop_mask) == 0 || ((play_mask | stop_mask) & ~valid) || (play_mask & stop_mask)) return ACK_BAD_ARG;
+  for (int i = 0; i < NUM_CH; i++)
+    if ((play_mask & (1 << i)) && progs[bank * LF_MAX_CH + i].n_steps == 0) return ACK_BAD_ARG;
+  uint32_t now = millis();
+  for (int i = 0; i < NUM_CH; i++) {
+    if (play_mask & (1 << i)) { st.assign[i] = (uint8_t)(bank * LF_MAX_CH + i); chans[i].play(&progs[st.assign[i]], now, offset_ms); }
+    else if (stop_mask & (1 << i)) chans[i].stop(now);
+  }
+  markDirty();
+  return ACK_OK;
+}
+
 static uint8_t doAssign(uint8_t mask, uint8_t slot) {
   if ((slot >= LF_MAX_PROGS && slot != LF_NO_PROGRAM) || !normMask(mask)) return ACK_BAD_ARG;
   for (int i = 0; i < NUM_CH; i++) if (mask & (1 << i)) st.assign[i] = slot;
@@ -332,6 +348,11 @@ static void handlePacket(const RxItem& it) {
         LfMsgPlay m; memcpy(&m, it.data, sizeof(m));
         status = doPlay(m.ch_mask, m.offset_ms);
       } break;
+    case MSG_GO:
+      if (it.len >= sizeof(LfMsgGo)) {
+        LfMsgGo m; memcpy(&m, it.data, sizeof(m));
+        status = doGo(m.bank, m.play_mask, m.stop_mask, m.offset_ms);
+      } break;
     case MSG_STOP:
       if (it.len >= sizeof(LfMsgChMask)) {
         const LfMsgChMask* m = (const LfMsgChMask*)it.data;
@@ -420,14 +441,15 @@ static void printProgs() {
 }
 
 static const char* HELP =
-  "commands (channels 1..8 or 'all', slots 1..8):\n"
+  "commands (channels 1..8 or 'all', slots 1..16):\n"
   "  status | progs | help\n"
   "  set <ch> <0-100> [fade_ms]\n"
   "  prog <slot> [loop] <steps>   e.g. prog 1 H100:10s B0-100/1s:5s H0:0\n"
-  "       H<lvl>:<dur>  F<a>-<b>:<dur>  B<a>-<b>/<period>:<dur>   dur: 500ms | 2s\n"
+  "       H<lvl>:<dur>  F<a>-<b>:<dur>  B<a>-<b>/<period>:<dur>  K:<dur> (keep level)   dur: 500ms | 2s\n"
   "  assign <ch> <slot|none>\n"
   "  play <ch> [offset_ms]        start as if offset_ms already elapsed\n"
   "  sync <ch> <t_ms>             playing channels: jump to t_ms if off by > 20 ms\n"
+  "  go <bank 0|1> <play mask> <stop mask> [offset_ms]   cue; masks are numbers, bit0 = ch1 (slot = bank*8+ch)\n"
   "  stop <ch> | identify <ch> [seconds]\n"
   "  pair | unpair | reset (factory) | reboot\n";
 
@@ -446,9 +468,17 @@ static void handleLine(char* line) {
   if (!strcmp(cmd, "reset")) { factoryReset(); return; }
   if (!strcmp(cmd, "reboot")) { ESP.restart(); return; }
 
+  if (!strcmp(cmd, "go")) {   // go <bank> <play mask> <stop mask> [offset_ms]
+    uint32_t b, pm, sm, off = 0; char* t = strtok(rest, " ");
+    if (!a1 || !parseU32(a1, b) || !t || !parseU32(t, pm) || !(t = strtok(nullptr, " ")) || !parseU32(t, sm)
+        || ((t = strtok(nullptr, " ")) && !parseU32(t, off)) || pm > 255 || sm > 255) { Serial.println("ERR go <bank 0|1> <play mask> <stop mask> [offset_ms]"); return; }
+    r = doGo((uint8_t)b, (uint8_t)pm, (uint8_t)sm, off);
+    Serial.println(r == ACK_OK ? "OK" : "ERR bad argument");
+    return;
+  }
   if (!strcmp(cmd, "prog")) {
     int slot = a1 ? atoi(a1) : 0;
-    if (slot < 1 || slot > LF_MAX_PROGS) { Serial.println("ERR slot 1..8"); return; }
+    if (slot < 1 || slot > LF_MAX_PROGS) { Serial.println("ERR slot 1..16"); return; }
     LfProgram p; char err[64];
     if (!lf::parseProgram(rest ? rest : "", p, err, sizeof err)) { Serial.printf("ERR %s\n", err); return; }
     r = doProg(slot - 1, p);
@@ -463,7 +493,7 @@ static void handleLine(char* line) {
     if (!rest) { Serial.println("ERR assign <ch> <slot|none>"); return; }
     bool none = !strncmp(rest, "none", 4);
     int sn = atoi(rest);
-    if (!none && (sn < 1 || sn > LF_MAX_PROGS)) { Serial.println("ERR slot 1..8 or none"); return; }
+    if (!none && (sn < 1 || sn > LF_MAX_PROGS)) { Serial.println("ERR slot 1..16 or none"); return; }
     r = doAssign(mask, none ? LF_NO_PROGRAM : (uint8_t)(sn - 1));
   } else if (!strcmp(cmd, "play")) {
     uint32_t off = 0;

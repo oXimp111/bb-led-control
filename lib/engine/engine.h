@@ -10,7 +10,7 @@ namespace lf {
 // ---------- program math ----------
 uint32_t programTotalMs(const LfProgram& p);
 float    stepEndLevel(const LfStep& s);                    // 0..1
-float    programLevelAt(const LfProgram& p, uint32_t t_ms); // 0..1, t past end = end level
+float    programLevelAt(const LfProgram& p, uint32_t t_ms, float entry = 0); // 0..1, t past end = end level. entry = level a leading KEEP step holds
 void     normalizeProgram(LfProgram& p);                    // zero unused steps, clamp
 bool     validateProgram(const LfProgram& p);
 uint16_t crc16(const uint8_t* data, size_t len);
@@ -33,7 +33,7 @@ class Channel {
   enum Mode { MANUAL, PROGRAM } mode_ = MANUAL;
   const LfProgram* prog_ = nullptr;
   uint32_t start_ = 0;
-  float from_ = 0, to_ = 0, cur_ = 0;
+  float from_ = 0, to_ = 0, cur_ = 0, entry_ = 0;
   uint32_t fstart_ = 0, fdur_ = 0;
 };
 
@@ -45,6 +45,7 @@ class Channel {
 //   H<lvl>:<dur>              hold
 //   F<a>-<b>:<dur>            fade a->b
 //   B<a>-<b>/<period>:<dur>   blink a<->b
+//   K:<dur>                   keep the current level (level when the program started, or the previous step's end)
 //   durations: 500ms | 1.5s | 2000 (bare = ms)
 bool   parseProgram(const char* text, LfProgram& out, char* err, size_t errlen);
 size_t formatProgram(const LfProgram& p, char* buf, size_t buflen);

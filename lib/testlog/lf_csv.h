@@ -41,6 +41,7 @@ inline const char* lfMsgName(int t, char* buf, size_t cap) {
     case MSG_IDENTIFY:  return "IDENTIFY";
     case MSG_UNPAIR:    return "UNPAIR";
     case MSG_SYNC:      return "SYNC";
+    case MSG_GO:        return "GO";
   }
   snprintf(buf, cap, "T%d", t);
   return buf;
@@ -58,6 +59,7 @@ inline int lfExpectedLen(int t) {
     case MSG_IDENTIFY:  return (int)sizeof(LfMsgIdentify);
     case MSG_UNPAIR:    return (int)sizeof(LfHeader);
     case MSG_SYNC:      return (int)sizeof(LfMsgSync);
+    case MSG_GO:        return (int)sizeof(LfMsgGo);
   }
   return -1;
 }

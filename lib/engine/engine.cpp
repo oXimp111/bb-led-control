@@ -18,7 +18,7 @@ uint32_t programTotalMs(const LfProgram& p) {
 float stepEndLevel(const LfStep& s) {
   switch (s.type) {
     case STEP_FADE: return pct(s.b);
-    default:        return pct(s.a);  // HOLD ends at a; BLINK ends back at a
+    default:        return pct(s.a);  // HOLD ends at a; BLINK ends back at a. KEEP has no level of its own (programLevelAt tracks it)
   }
 }
 
@@ -30,6 +30,7 @@ static float stepLevelAt(const LfStep& s, uint32_t t) {
       float f = (float)t / (float)s.duration_ms;
       return pct(s.a) + (pct(s.b) - pct(s.a)) * f;
     }
+    case STEP_KEEP: return 0;  // never used: programLevelAt substitutes the carried level
     case STEP_BLINK: {
       if (s.period_ms == 0) return pct(s.a);
       float ph = (float)(t % s.period_ms) / (float)s.period_ms;  // 0..1
@@ -40,15 +41,18 @@ static float stepLevelAt(const LfStep& s, uint32_t t) {
   return 0;
 }
 
-float programLevelAt(const LfProgram& p, uint32_t t) {
+float programLevelAt(const LfProgram& p, uint32_t t, float entry) {
   uint8_t n = p.n_steps > LF_MAX_STEPS ? LF_MAX_STEPS : p.n_steps;
   if (n == 0) return 0;
+  float carry = entry;  // level a KEEP step holds: end of the previous step, or `entry` for the first
   for (uint8_t i = 0; i < n; i++) {
     const LfStep& s = p.steps[i];
-    if (t < s.duration_ms) return stepLevelAt(s, t);
+    bool keep = s.type == STEP_KEEP;
+    if (t < s.duration_ms) return keep ? carry : stepLevelAt(s, t);
     t -= s.duration_ms;
+    if (!keep) carry = stepEndLevel(s);
   }
-  return stepEndLevel(p.steps[n - 1]);  // finished: hold last step's end level
+  return carry;  // finished: hold last step's end level
 }
 
 void normalizeProgram(LfProgram& p) {
@@ -60,6 +64,7 @@ void normalizeProgram(LfProgram& p) {
     if (s.a > 100) s.a = 100;
     if (s.b > 100) s.b = 100;
     if (s.type == STEP_HOLD) { s.b = 0; s.period_ms = 0; }
+    if (s.type == STEP_KEEP) { s.a = 0; s.b = 0; s.period_ms = 0; }
     if (s.type == STEP_FADE) s.period_ms = 0;
   }
 }
@@ -68,7 +73,7 @@ bool validateProgram(const LfProgram& p) {
   if (p.n_steps > LF_MAX_STEPS) return false;
   for (uint8_t i = 0; i < p.n_steps; i++) {
     const LfStep& s = p.steps[i];
-    if (s.type > STEP_BLINK || s.a > 100 || s.b > 100) return false;
+    if (s.type > STEP_KEEP || s.a > 100 || s.b > 100) return false;
     if (s.type == STEP_BLINK && s.period_ms == 0) return false;
   }
   return true;
@@ -112,6 +117,7 @@ void Channel::play(const LfProgram* p, uint32_t now, uint32_t offset_ms) {
   if (!p) return;
   mode_ = PROGRAM;
   prog_ = p;
+  entry_ = cur_;  // level a leading KEEP step holds
   start_ = now - offset_ms;  // unsigned: elapsed (now - start_) == offset_ms, also across millis() wrap
 }
 
@@ -147,7 +153,7 @@ float Channel::update(uint32_t now) {
       start_ += (t / total) * total;  // re-anchor so t stays small
       t = now - start_;
     }
-    cur_ = programLevelAt(*prog_, t);
+    cur_ = programLevelAt(*prog_, t, entry_);
   } else if (fdur_ > 0) {
     uint32_t t = now - fstart_;
     if (t >= fdur_) { cur_ = to_; fdur_ = 0; }
@@ -195,7 +201,9 @@ bool parseProgram(const char* text, LfProgram& out, char* err, size_t errlen) {
     if (out.n_steps >= LF_MAX_STEPS) { setErr(err, errlen, "max 24 steps", tok); return false; }
     LfStep& st = out.steps[out.n_steps];
     char c = (char)toupper((unsigned char)*s++);
-    if (c == 'H') {
+    if (c == 'K') {
+      st.type = STEP_KEEP;
+    } else if (c == 'H') {
       st.type = STEP_HOLD;
       if (!parseLevel(s, st.a)) { setErr(err, errlen, "bad level", tok); return false; }
     } else if (c == 'F' || c == 'B') {
@@ -211,7 +219,7 @@ bool parseProgram(const char* text, LfProgram& out, char* err, size_t errlen) {
         st.period_ms = (uint16_t)per;
       }
     } else {
-      setErr(err, errlen, "unknown step (H/F/B)", tok); return false;
+      setErr(err, errlen, "unknown step (H/F/B/K)", tok); return false;
     }
     uint32_t dur;  // local: st is packed, a reference to its field is undefined behaviour
     if (*s++ != ':' || !parseDur(s, dur)) {
@@ -240,7 +248,8 @@ size_t formatProgram(const LfProgram& p, char* buf, size_t len) {
   if (p.flags & LF_PROG_LOOP) adv(snprintf(buf + o, room(), "loop "));
   for (uint8_t i = 0; i < p.n_steps && i < LF_MAX_STEPS; i++) {
     const LfStep& s = p.steps[i];
-    if (s.type == STEP_HOLD) adv(snprintf(buf + o, room(), "H%u:", s.a));
+    if (s.type == STEP_KEEP) adv(snprintf(buf + o, room(), "K:"));
+    else if (s.type == STEP_HOLD) adv(snprintf(buf + o, room(), "H%u:", s.a));
     else if (s.type == STEP_FADE) adv(snprintf(buf + o, room(), "F%u-%u:", s.a, s.b));
     else {
       adv(snprintf(buf + o, room(), "B%u-%u/", s.a, s.b));
