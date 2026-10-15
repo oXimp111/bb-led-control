@@ -1,0 +1,28 @@
+node 70:4B:CA:21:4F:EC   control 70:4B:CA:25:7C:31   label '2relays'
+
+== 1. idle traffic, 30 s ==
+node received 115 packets (3.8 / s), node sent 60 heartbeats, control reported 175 status updates = 2.92 per heartbeat
+node queue drops 0, queue max 5
+
+== 2. 150 SET commands, node state checked 70 ms after each result ==
+commands failed: 0 of 150    result time ms: median 25, p95 83, max 89
+state mismatches (node level different from what the last acknowledged command set): 0
+
+== 3. burst: 300 SET commands back to back ==
+commands failed: 0 of 300    result time ms: median 24, p95 52, max 92
+
+== 4. program uploads: 5 rounds of 8 x 24-step programs ==
+uploads failed: 0 of 40    program checksum wrong on the node after a round: 0 of 40
+
+== 5. what the node received (from node.log) ==
+commands seen: 493 distinct, 1410 packets
+copies per command: 1 copies: 4, 2 copies: 61, 3 copies: 428
+time between first and last copy of the same command (ms): median 2.02, p95 6.54, max 10.70
+repeats the node recognised and ignored (re-ACKed): 917
+COMMANDS APPLIED MORE THAN ONCE (a late copy after another command): 0
+packets the node received that carry its OWN address (relay copies of its heartbeats/ACKs): 2770
+node totals: rx 4429, queue drops 0, queue max 8, bad header 0
+
+== SUMMARY (2relays) ==
+idle receive rate 3.8 packets/s | failed commands 0+0 of 450 | state mismatches 0 | uploads failed 0, wrong checksum 0 | applied twice 0 | max copy spread 10.70 ms
+logs: C:\Users\SeanL\Documents\Projects\BB LED Control ESP32\test_logs\relaytest_2relays_20261015_134925

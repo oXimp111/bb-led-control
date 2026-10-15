@@ -1,0 +1,28 @@
+node 70:4B:CA:21:4F:EC   control 70:4B:CA:25:7C:31   label 'off'
+pairing ...
+
+== 1. idle traffic, 30 s ==
+node received 0 packets (0.0 / s), node sent 59 heartbeats, control reported 59 status updates = 1.00 per heartbeat
+node queue drops 0, queue max 1
+
+== 2. 150 SET commands, node state checked 70 ms after each result ==
+commands failed: 0 of 150    result time ms: median 25, p95 33, max 44
+state mismatches (node level different from what the last acknowledged command set): 0
+
+== 3. burst: 300 SET commands back to back ==
+commands failed: 0 of 300    result time ms: median 24, p95 32, max 47
+
+== 4. program uploads: 5 rounds of 8 x 24-step programs ==
+uploads failed: 0 of 40    program checksum wrong on the node after a round: 0 of 40
+
+== 5. what the node received (from node.log) ==
+commands seen: 493 distinct, 493 packets
+copies per command: 1 copies: 493
+repeats the node recognised and ignored (re-ACKed): 0
+COMMANDS APPLIED MORE THAN ONCE (a late copy after another command): 0
+packets the node received that carry its OWN address (relay copies of its heartbeats/ACKs): 0
+node totals: rx 494, queue drops 0, queue max 1, bad header 0
+
+== SUMMARY (off) ==
+idle receive rate 0.0 packets/s | failed commands 0+0 of 450 | state mismatches 0 | uploads failed 0, wrong checksum 0 | applied twice 0 | max copy spread - ms
+logs: C:\Users\SeanL\Documents\Projects\BB LED Control ESP32\test_logs\relaytest_off_20261015_133850

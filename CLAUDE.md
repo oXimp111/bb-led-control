@@ -31,6 +31,7 @@ Installer: his girlfriend (China, Windows, non-technical) — explain steps simp
 ## Layout
 ```
 lib/protocol/protocol.h   ONLY definition of radio packets (node + control center). Bump LF_PROTO_VER on layout change.
+src/relay/                range-extender firmware (env `relay`, see docs/RELAY.md): repeats frames unchanged, nodes/control need no change
 src/control/              control center firmware (AP + web server + WebSocket/USB JSON <-> ESP-NOW bridge)
 tools/embed_web.py        build step: gzips web/control.html (+ tools/ws_shim.js) into the control firmware
 lib/engine/               program player + text format, pure C++ (unit-tested on PC)
@@ -60,6 +61,7 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 | Board | Env to flash | Command (hold BOOT until it prints `Writing`) | How to confirm |
 |---|---|---|---|
 | Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
+| Relay (optional, 1 spare board, only if a far wall is out of reach) | `relay` | `pio run -e relay -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame RELAY fw 1`, then a `[relay] 5 s:` table |
 | Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | `{"cmd":"hello"}` over USB answers `"proto":3`; the page opens at http://192.168.4.1/ (Wi-Fi `LED-Control` / `ledframes`) |
 - **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
 - Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
@@ -209,4 +211,6 @@ Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a c
 - PLANNED latency fixes: frame click should send only PLAY when the node already has that program (compare
   `prog_crc` from heartbeat); start shows and steps with ONE broadcast to all nodes.
 - DONE (2026-10-14, installer on site, see docs/TEST_RESULTS.md): pairing via the page works; the longest control-to-node distance in the venue works (node connected and online).
+- 2026-10-15: on site the farthest node is still too far from the control (weak signal). Relay written (`src/relay`, docs/RELAY.md) and bench-tested the same day: far node -95 dBm/offline without relay, online at -70 dBm with it. Two relays at once tested on the bench (`tools/relay_test.py`, docs/RELAY.md): duplicates arrive but nothing is applied twice, 0 failures.
+  Still open: relay position on site (open table, plastic cover; no cabinet), re-survey with nobody near the boards. Zip sent to the installer (no git access there).
 - Still open: logged RSSI/packet-loss survey per wall; multi-node test of the control firmware with logs.

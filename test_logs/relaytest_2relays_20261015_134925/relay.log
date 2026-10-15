@@ -1,0 +1,121 @@
+1792097360.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097360.5         70:4B:CA:21:4F:EC  node         rssi -51 dBm  frames 19
+1792097365.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097365.5         70:4B:CA:21:4F:EC  node         rssi -51 dBm  frames 20
+1792097370.5 [relay] 5 s: control->nodes 3  nodes->control 19  duplicate 21  tx_error 0  queue_drop 0
+1792097370.5         70:4B:CA:21:4F:EC  node         rssi -51 dBm  frames 37
+1792097370.5         70:4B:CA:25:7C:31  CONTROL      rssi -51 dBm  frames 6
+1792097375.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097375.5         70:4B:CA:21:4F:EC  node         rssi -51 dBm  frames 19
+1792097380.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097380.5         70:4B:CA:21:4F:EC  node         rssi -43 dBm  frames 19
+1792097385.5 [relay] 5 s: control->nodes 0  nodes->control 11  duplicate 9  tx_error 0  queue_drop 0
+1792097385.5         70:4B:CA:21:4F:EC  node         rssi -38 dBm  frames 20
+1792097390.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097390.5         70:4B:CA:21:4F:EC  node         rssi -35 dBm  frames 20
+1792097395.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097395.5         70:4B:CA:21:4F:EC  node         rssi -36 dBm  frames 20
+1792097400.5 [relay] 5 s: control->nodes 39  nodes->control 115  duplicate 138  tx_error 0  queue_drop 0
+1792097400.5         70:4B:CA:21:4F:EC  node         rssi -39 dBm  frames 218
+1792097400.5         70:4B:CA:25:7C:31  CONTROL      rssi -62 dBm  frames 74
+1792097405.5 [relay] 5 s: control->nodes 44  nodes->control 136  duplicate 169  tx_error 0  queue_drop 0
+1792097405.5         70:4B:CA:21:4F:EC  node         rssi -43 dBm  frames 264
+1792097405.5         70:4B:CA:25:7C:31  CONTROL      rssi -39 dBm  frames 85
+1792097410.5 [relay] 5 s: control->nodes 43  nodes->control 127  duplicate 155  tx_error 0  queue_drop 0
+1792097410.5         70:4B:CA:21:4F:EC  node         rssi -44 dBm  frames 243
+1792097410.5         70:4B:CA:25:7C:31  CONTROL      rssi -35 dBm  frames 82
+1792097415.5 [relay] 5 s: control->nodes 107  nodes->control 309  duplicate 378  tx_error 0  queue_drop 0
+1792097415.5         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 587
+1792097415.5         70:4B:CA:25:7C:31  CONTROL      rssi -16 dBm  frames 207
+1792097420.5 [relay] 5 s: control->nodes 184  nodes->control 530  duplicate 652  tx_error 0  queue_drop 0
+1792097420.5         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 1013
+1792097420.5         70:4B:CA:25:7C:31  CONTROL      rssi -15 dBm  frames 353
+1792097425.5 [relay] 5 s: control->nodes 73  nodes->control 215  duplicate 261  tx_error 0  queue_drop 0
+1792097425.5         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 414
+1792097425.5         70:4B:CA:25:7C:31  CONTROL      rssi -17 dBm  frames 135
+1792097430.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097430.5         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 20
+1792097435.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097435.6         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 20
+1792097440.5 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097440.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097445.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097445.6         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 20
+1792097450.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097450.6         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 20
+1792097455.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097455.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097460.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097460.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097465.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097465.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097470.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097470.6         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 20
+1792097475.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097475.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097480.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 11  tx_error 0  queue_drop 0
+1792097480.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 21
+1792097485.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097485.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097490.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097490.6         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 19
+1792097495.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097495.6         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 19
+1792097500.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097500.6         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 20
+1792097505.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097505.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097510.6 [relay] 5 s: control->nodes 0  nodes->control 9  duplicate 8  tx_error 0  queue_drop 0
+1792097510.6         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 17
+1792097515.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097515.6         70:4B:CA:21:4F:EC  node         rssi -36 dBm  frames 19
+1792097520.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097520.6         70:4B:CA:21:4F:EC  node         rssi -34 dBm  frames 19
+1792097525.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097525.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097530.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097530.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097535.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097535.6         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097540.6 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097540.6         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 20
+1792097545.6 [relay] 5 s: control->nodes 0  nodes->control 11  duplicate 11  tx_error 0  queue_drop 0
+1792097545.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 22
+1792097550.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097550.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097555.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097555.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097560.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097560.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097565.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097565.7         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 20
+1792097570.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 11  tx_error 0  queue_drop 0
+1792097570.7         70:4B:CA:21:4F:EC  node         rssi -16 dBm  frames 21
+1792097575.7 [relay] 5 s: control->nodes 0  nodes->control 9  duplicate 9  tx_error 0  queue_drop 0
+1792097575.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 18
+1792097580.7 [relay] 5 s: control->nodes 0  nodes->control 11  duplicate 12  tx_error 0  queue_drop 0
+1792097580.7         70:4B:CA:21:4F:EC  node         rssi -18 dBm  frames 23
+1792097585.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097585.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097590.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097590.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097595.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 11  tx_error 0  queue_drop 0
+1792097595.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 21
+1792097600.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 8  tx_error 0  queue_drop 0
+1792097600.7         70:4B:CA:21:4F:EC  node         rssi -34 dBm  frames 18
+1792097605.7 [relay] 5 s: control->nodes 0  nodes->control 9  duplicate 6  tx_error 0  queue_drop 0
+1792097605.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 15
+1792097610.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097610.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097615.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097615.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097620.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 10  tx_error 0  queue_drop 0
+1792097620.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 20
+1792097625.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097625.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097630.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 11  tx_error 0  queue_drop 0
+1792097630.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 21
+1792097635.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097635.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
+1792097640.7 [relay] 5 s: control->nodes 0  nodes->control 10  duplicate 9  tx_error 0  queue_drop 0
+1792097640.7         70:4B:CA:21:4F:EC  node         rssi -17 dBm  frames 19
