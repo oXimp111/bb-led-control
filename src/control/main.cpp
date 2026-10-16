@@ -45,12 +45,24 @@ static bool macParse(const char* s, uint8_t* out) {
   return true;
 }
 
+// A page whose Wi-Fi dropped without closing the socket (laptop Wi-Fi blip during a long cue pause) stops taking data.
+// Each write to it then blocks until WEBSOCKETS_TCP_TIMEOUT, and the status broadcasts stall the whole loop: GO
+// arrives seconds late or not at all. Drop such a client at once; a live page reconnects by itself in 2 s.
+static void wsSend(uint8_t num, const String& line) {
+  if (!wss.clientIsConnected(num)) return;
+  uint32_t t = millis();
+  bool ok = wss.sendTXT(num, line.c_str(), line.length());
+  if (!ok || millis() - t > WS_SLOW_MS) {
+    Serial.printf("[ws] client %u stopped taking data (%lu ms), dropped\n", num, (unsigned long)(millis() - t));
+    wss.disconnect(num);
+  }
+}
 static void sendTo(int src, const String& line) {
   if (src == SRC_SERIAL) Serial.println(line);
   else if (src == SRC_ALL) {
     if (serialJson) Serial.println(line);
-    wss.broadcastTXT(line.c_str(), line.length());
-  } else wss.sendTXT((uint8_t)src, line.c_str(), line.length());
+    for (uint8_t i = 0; i < WEBSOCKETS_SERVER_CLIENT_MAX; i++) wsSend(i, line);
+  } else wsSend((uint8_t)src, line);
 }
 static void sendDoc(int src, const JsonDocument& d) {
   String s;

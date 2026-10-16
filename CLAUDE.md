@@ -62,7 +62,10 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 |---|---|---|---|
 | Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
 | Relay (optional, 1 spare board, only if a far wall is out of reach) | `relay` | `pio run -e relay -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame RELAY fw 1`, then a `[relay] 5 s:` table |
-| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | `{"cmd":"hello"}` over USB answers `"proto":3`; the page opens at http://192.168.4.1/ (Wi-Fi `LED-Control` / `ledframes`) |
+| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 2, protocol 3`; the page opens at http://192.168.4.1/ (Wi-Fi `LED-Control` / `ledframes`) |
+- **Control fw 2 (2026-10-16) fixes "GO lags / needs a second press after a long cue pause"**: a page connection that died without closing (laptop Wi-Fi blip)
+  made every status broadcast block the control loop for 5 s. Now such a client is dropped at once (`wsSend()` in `src/control/main.cpp`, `WEBSOCKETS_TCP_TIMEOUT` 300 in `platformio.ini`).
+  Bench result (`tools/dead_ws_test.py`): fw 1 = GO no answer within 15 s (3/3), fw 2 = 20/20 ok, worst 170 ms. Only the control board needs reflashing; nodes unchanged.
 - **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
 - Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
 - The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.
