@@ -1,0 +1,82 @@
+[  0.01 min 00:15:34] ctl: [ws] status sent 8 times
+[  0.04 min 00:15:35] ctl: [477149][E][WebServer.cpp:638] _handleRequest(): request handler not found
+[  0.04 min 00:15:35] ctl: [477224][E][WiFiClient.cpp:429] write(): fail on fd 50, errno: 104, "Connection reset by peer"
+[  0.04 min 00:15:35] ctl: [ws] client 0 connected (1 total)
+[  0.16 min 00:15:43] show with 40 sections; status lines x8; state {'k': -1, 'loaded': [0, 1], 'busy': False, 'preparing': False, 'up': True, 'pending': 0, 'status': 'Ready. Nothing has played yet.  ·  next section ready ✓'}
+[  0.16 min 00:15:43] GO (first) -> section 1: 24 ms OK  go:[ok 23ms]
+[  0.23 min 00:15:47] --- round: stall 0.0 s at pause
+[  0.48 min 00:16:02] GO (stall 0.0s at pause) -> section 2: 18 ms OK  go:[ok 17ms]
+[  0.53 min 00:16:05] --- round: stall 1.0 s at pause
+[  0.58 min 00:16:08]   laptop stops reading for 1.0 s
+[  0.78 min 00:16:20] GO (stall 1.0s at pause) -> section 3: 33 ms OK  go:[ok 32ms]
+[  0.83 min 00:16:23] --- round: stall 2.0 s at pause
+[  0.88 min 00:16:26]   laptop stops reading for 2.0 s
+[  1.08 min 00:16:38] GO (stall 2.0s at pause) -> section 4: 105 ms OK  go:[ok 104ms]
+[  1.14 min 00:16:41] --- round: stall 4.0 s at pause
+[  1.19 min 00:16:44]   laptop stops reading for 4.0 s
+[  1.24 min 00:16:47] ctl: [ws] client 0 left
+[  1.25 min 00:16:48] ctl: [ws] client 0 connected (1 total)
+[  1.39 min 00:16:56] GO (stall 4.0s at pause) -> section 5: 19 ms OK  go:[ok 18ms]  toast: ['Control box link lost, reconnecting...']
+[  1.44 min 00:16:59] --- round: stall 0.0 s at press
+[  1.64 min 00:17:11] GO (stall 0.0s at press) -> section 6: 17 ms OK  go:[ok 16ms]
+[  1.69 min 00:17:15] --- round: stall 1.0 s at press
+[  1.89 min 00:17:27]   laptop stops reading for 1.0 s
+[  1.90 min 00:17:27] GO (stall 1.0s at press) -> section 7: 16 ms OK  go:[ok 14ms]
+[  1.95 min 00:17:30] --- round: stall 2.0 s at press
+[  2.15 min 00:17:42]   laptop stops reading for 2.0 s
+[  2.18 min 00:17:44] ctl: [ws] client 0 left
+[  2.19 min 00:17:44] GO (stall 2.0s at press) -> section 8: 2026 ms OK  go:[link_lost 1507ms; ok 31ms]  toast: ['Control box link lost, reconnecting...']
+[  2.19 min 00:17:44] ctl: [ws] client 0 connected (1 total)
+[  2.24 min 00:17:47] --- round: stall 4.0 s at press
+[  2.44 min 00:17:59]   laptop stops reading for 4.0 s
+[  2.46 min 00:18:01] ctl: [ws] client 0 left
+[  2.47 min 00:18:01] GO (stall 4.0s at press) -> section 9: 1672 ms OK  go:[link_lost 1154ms; ok 35ms]  toast: ['Control box link lost, reconnecting...']
+[  2.47 min 00:18:01] ctl: [ws] client 0 connected (1 total)
+[  2.52 min 00:18:04] --- round: stall 0.0 s at pause
+[  2.77 min 00:18:19] GO (stall 0.0s at pause) -> section 10: 19 ms OK  go:[ok 18ms]
+[  2.82 min 00:18:22] --- round: stall 1.0 s at pause
+[  2.87 min 00:18:25]   laptop stops reading for 1.0 s
+[  3.07 min 00:18:37] GO (stall 1.0s at pause) -> section 11: 18 ms OK  go:[ok 17ms]
+[  3.12 min 00:18:40] --- round: stall 2.0 s at pause
+[  3.17 min 00:18:43]   laptop stops reading for 2.0 s
+[  3.37 min 00:18:55] GO (stall 2.0s at pause) -> section 12: 16 ms OK  go:[ok 15ms]
+[  3.42 min 00:18:58] --- round: stall 4.0 s at pause
+[  3.47 min 00:19:01]   laptop stops reading for 4.0 s
+[  3.53 min 00:19:05] ctl: [ws] client 0 left
+[  3.54 min 00:19:05] ctl: [ws] client 0 connected (1 total)
+[  3.67 min 00:19:13] GO (stall 4.0s at pause) -> section 13: 59 ms OK  go:[ok 58ms]  toast: ['Control box link lost, reconnecting...']
+[  3.72 min 00:19:16] --- round: stall 0.0 s at press
+[  3.93 min 00:19:29] GO (stall 0.0s at press) -> section 14: 17 ms OK  go:[ok 16ms]
+[  3.98 min 00:19:32] --- round: stall 1.0 s at press
+[  4.18 min 00:19:44]   laptop stops reading for 1.0 s
+[  4.20 min 00:19:45] GO (stall 1.0s at press) -> section 15: 708 ms OK  go:[ok 707ms]
+[  4.25 min 00:19:48] --- round: stall 2.0 s at press
+[  4.45 min 00:20:00]   laptop stops reading for 2.0 s
+[  4.48 min 00:20:02] ctl: [ws] client 0 left
+[  4.49 min 00:20:02] GO (stall 2.0s at press) -> section 16: 2039 ms OK  go:[link_lost 1516ms; ok 34ms]  toast: ['Control box link lost, reconnecting...']
+[  4.49 min 00:20:02] ctl: [ws] client 0 connected (1 total)
+[  4.54 min 00:20:05] --- round: stall 4.0 s at press
+[  4.74 min 00:20:17]   laptop stops reading for 4.0 s
+[  4.77 min 00:20:19] ctl: [ws] client 0 left
+[  4.78 min 00:20:20] GO (stall 4.0s at press) -> section 17: 2232 ms OK  go:[link_lost 1637ms; ok 72ms]  toast: ['Control box link lost, reconnecting...']
+[  4.78 min 00:20:20] ctl: [ws] client 0 connected (1 total)
+[  4.84 min 00:20:23] ctl: [ws] client 0 left
+[  4.84 min 00:20:23] ctl: [ws] skipped 462 lines, 1 of them results
+[  4.84 min 00:20:24] ==== SUMMARY dup8_normalwin dup 8 ====
+[  4.84 min 00:20:24]   stall  0.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  1.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  2.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  4.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  0.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  1.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  2.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  4.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  0.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  1.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  2.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  4.0 s at pause  : first press OK
+[  4.84 min 00:20:24]   stall  0.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  1.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  2.0 s at press  : first press OK
+[  4.84 min 00:20:24]   stall  4.0 s at press  : first press OK
+[  4.84 min 00:20:24]   first press OK 16/16, recovered by pressing again 0, needed reload 0

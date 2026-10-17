@@ -77,6 +77,10 @@ static bool macParse(const char* s, uint8_t* out) {
 // Test build only (env control_wstest): serial "wszombie" turns every connected page into a dead link that the page
 // cannot see: nothing reaches it any more and what it sends is ignored, but the socket stays open (= half-open TCP).
 static uint32_t wsZombie = 0;
+// "wsdup N": every node status goes out N times (one bench node = the traffic of N nodes, or of nodes heard twice via a relay).
+// "wsstats": lines skipped because a page's send buffer was full (results = command answers the page never got).
+static int wsDup = 1;
+static uint32_t wsSkipped = 0, wsSkippedResults = 0;
 #endif
 static uint32_t wsStuckSince[WEBSOCKETS_SERVER_CLIENT_MAX];   // 0 = writable at the last try
 static void wsSend(uint8_t num, const String& line) {
@@ -85,6 +89,10 @@ static void wsSend(uint8_t num, const String& line) {
   if (wsZombie & (1u << num)) return;
 #endif
   if (!wss.writable(num)) {
+#ifdef LF_WS_TEST
+    wsSkipped++;
+    if (line.startsWith("{\"evt\":\"result\"")) { wsSkippedResults++; Serial.printf("[ws] client %u: buffer full, result skipped: %s\n", num, line.c_str()); }
+#endif
     // A live laptop whose ACKs come late (Wi-Fi power save) also fills the buffer for a moment: skip this line (the
     // next status comes 0.5 s later, a lost result is resent by the page) and drop only a client stuck this long.
     uint32_t now = millis();
@@ -401,6 +409,9 @@ static void handlePacket(const RxItem& it) {
     p->rssi = rssiOf(it.mac);
     if (!was) Serial.printf("[peer] %s online\n", ms);
     emitStatus(*p, SRC_ALL);
+#ifdef LF_WS_TEST
+    for (int i = 1; i < wsDup; i++) emitStatus(*p, SRC_ALL);
+#endif
     for (auto& j : pairJobs) if (j.used && !memcmp(j.mac, it.mac, 6)) {
       sendResult(j.src, j.id, ms, true);
       j.used = false;
@@ -635,6 +646,8 @@ static void handleSerialText(const char* s) {
     for (uint8_t i = 0; i < WEBSOCKETS_SERVER_CLIENT_MAX; i++) if (wss.clientIsConnected(i)) wsZombie |= 1u << i;
     Serial.printf("[ws] zombie mask 0x%02lX\n", (unsigned long)wsZombie);
   }
+  else if (!strncmp(s, "wsdup ", 6)) { wsDup = constrain(atoi(s + 6), 1, 16); Serial.printf("[ws] status sent %d times\n", wsDup); }
+  else if (!strcmp(s, "wsstats")) Serial.printf("[ws] skipped %lu lines, %lu of them results\n", (unsigned long)wsSkipped, (unsigned long)wsSkippedResults);
 #endif
   else if (!strcmp(s, "forget")) {
     for (auto& p : peers) p.used = false;

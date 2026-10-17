@@ -1,0 +1,92 @@
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":1,"text":"F0-61:900ms K:100ms B10-90/450ms:1.5s K:100ms F61-1:1.3s","id":2}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":2,"text":"F0-62:900ms K:100ms B10-90/500ms:1.5s K:100ms F62-2:1.3s","id":3}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":3,"text":"F0-63:900ms K:100ms B10-90/550ms:1.5s K:100ms F63-3:1.3s","id":4}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":4,"text":"F0-64:900ms K:100ms B10-90/600ms:1.5s K:100ms F64-4:1.3s","id":5}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":5,"text":"F0-65:900ms K:100ms B10-90/650ms:1.5s K:100ms F65-5:1.3s","id":6}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":6,"text":"F0-66:900ms K:100ms B10-90/700ms:1.5s K:100ms F66-6:1.3s","id":7}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":7,"text":"F0-67:900ms K:100ms B10-90/750ms:1.5s K:100ms F67-7:1.3s","id":8}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":8,"text":"F0-68:900ms K:100ms B10-90/800ms:1.5s K:100ms F68-8:1.3s","id":9}
+00:08:19 rx {"evt":"result","id":2,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":3,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":4,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":5,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":6,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":7,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":8,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":9,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":9,"text":"F0-61:900ms K:100ms B10-90/450ms:1.5s K:100ms F61-8:1.3s","id":10}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":10,"text":"F0-62:900ms K:100ms B10-90/500ms:1.5s K:100ms F62-9:1.3s","id":11}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":11,"text":"F0-63:900ms K:100ms B10-90/550ms:1.5s K:100ms F63-10:1.3s","id":12}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":12,"text":"F0-64:900ms K:100ms B10-90/600ms:1.5s K:100ms F64-11:1.3s","id":13}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":13,"text":"F0-65:900ms K:100ms B10-90/650ms:1.5s K:100ms F65-12:1.3s","id":14}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":14,"text":"F0-66:900ms K:100ms B10-90/700ms:1.5s K:100ms F66-13:1.3s","id":15}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":15,"text":"F0-67:900ms K:100ms B10-90/750ms:1.5s K:100ms F67-14:1.3s","id":16}
+00:08:19 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":16,"text":"F0-68:900ms K:100ms B10-90/800ms:1.5s K:100ms F68-15:1.3s","id":17}
+00:08:19 rx {"evt":"result","id":10,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":11,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":12,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":13,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":14,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:19 rx {"evt":"result","id":15,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:20 rx {"evt":"result","id":16,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:20 rx {"evt":"result","id":17,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:25 tx {"cmd":"go","node":"B0:CB:D8:E9:6F:80","bank":0,"play":[1,2,3,4,5,6,7,8],"stop":[],"t_ms":0,"id":18}
+00:08:25 rx {"evt":"result","id":18,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 tx {"cmd":"go","node":"B0:CB:D8:E9:6F:80","bank":1,"play":[1,2,3,4,5,6,7,8],"stop":[],"t_ms":0,"id":19}
+00:08:38 rx {"evt":"result","id":19,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":1,"text":"F0-61:900ms K:100ms B10-90/450ms:1.5s K:100ms F61-15:1.3s","id":20}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":2,"text":"F0-62:900ms K:100ms B10-90/500ms:1.5s K:100ms F62-16:1.3s","id":21}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":3,"text":"F0-63:900ms K:100ms B10-90/550ms:1.5s K:100ms F63-17:1.3s","id":22}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":4,"text":"F0-64:900ms K:100ms B10-90/600ms:1.5s K:100ms F64-18:1.3s","id":23}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":5,"text":"F0-65:900ms K:100ms B10-90/650ms:1.5s K:100ms F65-19:1.3s","id":24}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":6,"text":"F0-66:900ms K:100ms B10-90/700ms:1.5s K:100ms F66-20:1.3s","id":25}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":7,"text":"F0-67:900ms K:100ms B10-90/750ms:1.5s K:100ms F67-21:1.3s","id":26}
+00:08:38 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":8,"text":"F0-68:900ms K:100ms B10-90/800ms:1.5s K:100ms F68-22:1.3s","id":27}
+00:08:38 rx {"evt":"result","id":20,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":21,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":22,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":23,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":24,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":25,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":26,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:38 rx {"evt":"result","id":27,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:49 tx {"cmd":"go","node":"B0:CB:D8:E9:6F:80","bank":0,"play":[1,2,3,4,5,6,7,8],"stop":[],"t_ms":0,"id":28}
+00:08:50 dev link lost (nothing heard for 1931 ms), reconnecting
+00:08:51 dev link back after 538 ms
+00:08:51 tx {"cmd":"hello","id":29}
+00:08:51 tx {"cmd":"go","node":"B0:CB:D8:E9:6F:80","bank":0,"play":[1,2,3,4,5,6,7,8],"stop":[],"t_ms":1759,"id":30}
+00:08:51 rx {"evt":"hello","id":29,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC","B0:CB:D8:E9:6F:80"]}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":9,"text":"F0-61:900ms K:100ms B10-90/450ms:1.5s K:100ms F61-22:1.3s","id":31}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":10,"text":"F0-62:900ms K:100ms B10-90/500ms:1.5s K:100ms F62-23:1.3s","id":32}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":11,"text":"F0-63:900ms K:100ms B10-90/550ms:1.5s K:100ms F63-24:1.3s","id":33}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":12,"text":"F0-64:900ms K:100ms B10-90/600ms:1.5s K:100ms F64-25:1.3s","id":34}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":13,"text":"F0-65:900ms K:100ms B10-90/650ms:1.5s K:100ms F65-26:1.3s","id":35}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":14,"text":"F0-66:900ms K:100ms B10-90/700ms:1.5s K:100ms F66-27:1.3s","id":36}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":15,"text":"F0-67:900ms K:100ms B10-90/750ms:1.5s K:100ms F67-28:1.3s","id":37}
+00:08:56 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":16,"text":"F0-68:900ms K:100ms B10-90/800ms:1.5s K:100ms F68-29:1.3s","id":38}
+00:08:56 rx {"evt":"result","id":31,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":32,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":33,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":34,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":35,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":36,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":37,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:56 rx {"evt":"result","id":38,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 tx {"cmd":"go","node":"B0:CB:D8:E9:6F:80","bank":1,"play":[1,2,3,4,5,6,7,8],"stop":[],"t_ms":0,"id":39}
+00:08:57 rx {"evt":"result","id":39,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":1,"text":"F0-61:900ms K:100ms B10-90/450ms:1.5s K:100ms F61-29:1.3s","id":40}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":2,"text":"F0-62:900ms K:100ms B10-90/500ms:1.5s K:100ms F62-30:1.3s","id":41}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":3,"text":"F0-63:900ms K:100ms B10-90/550ms:1.5s K:100ms F63-31:1.3s","id":42}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":4,"text":"F0-64:900ms K:100ms B10-90/600ms:1.5s K:100ms F64-32:1.3s","id":43}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":5,"text":"F0-65:900ms K:100ms B10-90/650ms:1.5s K:100ms F65-33:1.3s","id":44}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":6,"text":"F0-66:900ms K:100ms B10-90/700ms:1.5s K:100ms F66-34:1.3s","id":45}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":7,"text":"F0-67:900ms K:100ms B10-90/750ms:1.5s K:100ms F67-35:1.3s","id":46}
+00:08:57 tx {"cmd":"prog","node":"B0:CB:D8:E9:6F:80","slot":8,"text":"F0-68:900ms K:100ms B10-90/800ms:1.5s K:100ms F68-36:1.3s","id":47}
+00:08:57 rx {"evt":"result","id":40,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":41,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":42,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":43,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":44,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":45,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":46,"node":"B0:CB:D8:E9:6F:80","ok":true}
+00:08:57 rx {"evt":"result","id":47,"node":"B0:CB:D8:E9:6F:80","ok":true}

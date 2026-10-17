@@ -1,0 +1,21 @@
+[  0.01 min 00:08:16] ctl: [ws] status sent 8 times
+[  0.03 min 00:08:18] ctl: [ 39629][E][WebServer.cpp:638] _handleRequest(): request handler not found
+[  0.03 min 00:08:18] ctl: [ 39682][E][WiFiClient.cpp:429] write(): fail on fd 50, errno: 104, "Connection reset by peer"
+[  0.03 min 00:08:18] ctl: [ws] client 0 connected (1 total)
+[  0.16 min 00:08:25] show with 40 sections; status lines x8; state {'k': -1, 'loaded': [0, 1], 'busy': False, 'preparing': False, 'up': True, 'pending': 0, 'status': 'Ready. Nothing has played yet.  ·  next section ready ✓'}
+[  0.16 min 00:08:25] GO (first) -> section 1: 21 ms OK  go:[ok 20ms]
+[  0.22 min 00:08:29] --- round: stall 0.0 s at press
+[  0.36 min 00:08:38] GO (stall 0.0s at press) -> section 2: 19 ms OK  go:[ok 17ms]
+[  0.41 min 00:08:41] --- round: stall 2.0 s at press
+[  0.55 min 00:08:49]   laptop stops reading for 2.0 s
+[  0.58 min 00:08:50] ctl: [ws] client 0 left
+[  0.59 min 00:08:51] ctl: [ws] client 0 connected (1 total)
+[  0.59 min 00:08:51] ctl: [ws] client 0: buffer full, result skipped: {"evt":"result","id":30,"node":"B0:CB:D8:E9:6F:80","ok":true}
+[  0.66 min 00:08:56] GO (stall 2.0s at press) -> section 3: 6760 ms FAILED  go:[link_lost 1220ms; timeout 5001ms]  toast: ['Control box link lost, reconnecting...', '1 node(s) did not confirm the cue. Check power and radio.']  state: {'k': 2, 'loaded': [2, None], 'busy': False, 'preparing': False, 'up': True, 'pending': 8, 'status': 'Section 3 finished · lights hold their last level until the next GO  ·  preparing next section…'}
+[  0.68 min 00:08:57] GO (again after 1 s) -> section 4: 28 ms OK  go:[ok 27ms]
+[  0.74 min 00:09:00] ctl: [ws] client 0 left
+[  0.74 min 00:09:00] ctl: [ws] skipped 3 lines, 1 of them results
+[  0.75 min 00:09:01] ==== SUMMARY trial dup 8 ====
+[  0.75 min 00:09:01]   stall  0.0 s at press  : first press OK
+[  0.75 min 00:09:01]   stall  2.0 s at press  : OK after 2 presses
+[  0.75 min 00:09:01]   first press OK 1/2, recovered by pressing again 1, needed reload 0
