@@ -1,0 +1,30 @@
+19:19:49 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":2}
+19:19:49 rx {"evt":"result","id":2,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:19:49 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":3}
+19:19:49 rx {"evt":"result","id":3,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:19:53 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":4}
+19:19:53 rx {"evt":"result","id":4,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:20:58 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":5}
+19:20:58 rx {"evt":"result","id":5,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:20:58 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":6}
+19:20:58 rx {"evt":"result","id":6,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:21:06 dev link lost (nothing heard for 3401 ms), reconnecting
+19:21:06 dev link back after 81 ms
+19:21:06 tx {"cmd":"hello","id":7}
+19:21:06 rx {"evt":"hello","id":7,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:22:03 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":8}
+19:22:03 rx {"evt":"result","id":8,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:22:03 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":9}
+19:22:03 rx {"evt":"result","id":9,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:22:35 dev link lost (closed), reconnecting
+19:22:35 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:22:35 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:22:35 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:22:35 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:22:35 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:22:35 dev link back after 20137 ms
+19:22:35 tx {"cmd":"hello","id":10}
+19:22:35 rx {"evt":"hello","id":10,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:23:35 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":11}
+19:23:35 rx {"evt":"result","id":11,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:23:35 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":12}

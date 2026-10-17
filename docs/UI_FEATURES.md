@@ -20,6 +20,7 @@ Update this file whenever a feature or shortcut changes.
 | Edit / Run switch | Edit = assign programs to frames. Run = play things |
 | Find nodes | Pair new wall nodes (on the node: hold BOOT 3 s and release; lights pulse). Not needed in the simulator |
 | Connection: Simulator / USB (Web Serial) | Choose the virtual room or the real control ESP32 over USB |
+| Connection: Wi-Fi (this device) + `● linked` / `● reconnecting…` | Only on the page served by the control box. The box sends a keepalive every second; after 3 s of silence (1.2 s when GO is pressed or the window comes back to the front) the page opens a new connection by itself. A GO pressed meanwhile waits for the link (up to 4 s) and is sent with the time already elapsed, so the section stays in time. No reload needed |
 | Simulator ▸ | Open or close the Simulator drawer (switches to Run mode). Slider = packet loss (retries up to 5 times; a frame shows `!` only if all tries fail) |
 | Log | Show or hide the traffic log. Double-click the log to show or hide heartbeat lines |
 

@@ -1,0 +1,24 @@
+[  0.56 min 19:19:46] wlan {'State': 'connected', 'SSID': 'LED-Control'} page http://192.168.10.1/
+[  0.58 min 19:19:47] ctl: [ws] client 0 connected (1 total)
+[  0.58 min 19:19:47] ctl: [ 43330][E][WebServer.cpp:638] _handleRequest(): request handler not found
+[  0.68 min 19:19:53] show with 40 sections loaded; transport ws; link badge: ● linked
+[  0.68 min 19:19:53] GO (first) -> section 1: 17 ms OK  [ok 16 ms t_ms=0]
+[  0.76 min 19:19:58] pause 60 s
+[  1.76 min 19:20:58] GO (after none) -> section 2: 26 ms OK  [ok 25 ms t_ms=0]
+[  1.84 min 19:21:03] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[  1.84 min 19:21:03] pause 60 s
+[  1.85 min 19:21:03] ctl: [ws] zombie mask 0x01
+[  1.90 min 19:21:07] ctl: [ws] client 0 left
+[  1.90 min 19:21:07] ctl: [ws] client 0 connected (1 total)
+[  2.84 min 19:22:03] GO (after zombie) -> section 3: 20 ms OK  [ok 19 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[  2.93 min 19:22:08] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[  3.03 min 19:22:14] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  3.03 min 19:22:14] ctl: [ws] client 0 left
+[  3.28 min 19:22:29] ctl: [ws] client 0 connected (1 total)
+[  3.37 min 19:22:35]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[  3.37 min 19:22:35] pause 60 s
+[  4.37 min 19:23:35] GO (after wifi) -> section 4: 15 ms OK  [ok 15 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[  4.37 min 19:23:35] ==== SUMMARY new ====
+[  4.37 min 19:23:35]   none   : first press OK 1/1, worst 26 ms
+[  4.37 min 19:23:35]   zombie : first press OK 1/1, worst 20 ms
+[  4.37 min 19:23:35]   wifi   : first press OK 1/1, worst 15 ms

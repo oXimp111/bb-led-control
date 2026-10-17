@@ -1,0 +1,27 @@
+[  0.19 min 18:44:03] wlan {'State': 'connected', 'SSID': 'LED-Control'} page http://localhost:8765/old.html
+[  0.20 min 18:44:04] ctl: [ws] client 0 connected (1 total)
+[  0.33 min 18:44:11] show with 40 sections loaded; link badge: (none, old page)
+[  0.33 min 18:44:11] GO (first) -> section 1: 15 ms OK  [ok 15 ms t_ms=0]
+[  0.41 min 18:44:16] pause 60 s
+[  1.41 min 18:45:16] GO (after none) -> section 2: 17 ms OK  [ok 16 ms t_ms=0]
+[  1.50 min 18:45:21] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[  1.50 min 18:45:21] pause 60 s
+[  1.50 min 18:45:22] ctl: [ws] zombie mask 0x01
+[  2.67 min 18:46:31] GO (after zombie) -> section 3: 10013 ms FAILED  [timeout 5004 ms t_ms=0; timeout 5007 ms t_ms=5004]  toast: ['1 node(s) did not confirm the cue. Check power and radio.']
+[  2.75 min 18:46:36] GO (second press) -> section 3: 3989 ms FAILED  []  toast: ['Could not send the section to every node. Press GO again.']
+[  2.92 min 18:46:46] GO (third press) -> section 3: 5003 ms FAILED  []  toast: ['Could not send the section to every node. Press GO again.']
+[  2.92 min 18:46:46] reloading the page (what the installer does)
+[  2.92 min 18:46:47] ctl: [ws] client 0 left
+[  2.92 min 18:46:47] ctl: [ws] client 0 connected (1 total)
+[  3.05 min 18:46:55] GO (after reload) -> section 1: 19 ms OK  [ok 18 ms t_ms=0]
+[  3.13 min 18:47:00] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[  3.40 min 18:47:15] ctl: [ws] client 0 stopped taking data (10011 ms), dropped
+[  3.56 min 18:47:25] ctl: [ws] client 0 left
+[  3.56 min 18:47:25] ctl: [ws] client 0 connected (1 total)
+[  3.57 min 18:47:26]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[  3.57 min 18:47:26] pause 60 s
+[  4.57 min 18:48:26] GO (after wifi) -> section 2: 20 ms OK  [ok 19 ms t_ms=0]  toast: ['Control box link lost, reconnecting...', 'Wi-Fi link to the control box failed', 'Control box link lost, reconnecting...']
+[  4.58 min 18:48:26] ==== SUMMARY old ====
+[  4.58 min 18:48:26]   none   : first press OK 1/1, worst 17 ms
+[  4.58 min 18:48:26]   zombie : first press OK 0/1, worst 10013 ms
+[  4.58 min 18:48:26]   wifi   : first press OK 1/1, worst 20 ms

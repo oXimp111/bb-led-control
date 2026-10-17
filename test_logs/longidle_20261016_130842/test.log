@@ -1,0 +1,117 @@
+[  0.00 min 13:08:51] connected, wlan {'State': 'connected', 'SSID': 'LED-Control', 'Signal': '100%'}
+[  0.00 min 13:08:51] pause 60 s
+[  1.00 min 13:09:51]   status lines 120 in 60 s (2.0/s)
+[  1.00 min 13:09:51] GO after 60 s pause: 22 ms ok
+[  1.00 min 13:09:51] pause 90 s
+[  2.01 min 13:10:51]   status lines 122 in 60 s (2.0/s)
+[  2.51 min 13:11:21]   status lines 60 in 30 s (2.0/s)
+[  2.51 min 13:11:21] GO after 90 s pause: 16 ms ok
+[  2.51 min 13:11:21] pause 120 s
+[  3.51 min 13:12:21]   status lines 120 in 60 s (2.0/s)
+[  4.51 min 13:13:21]   status lines 120 in 60 s (2.0/s)
+[  4.51 min 13:13:21] GO after 120 s pause: 17 ms ok
+[  4.51 min 13:13:21] pause 180 s
+[  5.51 min 13:14:21]   status lines 120 in 60 s (2.0/s)
+[  6.52 min 13:15:22]   status lines 121 in 60 s (2.0/s)
+[  7.51 min 13:16:21]   status lines 121 in 60 s (2.0/s)
+[  7.51 min 13:16:21] GO after 180 s pause: 14 ms ok
+[  7.51 min 13:16:21] pause 300 s
+[  8.52 min 13:17:21]   status lines 120 in 60 s (2.0/s)
+[  9.52 min 13:18:21]   status lines 120 in 60 s (2.0/s)
+[ 10.52 min 13:19:22]   status lines 120 in 60 s (2.0/s)
+[ 11.52 min 13:20:22]   status lines 121 in 60 s (2.0/s)
+[ 12.52 min 13:21:21]   status lines 119 in 60 s (2.0/s)
+[ 12.52 min 13:21:21] GO after 300 s pause: 16 ms ok
+[ 12.52 min 13:21:21] pause 60 s
+[ 13.52 min 13:22:22]   status lines 120 in 60 s (2.0/s)
+[ 13.52 min 13:22:22] GO after 60 s pause: 17 ms ok
+[ 13.52 min 13:22:22] pause 90 s
+[ 14.52 min 13:23:22]   status lines 121 in 60 s (2.0/s)
+[ 15.02 min 13:23:52]   status lines 60 in 30 s (2.0/s)
+[ 15.02 min 13:23:52] GO after 90 s pause: 15 ms ok
+[ 15.02 min 13:23:52] pause 120 s
+[ 16.02 min 13:24:52]   status lines 121 in 60 s (2.0/s)
+[ 17.02 min 13:25:52]   status lines 120 in 60 s (2.0/s)
+[ 17.02 min 13:25:52] GO after 120 s pause: 15 ms ok
+[ 17.02 min 13:25:52] pause 180 s
+[ 18.02 min 13:26:52]   status lines 120 in 60 s (2.0/s)
+[ 19.02 min 13:27:52]   status lines 119 in 60 s (2.0/s)
+[ 20.02 min 13:28:52]   status lines 120 in 60 s (2.0/s)
+[ 20.02 min 13:28:52] GO after 180 s pause: 15 ms ok
+[ 20.02 min 13:28:52] pause 300 s
+[ 21.03 min 13:29:52]   status lines 121 in 60 s (2.0/s)
+[ 22.03 min 13:30:52]   status lines 120 in 60 s (2.0/s)
+[ 23.03 min 13:31:52]   status lines 121 in 60 s (2.0/s)
+[ 24.03 min 13:32:52]   status lines 120 in 60 s (2.0/s)
+[ 25.02 min 13:33:52]   status lines 119 in 60 s (2.0/s)
+[ 25.02 min 13:33:52] GO after 300 s pause: 19 ms ok
+[ 25.02 min 13:33:52] pause 60 s
+[ 26.03 min 13:34:52]   status lines 120 in 60 s (2.0/s)
+[ 26.03 min 13:34:52] GO after 60 s pause: 15 ms ok
+[ 26.03 min 13:34:52] pause 90 s
+[ 27.03 min 13:35:52]   status lines 120 in 60 s (2.0/s)
+[ 27.53 min 13:36:22]   status lines 61 in 30 s (2.0/s)
+[ 27.53 min 13:36:22] GO after 90 s pause: 15 ms ok
+[ 27.53 min 13:36:22] pause 120 s
+[ 28.53 min 13:37:22]   status lines 119 in 60 s (2.0/s)
+[ 29.53 min 13:38:22]   status lines 121 in 60 s (2.0/s)
+[ 29.53 min 13:38:22] GO after 120 s pause: 15 ms ok
+[ 29.53 min 13:38:22] pause 180 s
+[ 30.53 min 13:39:22]   status lines 122 in 60 s (2.0/s)
+[ 31.53 min 13:40:22]   status lines 119 in 60 s (2.0/s)
+[ 32.53 min 13:41:22]   status lines 120 in 60 s (2.0/s)
+[ 32.53 min 13:41:22] GO after 180 s pause: 15 ms ok
+[ 32.53 min 13:41:22] pause 300 s
+[ 33.53 min 13:42:22]   status lines 121 in 60 s (2.0/s)
+[ 34.53 min 13:43:22]   status lines 120 in 60 s (2.0/s)
+[ 35.54 min 13:44:23]   status lines 120 in 60 s (2.0/s)
+[ 36.54 min 13:45:23]   status lines 120 in 60 s (2.0/s)
+[ 37.53 min 13:46:22]   status lines 119 in 60 s (2.0/s)
+[ 37.53 min 13:46:22] GO after 300 s pause: 14 ms ok
+[ 37.53 min 13:46:22] pause 60 s
+[ 38.53 min 13:47:22]   status lines 121 in 60 s (2.0/s)
+[ 38.53 min 13:47:23] GO after 60 s pause: 19 ms ok
+[ 38.53 min 13:47:23] pause 90 s
+[ 39.53 min 13:48:23]   status lines 121 in 60 s (2.0/s)
+[ 40.03 min 13:48:53]   status lines 60 in 30 s (2.0/s)
+[ 40.03 min 13:48:53] GO after 90 s pause: 16 ms ok
+[ 40.04 min 13:48:53] pause 120 s
+[ 41.04 min 13:49:53]   status lines 120 in 60 s (2.0/s)
+[ 42.04 min 13:50:53]   status lines 119 in 60 s (2.0/s)
+[ 42.04 min 13:50:53] GO after 120 s pause: 31 ms ok
+[ 42.04 min 13:50:53] pause 180 s
+[ 43.04 min 13:51:53]   status lines 121 in 60 s (2.0/s)
+[ 44.04 min 13:52:53]   status lines 122 in 60 s (2.0/s)
+[ 45.04 min 13:53:53]   status lines 119 in 60 s (2.0/s)
+[ 45.04 min 13:53:53] GO after 180 s pause: 18 ms ok
+[ 45.04 min 13:53:53] pause 300 s
+[ 46.04 min 13:54:53]   status lines 121 in 60 s (2.0/s)
+[ 47.04 min 13:55:53]   status lines 121 in 60 s (2.0/s)
+[ 48.04 min 13:56:53]   status lines 119 in 60 s (2.0/s)
+[ 49.05 min 13:57:53]   status lines 120 in 60 s (2.0/s)
+[ 50.04 min 13:58:53]   status lines 119 in 60 s (2.0/s)
+[ 50.04 min 13:58:53] GO after 300 s pause: 32 ms ok
+[ 50.04 min 13:58:53] pause 60 s
+[ 51.05 min 13:59:53]   status lines 119 in 60 s (2.0/s)
+[ 51.05 min 13:59:53] GO after 60 s pause: 24 ms ok
+[ 51.05 min 13:59:53] pause 90 s
+[ 52.05 min 14:00:53]   status lines 122 in 60 s (2.0/s)
+[ 52.55 min 14:01:23]   status lines 60 in 30 s (2.0/s)
+[ 52.55 min 14:01:23] GO after 90 s pause: 18 ms ok
+[ 52.55 min 14:01:23] pause 120 s
+[ 53.55 min 14:02:24]   status lines 121 in 60 s (2.0/s)
+[ 54.55 min 14:03:24]   status lines 121 in 60 s (2.0/s)
+[ 54.55 min 14:03:24] GO after 120 s pause: 16 ms ok
+[ 54.55 min 14:03:24] pause 180 s
+[ 55.55 min 14:04:24]   status lines 120 in 60 s (2.0/s)
+[ 56.55 min 14:05:24]   status lines 120 in 60 s (2.0/s)
+[ 57.55 min 14:06:24]   status lines 120 in 60 s (2.0/s)
+[ 57.55 min 14:06:24] GO after 180 s pause: 15 ms ok
+[ 57.55 min 14:06:24] pause 300 s
+[ 58.55 min 14:07:24]   status lines 121 in 60 s (2.0/s)
+[ 59.56 min 14:08:24]   status lines 120 in 60 s (2.0/s)
+[ 60.00 min 14:08:51]   status lines 53 in 27 s (2.0/s)
+
+==== SUMMARY ====
+duration 60.0 min, drops 0
+GOs 24, late or failed 0, worst 32 ms

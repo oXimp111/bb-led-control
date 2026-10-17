@@ -62,17 +62,31 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 |---|---|---|---|
 | Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
 | Relay (optional, 1 spare board, only if a far wall is out of reach) | `relay` | `pio run -e relay -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame RELAY fw 1`, then a `[relay] 5 s:` table |
-| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 2, protocol 3`; the page opens at http://192.168.4.1/ (Wi-Fi `LED-Control` / `ledframes`) |
+| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 3, protocol 3` and `open http://192.168.4.1/`; the page opens there (Wi-Fi `LED-Control` / `ledframes`) and shows `● linked` next to the connection box. NOT `control_wstest` (that one says `192.168.10.1`) |
 - **Control fw 2 (2026-10-16) fixes "GO lags / needs a second press after a long cue pause"**: a page connection that died without closing (laptop Wi-Fi blip)
   made every status broadcast block the control loop for 5 s. Now such a client is dropped at once (`wsSend()` in `src/control/main.cpp`, `WEBSOCKETS_TCP_TIMEOUT` 300 in `platformio.ini`).
   Bench result (`tools/dead_ws_test.py`): fw 1 = GO no answer within 15 s (3/3), fw 2 = 20/20 ok, worst 170 ms. Only the control board needs reflashing; nodes unchanged.
+- **Control fw 3 (2026-10-16): fw 2 was not enough on site ("GO fails after a long pause until the page is reloaded").** Found with a real browser (`tools/link_test.py`):
+  1. Page side: a link that died silently (laptop Wi-Fi dozed/blipped; the box dropped it, the laptop never heard) still looked open, so GO went into nothing, its retry too, until a reload.
+     Now the box sends `{"evt":"alive"}` every 1 s and the page (`tools/ws_shim.js`) reconnects after 3 s of silence (1.5 s while waiting for an answer, 1.2 s at a GO press or when the window returns),
+     fails what waited on the dead socket so it is resent on the new one, `request()` waits up to 4 s for the link, GO carries `t_ms` = time since the press, and a `● linked / ● reconnecting…` badge shows the state.
+     The box-served page no longer falls back to the simulator when the first connect fails; it keeps retrying.
+  2. Box side: `WiFiClient::write()` (Arduino core) waits up to 10 x 1 s for send-buffer room, so fw 2 still froze the loop 10 s once per dead laptop. Now `wsSend()` checks with a zero-wait `select()`
+     first; while the buffer is full lines are skipped, and a client stuck for `WS_STUCK_MS` (3 s) is dropped without a close frame (`LfWsServer`). Dropping at the first full buffer
+     (first fw 3 build) also dropped HEALTHY pages whose ACKs came late (seen 3x in 10 min on the bench). The library heartbeat (also a blocking write) is off. Also fixed: fw 2 could drop a page during its handshake (send before WSC_CONNECTED).
+     The 3 s tolerance was built after the last hardware test and is not hardware-tested yet.
+  10-minute pause on the production build (`tools/ap_proxy.py` lets Chrome on Sean's PC reach 192.168.4.1): GO first press OK, 42 ms, after a Wi-Fi cut mid-pause.
+  Result: old page = GO after a dead link failed 3 presses in a row, only a reload helped; new = first press OK in every case (`test_logs/linktest_old_*`, `linktest_new_*`, `linktest_soak_*`).
+  Test build `control_wstest` = AP at 192.168.10.1 (a browser on Sean's PC can reach it; his home LAN is also 192.168.4.x) + serial `wszombie`. Never install it.
 - **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
 - Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
 - The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.
 - After flashing a node it may show `not paired`: pair it again (hold its BOOT 3 s, then Find nodes in the page).
 - Each ESP32 gets the same `node` image: identity is its MAC. The wall a node belongs to is chosen in the page, not in firmware. Pin-to-frame table: docs/WIRING.md.
 - Boards in this project do not enter download mode by themselves: hold BOOT before the upload starts and keep holding until `Writing` appears, then release and tap EN.
-- Boards flashed on 2026-10-13 (both on this PC): control board (COM3, MAC ...7C:31) = `control`; node board (COM4, MAC 70:4B:CA:21:4F:EC) = `node_fulltest` (test build, replace before installing).
+- **Sean's boards on this PC are bench/test boards only. They are never shipped or used in the show.** The installer has her own boards on site and flashes them herself
+  from the zip Sean sends (she has no git). Whatever test firmware is on Sean's boards does not matter: never remind him to reflash or check them before shipping.
+  Only the source and the zip must be right.
 
 ## Build / flash (Windows)
 1. CH340 driver: WCH CH341SER.EXE v3.9+ (https://www.wch-ic.com/downloads/CH341SER_EXE.html). Board shows as COMx in Device Manager.

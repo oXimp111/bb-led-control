@@ -1,0 +1,96 @@
+[  0.00 min 19:24:05] wlan {'State': 'connected', 'SSID': 'LED-Control'} page http://192.168.10.1/
+[  0.02 min 19:24:06] ctl: [301484][E][WebServer.cpp:638] _handleRequest(): request handler not found
+[  0.02 min 19:24:06] ctl: [ws] client 0 connected (1 total)
+[  0.12 min 19:24:12] show with 40 sections loaded; transport ws; link badge: ● linked
+[  0.12 min 19:24:12] GO (first) -> section 1: 24 ms OK  [ok 24 ms t_ms=0]
+[  0.20 min 19:24:17] pause 90 s
+[  1.70 min 19:25:47] GO (after none) -> section 2: 30 ms OK  [ok 29 ms t_ms=0]
+[  1.79 min 19:25:52] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[  1.79 min 19:25:52] pause 90 s
+[  1.79 min 19:25:52] ctl: [ws] zombie mask 0x01
+[  1.85 min 19:25:55] ctl: [ws] client 0 left
+[  1.85 min 19:25:55] ctl: [ws] client 0 connected (1 total)
+[  3.29 min 19:27:22] GO (after zombie) -> section 3: 23 ms OK  [ok 22 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[  3.37 min 19:27:27] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[  3.46 min 19:27:32] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  3.46 min 19:27:32] ctl: [ws] client 0 left
+[  3.72 min 19:27:48] ctl: [ws] client 0 connected (1 total)
+[  3.81 min 19:27:53]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[  3.81 min 19:27:53] pause 90 s
+[  5.31 min 19:29:23] GO (after wifi) -> section 4: 26 ms OK  [ok 25 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[  5.31 min 19:29:23] pause 90 s
+[  6.81 min 19:30:53] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[  6.82 min 19:30:53] ctl: [ws] zombie mask 0x01
+[  6.84 min 19:30:55] GO (after late) -> section 5: 1223 ms FAILED  [link_lost 1049 ms t_ms=0; ok 88 ms t_ms=1135]  toast: ['Control box link lost, reconnecting...']
+[  6.85 min 19:30:55] ctl: [ws] client 0 left
+[  6.85 min 19:30:55] ctl: [ws] client 0 connected (1 total)
+[  6.86 min 19:30:56] GO (second press) -> section 6: 149 ms OK  [ok 149 ms t_ms=0]
+[  6.95 min 19:31:01] pause 90 s
+[  7.17 min 19:31:15] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  7.17 min 19:31:15] ctl: [ws] client 0 left
+[  7.19 min 19:31:16] ctl: [ws] client 0 connected (1 total)
+[  8.21 min 19:32:17] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  8.21 min 19:32:17] ctl: [ws] client 0 left
+[  8.21 min 19:32:17] ctl: [ws] client 0 connected (1 total)
+[  8.45 min 19:32:31] GO (after none) -> section 7: 31 ms OK  [ok 30 ms t_ms=0]  toast: ['Control box link lost, reconnecting...', 'Control box link lost, reconnecting...']
+[  8.53 min 19:32:36] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[  8.53 min 19:32:36] pause 90 s
+[  8.53 min 19:32:36] ctl: [ws] zombie mask 0x01
+[  8.59 min 19:32:40] ctl: [ws] client 0 left
+[  8.59 min 19:32:40] ctl: [ws] client 0 connected (1 total)
+[ 10.03 min 19:34:06] GO (after zombie) -> section 8: 146 ms OK  [ok 145 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[ 10.12 min 19:34:11] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[ 10.22 min 19:34:17] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 10.22 min 19:34:17] ctl: [ws] client 0 left
+[ 10.47 min 19:34:32] ctl: [ws] client 0 connected (1 total)
+[ 10.56 min 19:34:38]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[ 10.56 min 19:34:38] pause 90 s
+[ 11.78 min 19:35:51] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 11.78 min 19:35:51] ctl: [ws] client 0 left
+[ 11.81 min 19:35:53] ctl: [ws] client 0 connected (1 total)
+[ 12.06 min 19:36:08] GO (after wifi) -> section 9: 50 ms OK  [ok 50 ms t_ms=0]  toast: ['Control box link lost, reconnecting...', 'Control box link lost, reconnecting...']
+[ 12.06 min 19:36:08] pause 90 s
+[ 13.56 min 19:37:38] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[ 13.56 min 19:37:38] ctl: [ws] zombie mask 0x01
+[ 13.60 min 19:37:40] ctl: [ws] client 0 left
+[ 13.60 min 19:37:40] ctl: [ws] client 0 connected (1 total)
+[ 13.61 min 19:37:41] GO (after late) -> section 10: 2775 ms FAILED  [link_lost 1399 ms t_ms=0; ok 1284 ms t_ms=1490]  toast: ['Control box link lost, reconnecting...']
+[ 13.63 min 19:37:42] GO (second press) -> section 11: 28 ms OK  [ok 27 ms t_ms=0]
+[ 13.71 min 19:37:47] pause 90 s
+[ 15.22 min 19:39:17] GO (after none) -> section 12: 140 ms OK  [ok 139 ms t_ms=0]
+[ 15.30 min 19:39:22] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[ 15.30 min 19:39:22] pause 90 s
+[ 15.30 min 19:39:23] ctl: [ws] zombie mask 0x01
+[ 15.36 min 19:39:26] ctl: [ws] client 0 left
+[ 15.36 min 19:39:26] ctl: [ws] client 0 connected (1 total)
+[ 16.08 min 19:40:09] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 16.08 min 19:40:09] ctl: [ws] client 0 left
+[ 16.08 min 19:40:09] ctl: [ws] client 0 connected (1 total)
+[ 16.25 min 19:40:19] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 16.25 min 19:40:19] ctl: [ws] client 0 left
+[ 16.27 min 19:40:21] ctl: [ws] client 0 connected (1 total)
+[ 16.72 min 19:40:48] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 16.72 min 19:40:48] ctl: [ws] client 0 left
+[ 16.74 min 19:40:49] ctl: [ws] client 0 connected (1 total)
+[ 16.80 min 19:40:52] GO (after zombie) -> section 13: 20 ms OK  [ok 19 ms t_ms=0]  toast: ['Control box link lost, reconnecting...', 'Control box link lost, reconnecting...', 'Control box link lost, reconnecting...', 'Control box link lost, reconnecting...']
+[ 16.88 min 19:40:57] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[ 16.99 min 19:41:04] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[ 16.99 min 19:41:04] ctl: [ws] client 0 left
+[ 17.23 min 19:41:18] ctl: [ws] client 0 connected (1 total)
+[ 17.33 min 19:41:24]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[ 17.33 min 19:41:24] pause 90 s
+[ 18.83 min 19:42:54] GO (after wifi) -> section 14: 30 ms OK  [ok 30 ms t_ms=0]  toast: ['Control box link lost, reconnecting...']
+[ 18.83 min 19:42:54] pause 90 s
+[ 20.33 min 19:44:24] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[ 20.33 min 19:44:24] ctl: [ws] zombie mask 0x01
+[ 20.35 min 19:44:25] GO (after late) -> section 15: 1008 ms FAILED  [link_lost 842 ms t_ms=0; ok 79 ms t_ms=929]  toast: ['Control box link lost, reconnecting...']
+[ 20.35 min 19:44:26] ctl: [ws] client 0 left
+[ 20.35 min 19:44:26] ctl: [ws] client 0 connected (1 total)
+[ 20.37 min 19:44:27] GO (second press) -> section 16: 349 ms OK  [ok 349 ms t_ms=0]
+[ 20.46 min 19:44:32] pause 90 s
+[ 21.96 min 19:46:02] GO (after none) -> section 17: 103 ms OK  [ok 102 ms t_ms=0]
+[ 22.04 min 19:46:07] FAULT zombie: the box silently stops talking to the page (half-open socket)
+[ 22.04 min 19:46:07] pause 90 s
+[ 22.05 min 19:46:07] ctl: [ws] zombie mask 0x01
+[ 22.10 min 19:46:10] ctl: [ws] client 0 left
+[ 22.10 min 19:46:10] ctl: [ws] client 0 connected (1 total)

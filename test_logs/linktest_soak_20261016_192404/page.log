@@ -1,0 +1,152 @@
+19:24:07 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":2}
+19:24:08 rx {"evt":"result","id":2,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:24:08 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":3}
+19:24:08 rx {"evt":"result","id":3,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:24:12 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":4}
+19:24:12 rx {"evt":"result","id":4,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:25:47 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":5}
+19:25:47 rx {"evt":"result","id":5,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:25:47 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":6}
+19:25:47 rx {"evt":"result","id":6,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:25:55 dev link lost (nothing heard for 3376 ms), reconnecting
+19:25:55 dev link back after 64 ms
+19:25:55 tx {"cmd":"hello","id":7}
+19:25:55 rx {"evt":"hello","id":7,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:27:22 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":8}
+19:27:22 rx {"evt":"result","id":8,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:27:22 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":9}
+19:27:22 rx {"evt":"result","id":9,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:27:53 dev link lost (closed), reconnecting
+19:27:53 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:27:53 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:27:53 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:27:53 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:27:53 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:27:53 dev link back after 20148 ms
+19:27:53 tx {"cmd":"hello","id":10}
+19:27:53 rx {"evt":"hello","id":10,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:29:23 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":11}
+19:29:23 rx {"evt":"result","id":11,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:29:23 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":12}
+19:29:23 rx {"evt":"result","id":12,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:30:54 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":13}
+19:30:55 dev link lost (nothing heard for 1692 ms), reconnecting
+19:30:55 dev link back after 86 ms
+19:30:55 tx {"cmd":"hello","id":14}
+19:30:55 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":1135,"id":15}
+19:30:55 rx {"evt":"hello","id":14,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:30:55 rx {"evt":"result","id":15,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:30:55 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":16}
+19:30:55 rx {"evt":"result","id":16,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:30:56 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":17}
+19:30:56 rx {"evt":"result","id":17,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:30:56 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":18}
+19:30:56 rx {"evt":"result","id":18,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:31:15 dev link lost (closed), reconnecting
+19:31:15 dev link back after 888 ms
+19:31:15 tx {"cmd":"hello","id":19}
+19:31:15 rx {"evt":"hello","id":19,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:32:16 dev link lost (closed), reconnecting
+19:32:17 dev link back after 117 ms
+19:32:17 tx {"cmd":"hello","id":20}
+19:32:17 rx {"evt":"hello","id":20,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:32:31 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":21}
+19:32:31 rx {"evt":"result","id":21,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:32:31 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":22}
+19:32:31 rx {"evt":"result","id":22,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:32:39 dev link lost (nothing heard for 3142 ms), reconnecting
+19:32:39 dev link back after 113 ms
+19:32:39 tx {"cmd":"hello","id":23}
+19:32:39 rx {"evt":"hello","id":23,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:34:06 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":24}
+19:34:06 rx {"evt":"result","id":24,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:34:06 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":25}
+19:34:06 rx {"evt":"result","id":25,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:34:38 dev link lost (closed), reconnecting
+19:34:38 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:34:38 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:34:38 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:34:38 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:34:38 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:34:38 dev link back after 20199 ms
+19:34:38 tx {"cmd":"hello","id":26}
+19:34:38 rx {"evt":"hello","id":26,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:35:53 dev link lost (closed), reconnecting
+19:35:53 dev link back after 123 ms
+19:35:53 tx {"cmd":"hello","id":27}
+19:35:53 rx {"evt":"hello","id":27,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:36:08 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":28}
+19:36:08 rx {"evt":"result","id":28,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:36:08 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":29}
+19:36:08 rx {"evt":"result","id":29,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:37:38 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":30}
+19:37:40 dev link lost (nothing heard for 1885 ms), reconnecting
+19:37:40 dev link back after 91 ms
+19:37:40 tx {"cmd":"hello","id":31}
+19:37:40 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":1490,"id":32}
+19:37:40 rx {"evt":"hello","id":31,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:37:41 rx {"evt":"result","id":32,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:37:41 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":33}
+19:37:41 rx {"evt":"result","id":33,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:37:42 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":34}
+19:37:42 rx {"evt":"result","id":34,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:37:42 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":35}
+19:37:42 rx {"evt":"result","id":35,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:39:17 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":36}
+19:39:17 rx {"evt":"result","id":36,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:39:17 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":37}
+19:39:17 rx {"evt":"result","id":37,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:39:26 dev link lost (nothing heard for 3440 ms), reconnecting
+19:39:26 dev link back after 82 ms
+19:39:26 tx {"cmd":"hello","id":38}
+19:39:26 rx {"evt":"hello","id":38,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:40:09 dev link lost (nothing heard for 3036 ms), reconnecting
+19:40:10 dev link back after 1652 ms
+19:40:10 tx {"cmd":"hello","id":39}
+19:40:10 rx {"evt":"hello","id":39,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:40:20 dev link lost (nothing heard for 3437 ms), reconnecting
+19:40:21 dev link back after 1570 ms
+19:40:21 tx {"cmd":"hello","id":40}
+19:40:21 rx {"evt":"hello","id":40,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:40:49 dev link lost (closed), reconnecting
+19:40:49 dev link back after 89 ms
+19:40:49 tx {"cmd":"hello","id":41}
+19:40:49 rx {"evt":"hello","id":41,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:40:52 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":42}
+19:40:52 rx {"evt":"result","id":42,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:40:52 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":43}
+19:40:52 rx {"evt":"result","id":43,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:41:24 dev link lost (closed), reconnecting
+19:41:24 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:41:24 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:41:24 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:41:24 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:41:24 console WebSocket connection to 'ws://192.168.10.1:81/' failed: WebSocket is closed before the connection is established.
+19:41:24 dev link back after 20206 ms
+19:41:24 tx {"cmd":"hello","id":44}
+19:41:24 rx {"evt":"hello","id":44,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:42:54 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":45}
+19:42:54 rx {"evt":"result","id":45,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:42:54 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":46}
+19:42:54 rx {"evt":"result","id":46,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:44:24 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":47}
+19:44:25 dev link lost (nothing heard for 1534 ms), reconnecting
+19:44:25 dev link back after 87 ms
+19:44:25 tx {"cmd":"hello","id":48}
+19:44:25 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":929,"id":49}
+19:44:25 rx {"evt":"hello","id":48,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:44:25 rx {"evt":"result","id":49,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:44:25 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":50}
+19:44:25 rx {"evt":"result","id":50,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:44:26 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":51}
+19:44:27 rx {"evt":"result","id":51,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:44:27 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":52}
+19:44:27 rx {"evt":"result","id":52,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:46:02 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":53}
+19:46:02 rx {"evt":"result","id":53,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:46:02 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":54}
+19:46:02 rx {"evt":"result","id":54,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:46:10 dev link lost (nothing heard for 3145 ms), reconnecting
+19:46:10 dev link back after 143 ms
+19:46:10 tx {"cmd":"hello","id":55}
+19:46:10 rx {"evt":"hello","id":55,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}

@@ -1,0 +1,30 @@
+[  0.56 min 19:50:57] wlan {'State': 'connected', 'SSID': 'LED-Control'} page http://localhost:8080/
+[  0.60 min 19:50:59] ctl: [ 53013][E][WebServer.cpp:638] _handleRequest(): request handler not found
+[  0.60 min 19:50:59] ctl: [ 53058][E][WiFiClient.cpp:429] write(): fail on fd 51, errno: 104, "Connection reset by peer"
+[  0.60 min 19:50:59] ctl: [ws] client 0 connected (1 total)
+[  0.70 min 19:51:05] show with 40 sections loaded; transport ws; link badge: ● linked
+[  0.70 min 19:51:05] GO (first) -> section 1: 21 ms OK  [ok 20 ms t_ms=0]
+[  0.70 min 19:51:05] pause 600 s, wifi fault 300 s in
+[  5.70 min 19:56:05] FAULT wifi: laptop Wi-Fi off for 15 s, then back on LED-Control
+[  5.80 min 19:56:11] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  5.80 min 19:56:11] ctl: [ws] client 0 left
+[  6.09 min 19:56:29] ctl: [ws] client 0 connected (1 total)
+[  6.14 min 19:56:32]   rejoined {'State': 'connected', 'SSID': 'LED-Control'}
+[  7.14 min 19:57:32]   ... 214 s to GO; link: ● linked
+[  7.19 min 19:57:34] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  7.19 min 19:57:34] ctl: [ws] client 0 left
+[  7.21 min 19:57:36] ctl: [ws] client 0 connected (1 total)
+[  8.14 min 19:58:32]   ... 153 s to GO; link: ● linked
+[  8.77 min 19:59:10] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  8.77 min 19:59:10] ctl: [ws] client 0 left
+[  8.84 min 19:59:13] ctl: [ws] client 0 connected (1 total)
+[  9.14 min 19:59:32]   ... 93 s to GO; link: ● linked
+[  9.25 min 19:59:38] ctl: [ws] client 0 stopped taking data (send buffer full), dropped
+[  9.25 min 19:59:38] ctl: [ws] client 0 left
+[  9.42 min 19:59:48] ctl: [582146][E][WiFiClient.cpp:320] setSocketOption(): fail on -1, errno: 9, "Bad file number"
+[  9.42 min 19:59:48] ctl: [ws] client 0 left
+[  9.43 min 19:59:49] ctl: [ws] client 0 connected (1 total)
+[ 10.14 min 20:00:32]   ... 33 s to GO; link: ● linked
+[ 10.70 min 20:01:05] GO (after wifi) -> section 2: 42 ms OK  [ok 41 ms t_ms=0]  toast: ['Control box link lost, reconnecting...', 'Control box link lost, reconnecting...', 'Control box link lost, reconnecting...', 'Control box link lost, reconnecting...']
+[ 10.70 min 20:01:05] ==== SUMMARY prod10min ====
+[ 10.70 min 20:01:05]   wifi   : first press OK 1/1, worst 42 ms

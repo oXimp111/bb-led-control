@@ -752,8 +752,11 @@ function nodeForWall(w) { return isSim() ? SIM_MACS[w] : (Object.keys(S.nodes).f
 function allMacs() { return isSim() ? Object.values(SIM_MACS) : Object.keys(S.nodes).filter(m => S.nodes[m].wall); }
 const short = mac => mac.slice(-5).replace(':', '');
 
-function request(obj) {
+// Wi-Fi transport (tools/ws_shim.js) only: wait until the link to the control box is up (reconnects after a dead link).
+const linkReady = () => transport.ready ? transport.ready(4000) : Promise.resolve(true);
+async function request(obj) {
   obj.id = ++reqId;
+  if (!(await linkReady())) { log('tx', 'not sent, no link: ' + JSON.stringify(obj)); return { ok: false, err: 'no_link' }; }
   log('tx', JSON.stringify(obj));
   transport.write(obj);
   return new Promise(res => {
@@ -1967,16 +1970,24 @@ async function cueGo(target) {
     }
     const t0 = performance.now();
     c.k = target; c.tStart = t0; c.resumed = false; cueSave(c); renderCue();
-    const send = (mac, e, t_ms) => request({ cmd: 'go', node: mac, bank, play: e.play, stop: e.stop, t_ms });
+    // t_ms = time since the press, taken when the packet really leaves (after a reconnect it starts as if that time had passed)
+    const send = async (mac, e) => {
+      await linkReady();
+      const late = Math.round(performance.now() - t0);
+      return request({ cmd: 'go', node: mac, bank, play: e.play, stop: e.stop, t_ms: late < 30 ? 0 : late });
+    };
+    let noLink = false;
     const rs = await Promise.all(Object.entries(per).map(async ([mac, e]) => {
-      let r = await send(mac, e, 0);
+      let r = await send(mac, e);
       if (!r.ok && /bad/.test(r.err || '')) {                  // node lost the section (reboot, reflash): send it again, then cue
-        c.loaded[bank] = null; await cueLoad(c, target); r = await send(mac, e, Math.round(performance.now() - t0));
-      } else if (!r.ok) r = await send(mac, e, Math.round(performance.now() - t0));   // late retry starts as if the time had passed
+        c.loaded[bank] = null; await cueLoad(c, target); r = await send(mac, e);
+      } else if (!r.ok) r = await send(mac, e);                // retry (on the new link if the old one died)
+      if (!r.ok && /link/.test(r.err || '')) noLink = true;
       return r.ok;
     }));
     const bad = rs.filter(x => !x).length;
-    if (bad) toast(`${bad} node(s) did not confirm the cue. Check power and radio.`, 6000);
+    if (bad) toast(noLink ? 'No link to the control box for 4 s (is it powered?). Press GO again.'
+      : `${bad} node(s) did not confirm the cue. Check power and radio.`, 6000);
   } finally { c.busy = false; renderCue(); }
   cuePrefetch(c);
 }
@@ -2185,6 +2196,7 @@ setInterval(() => Sim.tick(), 50);
      {"evt":"status","node":MAC,"online":true,"rssi":-60,"level":[..8],"playing":bitmask,"assign":[..8]}
      {"evt":"status","node":MAC,"online":false}
      {"evt":"hello","id":1,"fw":1,"mac":MAC,"peers":[MAC,...]}
+     {"evt":"alive"}   WebSocket only, every 1 s (control fw 3): the page reconnects when nothing arrives for 3 s
    ===================================================================== */
 </script>
 </body>

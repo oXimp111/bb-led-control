@@ -21,7 +21,32 @@ enum : int { SRC_ALL = -2, SRC_SERIAL = -1 };   // otherwise a WebSocket client 
 static const uint8_t BCAST[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 static uint8_t apMac[6];
 static WebServer http(80);
-static WebSocketsServer wss(WS_PORT);
+// WiFiClient::write() (Arduino core) waits up to 10 x 1 s for room in the socket's send buffer, and the library only
+// checks WEBSOCKETS_TCP_TIMEOUT after that returns: one write to a laptop that left the air froze this loop for 10 s
+// (seen in tools/link_test.py). So never write to a socket that has no room; drop it without a close frame (that
+// frame would be one more blocking write).
+class LfWsServer : public WebSocketsServer {
+ public:
+  using WebSocketsServer::WebSocketsServer;
+  // clientIsConnected() is also true while the handshake is still running; a send then fails and the client
+  // would be dropped before it ever opened.
+  bool open(uint8_t num) { return num < WEBSOCKETS_SERVER_CLIENT_MAX && _clients[num].status == WSC_CONNECTED && clientIsConnected(num); }
+  bool writable(uint8_t num) {   // lwIP: writable = at least TCP_SNDLOWAT (~2.8 KB) free, more than any line we send
+    WSclient_t* c = &_clients[num];
+    int fd = c->tcp ? c->tcp->fd() : -1;
+    if (fd < 0) return false;
+    fd_set s;
+    FD_ZERO(&s);
+    FD_SET(fd, &s);
+    timeval tv = {0, 0};
+    return select(fd + 1, nullptr, &s, nullptr, &tv) > 0 && FD_ISSET(fd, &s);
+  }
+  void drop(uint8_t num) {
+    WSclient_t* c = &_clients[num];
+    if (clientIsConnected(c)) WebSocketsServerCore::clientDisconnect(c);
+  }
+};
+static LfWsServer wss(WS_PORT);
 static Preferences prefs;
 static bool radioOk = false;
 static bool serialJson = false;   // set once a '{' line arrives on USB: only then are events echoed to USB
@@ -47,14 +72,36 @@ static bool macParse(const char* s, uint8_t* out) {
 
 // A page whose Wi-Fi dropped without closing the socket (laptop Wi-Fi blip during a long cue pause) stops taking data.
 // Each write to it then blocks until WEBSOCKETS_TCP_TIMEOUT, and the status broadcasts stall the whole loop: GO
-// arrives seconds late or not at all. Drop such a client at once; a live page reconnects by itself in 2 s.
+// arrives seconds late or not at all. Drop such a client at once; a live page reconnects by itself.
+#ifdef LF_WS_TEST
+// Test build only (env control_wstest): serial "wszombie" turns every connected page into a dead link that the page
+// cannot see: nothing reaches it any more and what it sends is ignored, but the socket stays open (= half-open TCP).
+static uint32_t wsZombie = 0;
+#endif
+static uint32_t wsStuckSince[WEBSOCKETS_SERVER_CLIENT_MAX];   // 0 = writable at the last try
 static void wsSend(uint8_t num, const String& line) {
-  if (!wss.clientIsConnected(num)) return;
+  if (!wss.open(num)) { wsStuckSince[num] = 0; return; }
+#ifdef LF_WS_TEST
+  if (wsZombie & (1u << num)) return;
+#endif
+  if (!wss.writable(num)) {
+    // A live laptop whose ACKs come late (Wi-Fi power save) also fills the buffer for a moment: skip this line (the
+    // next status comes 0.5 s later, a lost result is resent by the page) and drop only a client stuck this long.
+    uint32_t now = millis();
+    if (!wsStuckSince[num]) wsStuckSince[num] = now | 1;
+    else if (now - wsStuckSince[num] > WS_STUCK_MS) {
+      Serial.printf("[ws] client %u stopped taking data (send buffer full for %lu ms), dropped\n", num, (unsigned long)(now - wsStuckSince[num]));
+      wsStuckSince[num] = 0;
+      wss.drop(num);
+    }
+    return;
+  }
+  wsStuckSince[num] = 0;
   uint32_t t = millis();
   bool ok = wss.sendTXT(num, line.c_str(), line.length());
   if (!ok || millis() - t > WS_SLOW_MS) {
     Serial.printf("[ws] client %u stopped taking data (%lu ms), dropped\n", num, (unsigned long)(millis() - t));
-    wss.disconnect(num);
+    wss.drop(num);
   }
 }
 static void sendTo(int src, const String& line) {
@@ -583,6 +630,12 @@ static void handleSerialText(const char* s) {
   if (!strcmp(s, "status")) printStatus();
   else if (!strcmp(s, "scan")) { scanning = true; scanStart = millis(); Serial.println("scan on (120 s)"); }
   else if (!strcmp(s, "reboot")) ESP.restart();
+#ifdef LF_WS_TEST
+  else if (!strcmp(s, "wszombie")) {
+    for (uint8_t i = 0; i < WEBSOCKETS_SERVER_CLIENT_MAX; i++) if (wss.clientIsConnected(i)) wsZombie |= 1u << i;
+    Serial.printf("[ws] zombie mask 0x%02lX\n", (unsigned long)wsZombie);
+  }
+#endif
   else if (!strcmp(s, "forget")) {
     for (auto& p : peers) p.used = false;
     savePeers();
@@ -615,7 +668,15 @@ static void pollSerial() {
 // ------------------------------------------------------------ Wi-Fi: web page + WebSocket
 static void onWs(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
   if (type == WStype_CONNECTED) Serial.printf("[ws] client %u connected (%u total)\n", num, wss.connectedClients());
-  else if (type == WStype_DISCONNECTED) Serial.printf("[ws] client %u left\n", num);
+  else if (type == WStype_DISCONNECTED) {
+    Serial.printf("[ws] client %u left\n", num);
+#ifdef LF_WS_TEST
+    wsZombie &= ~(1u << num);
+#endif
+  }
+#ifdef LF_WS_TEST
+  else if (wsZombie & (1u << num)) return;
+#endif
   else if (type == WStype_TEXT && length < LINE_MAX) {
     static char buf[LINE_MAX];
     memcpy(buf, payload, length);
@@ -636,13 +697,14 @@ static void webInit() {
     http.send(200, "application/json", b);
   });
   http.onNotFound([]() {   // phones/laptops probe odd URLs when joining: send them to the page
-    http.sendHeader("Location", "http://192.168.4.1/");
+    http.sendHeader("Location", "http://" + WiFi.softAPIP().toString() + "/");
     http.send(302, "text/plain", "");
   });
   http.begin();
   wss.begin();
   wss.onEvent(onWs);
-  wss.enableHeartbeat(15000, 3000, 2);   // drop dead browser tabs
+  // No library heartbeat: its ping is a write that can block (see LfWsServer). Dead tabs are found by the 1 s
+  // {"evt":"alive"} instead: their send buffer fills within a few seconds and wsSend() drops them.
   if (MDNS.begin(MDNS_NAME)) MDNS.addService("http", "tcp", 80);
 }
 
@@ -651,6 +713,9 @@ static void radioInit() {
   WiFi.mode(WIFI_AP);
   WiFi.setSleep(false);
   if (!WiFi.softAP(AP_SSID, AP_PASSWORD, LF_WIFI_CHANNEL, 0, AP_MAX_CLIENTS)) Serial.println("[boot] ERROR: Wi-Fi AP failed");
+#ifdef AP_IP_NET   // test build: another subnet, so a PC whose home network is also 192.168.4.x can open the page
+  WiFi.softAPConfig(IPAddress(192, 168, AP_IP_NET, 1), IPAddress(192, 168, AP_IP_NET, 1), IPAddress(255, 255, 255, 0));
+#endif
   WiFi.softAPmacAddress(apMac);
   rxQueue = xQueueCreate(32, sizeof(RxItem));
   if (esp_now_init() != ESP_OK) { Serial.println("[boot] ERROR: ESP-NOW init failed"); return; }
@@ -700,6 +765,11 @@ void loop() {
   processPending();
   processPairJobs();
   checkOffline();
+  static uint32_t lastAlive = 0;   // keepalive: the page reconnects when nothing at all arrives for a few seconds
+  if (millis() - lastAlive >= WS_ALIVE_MS) {
+    lastAlive = millis();
+    for (uint8_t i = 0; i < WEBSOCKETS_SERVER_CLIENT_MAX; i++) wsSend(i, "{\"evt\":\"alive\"}");
+  }
   if (scanning && millis() - scanStart > SCAN_MAX_MS) scanning = false;
   ledTick();
   delay(1);

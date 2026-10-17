@@ -1,0 +1,41 @@
+19:51:01 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":2}
+19:51:01 rx {"evt":"result","id":2,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:51:01 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":9,"text":"F100-0:2s","id":3}
+19:51:01 rx {"evt":"result","id":3,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:51:05 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":0,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":4}
+19:51:05 rx {"evt":"result","id":4,"node":"70:4B:CA:21:4F:EC","ok":true}
+19:56:32 dev link lost (closed), reconnecting
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 console WebSocket connection to 'ws://localhost:81/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET
+19:56:32 dev link back after 22881 ms
+19:56:32 tx {"cmd":"hello","id":5}
+19:56:32 rx {"evt":"hello","id":5,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:57:35 dev link lost (closed), reconnecting
+19:57:35 dev link back after 646 ms
+19:57:35 tx {"cmd":"hello","id":6}
+19:57:35 rx {"evt":"hello","id":6,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:59:13 dev link lost (closed), reconnecting
+19:59:13 dev link back after 634 ms
+19:59:13 tx {"cmd":"hello","id":7}
+19:59:13 rx {"evt":"hello","id":7,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+19:59:39 dev link lost (nothing heard for 3239 ms), reconnecting
+19:59:42 console WebSocket connection to 'ws://localhost:81/' failed: WebSocket is closed before the connection is established.
+19:59:46 console WebSocket connection to 'ws://localhost:81/' failed: WebSocket is closed before the connection is established.
+19:59:49 dev link back after 9183 ms
+19:59:49 tx {"cmd":"hello","id":8}
+19:59:49 rx {"evt":"hello","id":8,"fw":3,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC"]}
+20:01:05 tx {"cmd":"go","node":"70:4B:CA:21:4F:EC","bank":1,"play":[1],"stop":[2,3,4,5,6,7,8],"t_ms":0,"id":9}
+20:01:05 rx {"evt":"result","id":9,"node":"70:4B:CA:21:4F:EC","ok":true}
+20:01:05 tx {"cmd":"prog","node":"70:4B:CA:21:4F:EC","slot":1,"text":"F0-100:2s","id":10}
