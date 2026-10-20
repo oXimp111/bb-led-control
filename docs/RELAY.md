@@ -2,6 +2,8 @@
 
 Status 2026-10-15: bench-tested with three boards (control on the PC, node far away on power only, relay in between). Node without relay: -95 dBm or offline; with relay: online at -70 dBm (page RSSI). Relay printout: `tx_error 0`, node heartbeats counted at the expected 2 per second. Not yet measured: the cabinet position on site, several nodes at once, a long soak run.
 
+On site 2026-10-19 (reported, no log): relay tried, best about -80 dBm. Which hop was weak and where the relay stood are not recorded yet.
+
 ## What it is
 One extra plain ESP32 (same 30-pin board as the nodes), no LEDs/MOSFETs attached, powered from any USB charger. Firmware: `src/relay/main.cpp`, env `relay`.
 It repeats every LED-frame radio packet it hears, unchanged and with the original sender's MAC, so **the node and control firmware do not change**
@@ -35,7 +37,7 @@ It repeats every LED-frame radio packet it hears, unchanged and with the origina
   ```
   `CONTROL` = the control board, `node` = a wall node. The far node must appear with rssi better than -80, and the CONTROL line must appear.
   (A node that is already out of reach of the relay does not appear at all.)
-- Also useful: the page shows RSSI of each node as seen by the control. Compare before and after.
+- **The page RSSI does NOT show the node-to-relay hop.** The control shows the RSSI of the last packet carrying that node's MAC (`rssiTab` in `src/control/main.cpp`). The relay re-sends with the node's MAC and its copy arrives 1-3 ms after the direct one, so with a relay on, the page usually shows the **relay -> control** hop (or the direct node -> control path when the relay missed a packet). Without a relay it is the real node -> control signal. The bench "-70 dBm with relay" above was most likely the relay -> control hop too. Use the relay printout for the node -> relay hop.
 - The LED on the relay blinks briefly once a second (alive) and flashes on every repeated packet.
 
 ## If it does not help

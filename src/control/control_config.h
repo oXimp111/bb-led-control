@@ -1,7 +1,7 @@
 // control_config.h — settings for the control center (plain 30-pin ESP32).
 #pragma once
 
-#define CTRL_FW_VERSION 3
+#define CTRL_FW_VERSION 4
 
 // Wi-Fi access point the operator's laptop joins. Page: http://192.168.4.1/
 // The AP channel IS the ESP-NOW channel, so it must stay LF_WIFI_CHANNEL.

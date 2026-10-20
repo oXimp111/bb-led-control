@@ -62,7 +62,7 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 |---|---|---|---|
 | Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
 | Relay (optional, 1 spare board, only if a far wall is out of reach) | `relay` | `pio run -e relay -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame RELAY fw 1`, then a `[relay] 5 s:` table |
-| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 3, protocol 3` and `open http://192.168.4.1/`; the page opens there (Wi-Fi `LED-Control` / `ledframes`) and shows `● linked` next to the connection box. NOT `control_wstest` (that one says `192.168.10.1`) |
+| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 4, protocol 3` and `open http://192.168.4.1/`; the page opens there (Wi-Fi `LED-Control` / `ledframes`) and shows `● linked` next to the connection box. NOT `control_wstest` (that one says `192.168.10.1`) |
 - **Control fw 2 (2026-10-16) fixes "GO lags / needs a second press after a long cue pause"**: a page connection that died without closing (laptop Wi-Fi blip)
   made every status broadcast block the control loop for 5 s. Now such a client is dropped at once (`wsSend()` in `src/control/main.cpp`, `WEBSOCKETS_TCP_TIMEOUT` 300 in `platformio.ini`).
   Bench result (`tools/dead_ws_test.py`): fw 1 = GO no answer within 15 s (3/3), fw 2 = 20/20 ok, worst 170 ms. Only the control board needs reflashing; nodes unchanged.
@@ -78,6 +78,8 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
   10-minute pause on the production build (`tools/ap_proxy.py` lets Chrome on Sean's PC reach 192.168.4.1): GO first press OK, 42 ms, after a Wi-Fi cut mid-pause.
   Result: old page = GO after a dead link failed 3 presses in a row, only a reload helped; new = first press OK in every case (`test_logs/linktest_old_*`, `linktest_new_*`, `linktest_soak_*`).
   Test build `control_wstest` = AP at 192.168.10.1 (a browser on Sean's PC can reach it; his home LAN is also 192.168.4.x) + serial `wszombie`. Never install it.
+- **Control fw 4 (2026-10-19)**: only the embedded page changed (fw number bumped so the installer can see the new page is on the board): choosing a cue-list show starts at section 1 and never changes the lights,
+  uploads go to the bank not in use, timeline max 60 min. Zip `LEDframes_2026-10-19.zip` (folder `LEDframes_2026-10-19`, steps in `README_FIRST_CONTROL.txt`) + her show merged into one (`怨种闺蜜_相框灯_v15_one_show.json`). Nodes unchanged.
 - **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
 - Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
 - The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.
@@ -165,7 +167,8 @@ Purpose: a 15 min show whose parts are triggered by the operator on the actors' 
   (start of section 2, 3, ...; section 1 starts at 0, name `show.first`). `compileSections()` slices the compiled steps at the cuts, each section starts at t=0.
   Gaps are `K` (hold the level) instead of off. A fade cut at a boundary is split exactly; a blink cut mid-period becomes fades + the rest of the blink.
   A frame with no clip in a section has no program there. The 24-step limit applies per section.
-- **Radio**: section k is uploaded into bank k%2 (`MSG_PROG` slot = bank*8+ch). While section k plays the page uploads k+1 into the other bank, so a cue is ONE small
+- **Radio**: a section is uploaded into the bank the lights are NOT using (`cueInUse` = bank of the last GO, saved in `lf-cue`; plain shows/frame programs use bank 0; before anything played, section k -> bank k%2), because a node
+  restarts every channel playing a slot when that slot is rewritten (`MSG_PROG` slot = bank*8+ch). While section k plays the page uploads k+1 into the other bank, so a cue is ONE small
   `MSG_GO { bank, play_mask, stop_mask, offset_ms }` per node (control JSON `{"cmd":"go","node","bank","play":[..],"stop":[..],"t_ms"}`).
   Node `doGo`: all-or-nothing (bad bank/masks or an empty program in play_mask -> `ACK_BAD_ARG`, nothing changes). play_mask channels: assign slot bank*8+ch and play;
   stop_mask channels: stop and hold the level; channels in neither mask (frames the operator took over) are untouched.
@@ -174,7 +177,9 @@ Purpose: a 15 min show whose parts are triggered by the operator on the actors' 
   Press during the 300 ms debounce or while a GO is being sent is ignored. GO after the last section does nothing. Space/Enter = GO.
   A `go` that fails is retried by the control firmware (6 sends) and once more by the page with `t_ms` = time elapsed.
 - Previous / jump / first GO after a reload may need a re-upload ("preparing", about 0.3-0.5 s). Replay of the current section is instant (its bank is still loaded).
-- The page keeps only the section index in localStorage (`lf-cue`); after a reload it shows "was playing before the page was reloaded" and the next GO continues with the next section.
+- The page keeps only the section index (and the bank in use) in localStorage (`lf-cue`); after a reload it re-selects that show, shows "was playing before the page was reloaded" and the next GO continues with the next section.
+  Choosing a show in the dropdown always starts it at section 1 and never changes the lights (fixed 2026-10-19: before, it resumed the last position of show C and the prefetch into both banks restarted lit frames).
+- Timeline max 60 min (`MAXT`, was 10 min, which is why the installer's v14 split one evening into 3 shows A/B/C). `怨种闺蜜_相框灯_v15_one_show.json` = v14 merged into ONE cue list Q1-Q19, every section's program text identical to v14.
 - Not possible: playing a whole cue-list show in one go on the nodes (it would exceed 24 steps); the editor preview plays it continuously.
 
 ## Full capability node test (`node_fulltest`) + `tools/fulltest.py`  — the hardware test
@@ -230,4 +235,5 @@ Source: 2026-10-13 two-board tests, details in docs/TEST_RESULTS.md. Each is a c
 - DONE (2026-10-14, installer on site, see docs/TEST_RESULTS.md): pairing via the page works; the longest control-to-node distance in the venue works (node connected and online).
 - 2026-10-15: on site the farthest node is still too far from the control (weak signal). Relay written (`src/relay`, docs/RELAY.md) and bench-tested the same day: far node -95 dBm/offline without relay, online at -70 dBm with it. Two relays at once tested on the bench (`tools/relay_test.py`, docs/RELAY.md): duplicates arrive but nothing is applied twice, 0 failures.
   Still open: relay position on site (open table, plastic cover; no cabinet), re-survey with nobody near the boards. Zip sent to the installer (no git access there).
+  2026-10-19 (reported by Sean, no log): relay tried on site, best signal still about -80 dBm. Which hop (control->relay or relay->far node) and positions not recorded.
 - Still open: logged RSSI/packet-loss survey per wall; multi-node test of the control firmware with logs.

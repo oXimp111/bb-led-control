@@ -45,6 +45,8 @@ Frame numbers equal channel numbers, counted left to right while facing the wall
   if it has finished, the lights hold their last level until the press. Also: **Previous**, **Replay section**, **Go to** (asks first), **Reset** (asks first).
   The panel shows the sections, the playing section's time, and "next section ready ✓" once it has been sent to the nodes (GO is instant then).
   Clicking a frame takes that frame out of the cue list until Reset.
+  Choosing a cue-list show in the dropdown always starts it at section 1 (only a page reload resumes where it was, and the reload re-selects that show).
+  Choosing a show never changes the lights: its sections are sent into the program bank the lights are not using; section 2 follows after the first GO.
 
 **Side panel**
 - Nodes list: click a node for its popup (rename, change wall, Identify = pulse 5 s, Remove node).
@@ -88,7 +90,7 @@ Editing a program does not resend anything. The next Run-mode click on a frame s
 - No keyboard shortcuts on this page. Leaving the page or switching the toggle stops the preview.
 
 ### Entire set (show editor)
-A show is a whole-room timeline with one row per frame (W1-1 … W4-5), grouped by wall.
+A show is a whole-room timeline with one row per frame (W1-1 … W4-5), grouped by wall. A non-loop show (and a cue list) can be up to 60 min long (`MAXT`).
 Every change saves automatically. Maximum 24 steps per frame (gaps count as steps). Rows over the limit turn red,
 and Run mode will not play that show.
 

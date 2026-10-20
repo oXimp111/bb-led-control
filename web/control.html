@@ -1074,7 +1074,7 @@ function nodeModal(mac) {
    S.shows = [{name, loop, length_ms, tracks:[{frames, stagger_ms, clips:[{t,fx,a,b,per,dur}]}]}]
    The editor keeps ONE track per frame (frames:[id], stagger_ms:0). Older/imported shows with group
    tracks or stagger are expanded to that form by normalizeShow(); compileShow() output is identical. */
-const MAXT = 600000, SNAP = 100, LABEL_W = 84, RULER_H = 24;
+const MAXT = 3600000, SNAP = 100, LABEL_W = 84, RULER_H = 24;
 const ED = { idx: 0, view: S.progView === 'sp' ? 'sp' : 'ed', rows: new Set(), anchor: null, clips: new Set(), collapsed: {}, ppm: 0.06, rowH: 20, needFit: true,
   playing: false, pos: 0, pos0: 0, t0: 0, undo: [], redo: [], clipboard: null, cache: null };
 const byId = id => document.getElementById(id);
@@ -1192,7 +1192,7 @@ function spActive() { return byId('page-programs').classList.contains('on') && E
 function renderEditor() {
   if (!edActive()) return;
   const sc = byId('tlScroll');
-  if (ED.needFit && sc.clientWidth > LABEL_W + 60) { ED.ppm = clamp((sc.clientWidth - LABEL_W - 8) / edExtent(curShow()), 0.003, 0.6); ED.needFit = false; }
+  if (ED.needFit && sc.clientWidth > LABEL_W + 60) { ED.ppm = clamp((sc.clientWidth - LABEL_W - 8) / edExtent(curShow()), 0.0005, 0.6); ED.needFit = false; }
   renderShowList(); renderTop(); renderTimeline(); renderEdPreview();
 }
 function renderShowList() {
@@ -1288,7 +1288,7 @@ function edTick() {
   requestAnimationFrame(edTick);
 }
 function setZoom(p, ax) {         // ax = x inside the scroll viewport to keep fixed (default: centre)
-  const sc = byId('tlScroll'); p = clamp(p, 0.003, 0.6);
+  const sc = byId('tlScroll'); p = clamp(p, 0.0005, 0.6);
   const vx = ax == null ? (sc.clientWidth + LABEL_W) / 2 : ax, tA = (sc.scrollLeft + vx - LABEL_W) / ED.ppm;
   ED.ppm = p; renderTimeline(); sc.scrollLeft = tA * p + LABEL_W - vx;
 }
@@ -1334,7 +1334,7 @@ function clipModal(clip) {
     if (fx === 'B') { c.per = Math.round(+g('cP').value); if (!(c.per >= 1 && c.per <= 65535)) return { err: 'Blink period must be 1–65535 ms' }; }
     if (!(c.t >= 0)) return { err: 'Start must be 0 or later' };
     if (!(c.dur >= 1)) return { err: 'Length must be at least 1 ms' };
-    if (c.t + c.dur > maxT(sh)) return { err: sh.loop ? 'Clip would run past the loop length' : 'Clip is past the maximum show length (10 min)' };
+    if (c.t + c.dur > maxT(sh)) return { err: sh.loop ? 'Clip would run past the loop length' : `Clip is past the maximum show length (${MAXT / 60000} min)` };
     const ids = isNew ? [...ED.rows] : [locate(sh, clip)], ignore = new Set(clip ? [clip] : []);
     const hit = ids.find(id => conflicts(sh, id, c.t, c.dur, ignore));
     if (hit) return { err: 'Overlaps another clip on ' + hit };
@@ -1901,7 +1901,9 @@ function selfTest() {
 }
 
 /* ============================ CUE LIST (Run mode, stepped shows) ============================
-   Every node holds two program banks (slot = bank*8 + channel, 1-based in the JSON). Section k lives in bank k%2.
+   Every node holds two program banks (slot = bank*8 + channel, 1-based in the JSON). A section is uploaded into the bank
+   the lights are NOT using (cueInUse = bank of the last GO; plain shows and frame programs use bank 0), because a node
+   restarts every channel that plays a slot when that slot is rewritten. Before anything played, section k goes to bank k%2.
    While section k plays, section k+1 is uploaded into the other bank, so a GO is ONE small "go" packet per node:
    switch the channels to the new bank and play, and stop the frames that have nothing in the new section (they keep
    their level). GO while a section plays: those frames freeze where they are and the next section takes over.
@@ -1910,39 +1912,44 @@ const CUE_DEBOUNCE_MS = 300;
 let cue = null;      // state of the selected cue-list show (runtime only; only the section index is saved)
 const steppedSel = () => { const sh = S.shows.find(x => x.id === byId('showSel').value); return sh && sh.stepped ? sh : null; };
 const cueNodes = () => ROOM_ORDER().filter(id => nodeForWall(pid(id)[0]));
-const cueSave = c => Store.set('lf-cue', { showId: c.showId, sig: c.sig, k: c.k });
+let cueInUse = (Store.get('lf-cue', null) || {}).bank;     // bank the lights play from: 0, 1, or undefined (unknown)
+if (cueInUse !== 0 && cueInUse !== 1) cueInUse = null;
+let cuePicked = false;     // the operator chose a show in the dropdown: start it at section 1 (only a page reload resumes)
+const cueSave = c => Store.set('lf-cue', { showId: c.showId, sig: c.sig, k: c.k, bank: cueInUse });
 function cueFor(show) {
   const sig = JSON.stringify([show.tracks, show.cues, show.first]);
-  if (cue && cue.showId === show.id && cue.sig === sig) return cue;
-  const saved = Store.get('lf-cue', null), same = !!(saved && saved.showId === show.id && saved.sig === sig && saved.k >= 0);
+  if (cue && cue.showId === show.id && cue.sig === sig && !cuePicked) return cue;
+  const saved = Store.get('lf-cue', null), same = !cuePicked && !!(saved && saved.showId === show.id && saved.sig === sig && saved.k >= 0);
+  cuePicked = false;
   cue = { showId: show.id, sig, comp: compileSections(show), k: same ? saved.k : -1, resumed: same, tStart: 0, loaded: [null, null],
     jobs: {}, chain: Promise.resolve(), busy: false, last: 0, preparing: false, override: new Set() };
   return cue;
 }
-function cueLoad(c, j) {      // make sure section j is in its bank on every node; one upload job at a time
-  if (j < 0 || j >= c.comp.sections.length) return Promise.resolve(true);
-  const bank = j % 2;
-  if (c.loaded[bank] === j) return Promise.resolve(true);
-  if (c.jobs[j]) return c.jobs[j];
+function cueLoad(c, j, force) {   // make sure section j is in a bank on every node -> that bank, or -1; one upload job at a time
+  if (j < 0 || j >= c.comp.sections.length) return Promise.resolve(-1);
+  if (force === undefined && c.loaded.includes(j)) return Promise.resolve(c.loaded.indexOf(j));
+  if (force === undefined && c.jobs[j]) return c.jobs[j];
   const job = c.chain = c.chain.then(async () => {
-    if (c !== cue) return false;
-    if (c.loaded[bank] === j) return true;
+    if (c !== cue) return -1;
+    if (force === undefined && c.loaded.includes(j)) return c.loaded.indexOf(j);
+    const bank = force !== undefined ? force : cueInUse === null ? j % 2 : 1 - cueInUse;   // never the bank the lights use
     c.loaded[bank] = null; renderCue();
     const sec = c.comp.sections[j];
     const rs = await Promise.all(cueNodes().filter(id => sec.programs[id] && !c.override.has(id)).map(id => {
       const [w, ch] = pid(id);
       return request({ cmd: 'prog', node: nodeForWall(w), slot: bank * 8 + ch, text: sec.programs[id] }).then(r => r.ok);
     }));
-    const ok = rs.every(Boolean);
-    if (ok && c === cue) c.loaded[bank] = j;
-    delete c.jobs[j]; renderCue(); return ok;
-  }).catch(() => false);
-  c.jobs[j] = job;
+    const ok = rs.every(Boolean) && c === cue;
+    if (ok) c.loaded[bank] = j;
+    if (c.jobs[j] === job) delete c.jobs[j];
+    renderCue(); return ok ? bank : -1;
+  }).catch(() => -1);
+  if (force === undefined) c.jobs[j] = job;
   return job;
 }
 function cuePrefetch(c) {     // keep the next section ready (before the first GO: sections 1 and 2)
   if (c !== cue || mode !== 'run' || !cueNodes().length || c.comp.errors.length) return;
-  (c.k < 0 ? [0, 1] : [c.k + 1]).forEach(j => cueLoad(c, j));
+  (c.k >= 0 ? [c.k + 1] : cueInUse === null ? [0, 1] : [0]).forEach(j => cueLoad(c, j));   // lights in use: section 2 waits for the first GO
 }
 async function cueGo(target) {
   const show = steppedSel(); if (!show || mode !== 'run') return;
@@ -1955,12 +1962,13 @@ async function cueGo(target) {
   if (c.busy || now - c.last < CUE_DEBOUNCE_MS) return;       // a second press during the first never skips a section
   c.busy = true; c.last = now;
   try {
-    const bank = target % 2, sec = c.comp.sections[target];
-    if (c.loaded[bank] !== target) {                           // rare: not ready yet (jump, previous, fast presses)
+    const sec = c.comp.sections[target];
+    let bank = c.loaded.indexOf(target);
+    if (bank < 0) {                                            // rare: not ready yet (jump, previous, fast presses)
       c.preparing = true; renderCue();
-      const ok = await cueLoad(c, target);
+      bank = await cueLoad(c, target);
       c.preparing = false;
-      if (!ok || c !== cue) { renderCue(); return toast('Could not send the section to every node. Press GO again.'); }
+      if (bank < 0 || c !== cue) { renderCue(); return toast('Could not send the section to every node. Press GO again.'); }
     }
     const per = {};
     for (const id of cueNodes()) {
@@ -1969,7 +1977,7 @@ async function cueGo(target) {
       (sec.programs[id] ? e.play : e.stop).push(ch);
     }
     const t0 = performance.now();
-    c.k = target; c.tStart = t0; c.resumed = false; cueSave(c); renderCue();
+    c.k = target; c.tStart = t0; c.resumed = false; cueInUse = bank; cueSave(c); renderCue();
     // t_ms = time since the press, taken when the packet really leaves (after a reconnect it starts as if that time had passed)
     const send = async (mac, e) => {
       await linkReady();
@@ -1980,7 +1988,7 @@ async function cueGo(target) {
     const rs = await Promise.all(Object.entries(per).map(async ([mac, e]) => {
       let r = await send(mac, e);
       if (!r.ok && /bad/.test(r.err || '')) {                  // node lost the section (reboot, reflash): send it again, then cue
-        c.loaded[bank] = null; await cueLoad(c, target); r = await send(mac, e);
+        c.loaded[bank] = null; await cueLoad(c, target, bank); r = await send(mac, e);
       } else if (!r.ok) r = await send(mac, e);                // retry (on the new link if the old one died)
       if (!r.ok && /link/.test(r.err || '')) noLink = true;
       return r.ok;
@@ -1991,7 +1999,10 @@ async function cueGo(target) {
   } finally { c.busy = false; renderCue(); }
   cuePrefetch(c);
 }
-function cueInvalidate() { if (cue) cue.loaded = [null, null]; }     // something else wrote to the program slots
+function cueInvalidate() {     // a plain show / all frames wrote slots 1-8 (= bank 0) and plays from them
+  if (cue) cue.loaded = [null, null];
+  cueInUse = 0; const saved = Store.get('lf-cue', null); if (saved) Store.set('lf-cue', { ...saved, bank: 0 });
+}
 function confirmModal(title, msg, label, onOk) {
   openModal(`<h2>${esc(title)}</h2><p>${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button id="cfNo">Cancel</button><button class="pri" id="cfYes">${esc(label)}</button></div>`);
   byId('cfNo').onclick = closeModal; byId('cfYes').onclick = () => { closeModal(); onOk(); };
@@ -2020,7 +2031,7 @@ function cueTick() {
   const sh = steppedSel(), panel = byId('cuePanel'); if (!sh || panel.style.display === 'none' || !cue || cue.showId !== sh.id) return;
   const c = cue, secs = c.comp.sections, st = byId('cueStatus'), fill = byId('cueFill');
   let txt = '', pct = 0;
-  const nextReady = c.k + 1 < secs.length && c.loaded[(c.k + 1) % 2] === c.k + 1;
+  const nextReady = c.k + 1 < secs.length && c.loaded.includes(c.k + 1);
   if (c.comp.errors.length) { const e = c.comp.errors[0]; txt = `⚠ ${e.id} needs ${e.n} steps in section ${e.section + 1} (max ${MAX_STEPS}). Fix it in Programs.`; }
   else if (c.preparing) txt = 'Sending the section… it starts as soon as it is ready.';
   else if (c.k < 0) txt = 'Ready. Nothing has played yet.';
@@ -2042,7 +2053,7 @@ byId('cueJumpBtn').onclick = () => { const j = +byId('cueJump').value, s = stepp
 byId('cueReset').onclick = () => confirmModal('Reset the cue list?', 'The next GO starts at section 1 again. Lights stay as they are. Frames you played by hand are released.', 'Reset', () => {
   if (!cue) return; cue.k = -1; cue.override.clear(); cue.resumed = false; cueSave(cue); cuePrefetch(cue); renderCue();
 });
-byId('showSel').onchange = cueSync;
+byId('showSel').onchange = () => { cuePicked = true; cueSync(); };
 setInterval(cueTick, 200);
 window.addEventListener('keydown', e => {
   if (e.code !== 'Space' && e.key !== 'Enter') return;
@@ -2066,6 +2077,7 @@ async function cueSelfTest() {
     one('W1-2', { t: 0, fx: 'H', a: 50, dur: 2000 }, { t: 4000, fx: 'H', a: 20, dur: 1000 }),  // sec 1 + 3 (sec 2: nothing -> holds)
     one('W2-1', { t: 2000, fx: 'H', a: 80, dur: 2000 }),                                       // sec 2 only (leading gap in sec 1 = keep)
     one('W3-1', { t: 3000, fx: 'F', a: 0, b: 100, dur: 1000 })] });                           // sec 2, starts after a 1 s keep
+  const keepUse = cueInUse; cueInUse = null;                                                 // the simulator starts with nothing playing
   S.shows.push(sh); refreshShowSel(); byId('showSel').value = sh.id; setMode('run'); cue = null; cueSync();
   const c = cueFor(sh);
   await sleep(2500);                                                                          // prefetch of sections 1 and 2
@@ -2090,6 +2102,23 @@ async function cueSelfTest() {
   check('GO after the wait starts section 3 (W1-2 -> 20 %), W2-1 holds', c.k === 2 && lvl('W1-2') === 20 && lvl('W2-1') === 80, c.k + ',' + lvl('W1-2'));
   await sleep(400);
   await cueGo(); check('GO past the last section changes nothing', c.k === 2, c.k);
+  // choosing another show must not touch the lights: its section 1 goes into the bank the lights are NOT using
+  const used = cueInUse, sh2 = normalizeShow({ name: 'cue self test 2', stepped: true, cues: [{ t: 1000, name: 'b' }], tracks: [
+    one('W1-2', { t: 0, fx: 'H', a: 90, dur: 500 }), one('W2-1', { t: 0, fx: 'H', a: 5, dur: 500 }), one('W1-1', { t: 1000, fx: 'H', a: 60, dur: 500 })] });
+  S.shows.push(sh2); refreshShowSel();
+  const pick = s => { byId('showSel').value = s.id; byId('showSel').onchange(); };
+  pick(sh2); await sleep(1500);
+  const c2 = cue;
+  check('picking another show leaves the lights alone (W1-2 20 %, W2-1 80 %)', lvl('W1-2') === 20 && lvl('W2-1') === 80, lvl('W1-2') + ',' + lvl('W2-1'));
+  check('...its section 1 went into the free bank only', used !== null && c2.loaded[1 - used] === 0 && c2.loaded[used] === null, used + ' ' + JSON.stringify(c2.loaded));
+  await cueGo(); await sleep(300);
+  check('its first GO plays section 1 (W1-2 90 %, W2-1 5 %)', c2.k === 0 && lvl('W1-2') === 90 && lvl('W2-1') === 5, c2.k + ',' + lvl('W1-2') + ',' + lvl('W2-1'));
+  await sleep(1200);
+  check('...and section 2 is loaded into the other bank after it', c2.loaded[used] === 1, JSON.stringify(c2.loaded));
+  pick(sh); await sleep(300);
+  check('picking the first show again starts it at section 1 (not where it stopped)', cue.k === -1 && !cue.resumed, cue.k);
+  check('...and its section 1 goes into the free bank (lights unchanged: W1-2 90 %)', cue.loaded[cueInUse] === null && lvl('W1-2') === 90, JSON.stringify(cue.loaded) + ' ' + lvl('W1-2'));
+  S.shows.splice(S.shows.indexOf(sh2), 1); cueInUse = keepUse;
   S.shows.splice(S.shows.indexOf(sh), 1); cue = null; refreshShowSel(); byId('showSel').value = keepSel; setMode(keepMode); cueSync();
   out.forEach(l => console.log(l));
   console.log(ok ? 'CUE SELFTEST PASS' : 'CUE SELFTEST FAIL');
@@ -2161,6 +2190,7 @@ ctrlEls = drawRoom(document.getElementById('roomSvg'), true);
 simEls = drawRoom(document.getElementById('simSvg'), false);
 edEls = drawRoom(byId('edSvg'), false, 'e');
 migratePrograms(); ensureShows(); refreshShowSel(); initEditor(); initSingle();
+{ const sc = Store.get('lf-cue', null); if (sc && S.shows.some(x => x.id === sc.showId)) { byId('showSel').value = sc.showId; cueSync(); } }   // reload: back to the cue list that was playing
 SimTransport.open(onEvent);
 renderNodes(); renderControl();
 if (!storageOk()) toast('This viewer blocks saving. Open control.html in Chrome, Edge or Safari so assignments persist.');

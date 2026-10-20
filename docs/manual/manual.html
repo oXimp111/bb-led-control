@@ -177,7 +177,7 @@ li.u{background:#fff3b0;border-radius:1mm}
 <p>结果：选中的第一行保持不动，之后每一行依次比前一行晚一个间隔开始。图 2-1 的示例即为间隔 300 ms 的波浪。如提示 “Select 2+ rows that have a clip at the playhead”，请检查所选行数以及播放线位置。</p>
 
 <h3>2.6 循环节目</h3>
-<p>勾选 <span class="en">Loop</span> 后出现 <span class="en">length ... ms</span>，即循环一圈的总长度（如 8000 = 8 秒）。时间线上不能在该长度之外放置片段，且长度不能小于最后一个片段的结束时间。节目总长度显示在旁边的 <span class="en">Total</span>。未循环的节目时间线最长 10 分钟，播放结束后各画框停在最后的亮度。</p>
+<p>勾选 <span class="en">Loop</span> 后出现 <span class="en">length ... ms</span>，即循环一圈的总长度（如 8000 = 8 秒）。时间线上不能在该长度之外放置片段，且长度不能小于最后一个片段的结束时间。节目总长度显示在旁边的 <span class="en">Total</span>。<span class="u"><span class="nw">更新</span>未循环的节目（包括分段节目）时间线最长 60 分钟</span>，播放结束后各画框停在最后的亮度。</p>
 
 <h3>2.7 步数限制</h3>
 <p>每个画框最多 <b>24 步</b>。一个片段算一步，<b>片段之间的空隙（熄灯）也算一步</b>。</p>
@@ -305,7 +305,7 @@ li.u{background:#fff3b0;border-radius:1mm}
 <div class="note">Control 页主画面显示的亮度来自约每 0.5 秒一次的状态更新，所以快于 1 秒一次的闪烁在主画面上可能显得偏慢或不准，请以模拟器为准。</div>
 
 <h3 class="u">4.4 Cue list 播放（GO）<span class="nw">新增</span></h3>
-<p>在节目下拉框选中带 ⏭ 的分段节目，图 4-3 上方出现 Cue list 面板。选中后软件会提前把前两段发送到各节点，下一段始终保持在准备好的状态，所以按下 <span class="en">GO</span> 时只发送一个很小的指令，几乎没有延迟。</p>
+<p>在节目下拉框选中带 ⏭ 的分段节目，图 4-3 上方出现 Cue list 面板。选中后软件会提前把第 1 段（灯未在播放分段节目时为前两段）发送到各节点，下一段始终保持在准备好的状态，所以按下 <span class="en">GO</span> 时只发送一个很小的指令，几乎没有延迟。</p>
 <img src="img/17_cue_run.png"><div class="cap">图 4-5　Cue list 面板（第 1 段播放中，下一段 Storm 已就绪）</div>
 <ol class="mk">
 <li>节目下拉框，带 ⏭ 为分段节目。</li>
@@ -324,11 +324,12 @@ li.u{background:#fff3b0;border-radius:1mm}
 <tr class="u"><td>当前段已播完、尚未收到提示</td><td>灯<b>保持最后一步的亮度</b>，无论等多久，直到按 GO 才开始下一段。</td></tr>
 <tr class="u"><td>连续快速按 GO</td><td>300 ms 内的重复按键以及正在发送指令时的按键被忽略，不会跳过一段。</td></tr>
 <tr class="u"><td>点击单个画框</td><td>该画框播放自己的程序，并脱离分段节目，直到 Reset。状态行显示脱离的画框数。</td></tr>
+<tr class="u"><td><span class="nw">新增</span>在下拉框中选择分段节目</td><td>该节目<b>从第 1 段开始</b>（即使之前播放过一部分）。选择节目本身<b>不会改变灯光</b>，第一次按 GO 才开始。</td></tr>
 <tr class="u"><td>刷新页面</td><td>软件记住当前段号，状态行提示该段在刷新前已播放；下一次 GO 播放下一段，第一次可能需要重新发送。</td></tr>
 <tr class="u"><td>无线通信中断</td><td>灯保持当前状态，不会熄灭。恢复后可继续按 GO。</td></tr>
 <tr class="u"><td>某段超过 24 步</td><td>状态行显示红字，GO 不可用；请回到 Programs 页修改。</td></tr>
 </table>
-<div class="note u">分段节目的各段是依次发送到节点的两个存储区（每个节点存两段）。因此 Previous 和跳转通常需要先重新发送，而 GO 与 Replay 不需要。</div>
+<div class="note u">分段节目的各段是依次发送到节点的两个存储区（每个节点存两段），新的一段总是发送到灯当前未使用的那个存储区。因此 Previous 和跳转通常需要先重新发送，而 GO 与 Replay 不需要。</div>
 
 <h2>第 5 章　快捷键与备份</h2>
 <h3>5.1 整套节目页快捷键</h3>
