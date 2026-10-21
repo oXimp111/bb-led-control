@@ -113,3 +113,14 @@ control center is adequate. (An earlier guess that the flash write of the progra
 5. Node-side log read: packets correct (see section 1). Node reported ~16,100 "readback differs" events: instrumentation artifact (readback before the 2 ms PWM latch), fixed in 6b54c7e;
    after reflashing, write_mismatch 0 / log_mismatch 0 and outtest 40/40.
 6. `stress 100` on node_test: poor delivery, node rebooting (task watchdog) - section 2. Cause isolated by flashing the plain `node` firmware: `stress 50` PASS - section 3.
+
+## 2026-10-21: control fw 5 (bench, flashed remotely with tools/serial_flash.py)
+| Test | Result |
+|---|---|
+| Engine unit tests (`test/engine_test.cpp`) | ALL PASSED |
+| Page `selfTest()` / `cueSelfTest()` (Chrome) | PASS / PASS |
+| fw 5 import checks: v15 = 18 cues / 19 sections / 0 errors; 63-min show refused with a message; mixed file imports the good show; cues past `MAXT` kept; survives save + reload | 8/8 |
+| Remote-flash PC test (`tools/serial_flash_test.py`) | 25/25 |
+| Full capability hardware test (`tools/fulltest.py`, control fw 5 + `node_fulltest`) | 614/614, 0 lost packets (`test_logs/fulltest_20261021_074808`) |
+| Real cue list over Wi-Fi: page served by the box (`control_wstest` fw 5), v15 show, real node on W1 | offline W2 node: GO refused with "W2 (…4FEC): no_ack"; then GO 1-19 all OK, worst 191 ms, median 64 ms, link never lost |
+| Remote flashes (no BOOT): control 916 KB 149 s, control_wstest 158 s, node 78-127 s, node_fulltest 127 s | all confirmed, SHA matches |

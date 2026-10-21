@@ -1133,7 +1133,8 @@ function normalizeShow(raw) {       // any valid show -> one track per frame, st
   if (raw.stepped) {
     sh.stepped = true; sh.loop = false; delete sh.length_ms;
     const seen = new Set(); sh.cues = (Array.isArray(raw.cues) ? raw.cues : []).map(c => ({ t: Math.round(+c.t) || 0, name: String(c.name || '').slice(0, 40) }))
-      .filter(c => c.t > 0 && c.t <= MAXT && !seen.has(c.t) && seen.add(c.t)).sort((a, b) => a.t - b.t);
+      .filter(c => c.t > 0 && !seen.has(c.t) && seen.add(c.t)).sort((a, b) => a.t - b.t);   // never drop cues: a page with a shorter
+      // MAXT (fw 3: 10 min) used to cut every cue past it and save the damaged show; importShows() now refuses a show that is too long
     if (raw.first) sh.first = String(raw.first).slice(0, 40);
   }
   return sh;
@@ -1604,10 +1605,16 @@ const slug = s => (s.replace(/[^\w\-]+/g, '_').replace(/^_+|_+$/g, '') || 'show'
 function importShows(text) {
   let data; try { data = JSON.parse(text); } catch { return toast('Import failed: not a JSON file'); }
   const list = Array.isArray(data) ? data : Array.isArray(data && data.shows) ? data.shows : [data];
-  const added = [];
-  for (const raw of list) { try { const sh = normalizeShow(raw); sh.id = newId('s'); sh.name = uniqueName(sh.name); S.shows.push(sh); added.push(sh); } catch { } }
-  if (!added.length) return toast('Import failed: no valid show found in that file');
-  toast(`Imported ${added.length} show${added.length === 1 ? '' : 's'}`);
+  const added = [], tooLong = [];
+  for (const raw of list) {
+    let sh; try { sh = normalizeShow(raw); } catch { continue; }
+    const end = Math.max(0, ...sh.tracks.flatMap(tr => tr.clips.map(c => c.t + c.dur)), ...(sh.cues || []).map(c => c.t));
+    if (!sh.loop && end > MAXT) { tooLong.push(`${sh.name} (${Math.ceil(end / 60000)} min)`); continue; }
+    sh.id = newId('s'); sh.name = uniqueName(sh.name); S.shows.push(sh); added.push(sh);
+  }
+  const longMsg = tooLong.length ? `Not imported, longer than ${MAXT / 60000} min: ${tooLong.join(', ')}. This page cannot hold it.` : '';
+  if (!added.length) return toast(longMsg || 'Import failed: no valid show found in that file', 8000);
+  toast(`Imported ${added.length} show${added.length === 1 ? '' : 's'}` + (longMsg ? '. ' + longMsg : ''), longMsg ? 8000 : 3200);
   switchShow(S.shows.indexOf(added[0]));
 }
 
@@ -1934,10 +1941,17 @@ function cueLoad(c, j, force) {   // make sure section j is in a bank on every n
     if (force === undefined && c.loaded.includes(j)) return c.loaded.indexOf(j);
     const bank = force !== undefined ? force : cueInUse === null ? j % 2 : 1 - cueInUse;   // never the bank the lights use
     c.loaded[bank] = null; renderCue();
-    const sec = c.comp.sections[j];
-    const rs = await Promise.all(cueNodes().filter(id => sec.programs[id] && !c.override.has(id)).map(id => {
-      const [w, ch] = pid(id);
-      return request({ cmd: 'prog', node: nodeForWall(w), slot: bank * 8 + ch, text: sec.programs[id] }).then(r => r.ok);
+    const sec = c.comp.sections[j], perNode = {};
+    for (const id of cueNodes()) if (sec.programs[id] && !c.override.has(id)) (perNode[nodeForWall(pid(id)[0])] = perNode[nodeForWall(pid(id)[0])] || []).push(id);
+    // one command at a time per node (the box handles one per node anyway), all nodes in parallel: no burst of 24 lines
+    c.fail = null;
+    const rs = await Promise.all(Object.entries(perNode).map(async ([mac, ids]) => {
+      for (const id of ids) {
+        const [w, ch] = pid(id);
+        const r = await request({ cmd: 'prog', node: mac, slot: bank * 8 + ch, text: sec.programs[id] });
+        if (!r.ok) { c.fail = c.fail || `${w} (…${short(mac)}): ${r.err || 'failed'}`; return false; }
+      }
+      return true;
     }));
     const ok = rs.every(Boolean) && c === cue;
     if (ok) c.loaded[bank] = j;
@@ -1968,7 +1982,7 @@ async function cueGo(target) {
       c.preparing = true; renderCue();
       bank = await cueLoad(c, target);
       c.preparing = false;
-      if (bank < 0 || c !== cue) { renderCue(); return toast('Could not send the section to every node. Press GO again.'); }
+      if (bank < 0 || c !== cue) { renderCue(); return toast(`Could not send the section to every node${c.fail ? ': ' + c.fail : ''}. Press GO again.`, 6000); }
     }
     const per = {};
     for (const id of cueNodes()) {

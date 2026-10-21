@@ -9,6 +9,7 @@
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
+#include <esp_task_wdt.h>
 #include <esp_now.h>
 #include <esp_wifi.h>
 #include "protocol.h"
@@ -776,9 +777,13 @@ void setup() {
   Serial.printf("[boot] Wi-Fi \"%s\" password \"%s\" -> open http://%s/   (controller MAC %s)\n", AP_SSID, AP_PASSWORD,
                 WiFi.softAPIP().toString().c_str(), ms);
   Serial.println("[boot] USB: type 'help' for text commands; the page also speaks JSON lines here.");
+  // a hung box reboots by itself (nodes keep playing; the page reconnects). Nothing in loop() may block this long.
+  esp_task_wdt_init(CTRL_WDT_S, true);
+  esp_task_wdt_add(NULL);
 }
 
 void loop() {
+  esp_task_wdt_reset();
   http.handleClient();
   wss.loop();
   serialota::poll();

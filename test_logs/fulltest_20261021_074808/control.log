@@ -1,0 +1,1263 @@
+1792594088.871 ets Jul 29 2019 12:21:46
+1792594088.871 
+1792594088.877 rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+1792594088.879 configsip: 0, SPIWP:0xee
+1792594088.884 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+1792594088.887 mode:DIO, clock div:2
+1792594088.890 load:0x3fff0030,len:1184
+1792594088.893 load:0x40078000,len:13232
+1792594088.893 load:0x40080400,len:3028
+1792594088.896 entry 0x400805e4
+1792594089.265 >>> {"cmd": "hello", "id": 101}
+1792594089.495 
+1792594089.498 [boot] LED frame control center fw 5, protocol 3
+1792594089.500 @ota boot control part=app1 state=valid
+1792594089.628 [boot] Wi-Fi "LED-Control" password "ledframes" -> open http://192.168.4.1/   (controller MAC 70:4B:CA:25:7C:31)
+1792594089.635 [boot] USB: type 'help' for text commands; the page also speaks JSON lines here.
+1792594089.645 {"evt":"hello","id":101,"fw":5,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC","B0:CB:D8:E9:6F:80"]}
+1792594090.767 >>> {"id": 1, "cmd": "hello"}
+1792594090.785 {"evt":"hello","id":1,"fw":5,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC","B0:CB:D8:E9:6F:80"]}
+1792594090.786 >>> {"cmd": "scan", "on": true, "id": 102}
+1792594090.799 {"evt":"result","id":102,"ok":true}
+1792594091.295 {"evt":"found","node":"B0:CB:D8:E9:6F:80","n_ch":8,"fw":2}
+1792594091.295 >>> {"cmd": "pair", "node": "B0:CB:D8:E9:6F:80", "id": 103}
+1792594091.514 [peer] B0:CB:D8:E9:6F:80 online
+1792594091.533 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594091.539 {"evt":"result","id":103,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594091.539 >>> {"cmd": "scan", "on": false, "id": 104}
+1792594091.550 {"evt":"result","id":104,"ok":true}
+1792594092.039 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594092.522 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594093.071 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594093.613 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594094.101 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594094.554 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594095.017 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594095.468 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594095.929 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594096.422 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594096.960 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594097.509 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594098.027 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594098.524 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594099.061 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594099.559 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594100.012 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594100.471 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594101.016 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594101.554 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594102.041 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594102.591 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594103.190 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[10,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594103.771 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,10,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594104.348 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,10,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594104.802 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,25,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594105.314 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,25,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594105.891 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,25,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594106.357 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,50,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594106.856 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,50,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594107.439 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,50,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594107.903 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,75,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594108.418 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,75,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594108.980 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,75,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594109.559 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,100,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594110.138 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,100,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594110.719 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,100],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594110.898 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 105}
+1792594110.914 {"evt":"result","id":105,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594110.918 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 106}
+1792594110.946 {"evt":"result","id":106,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594110.950 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 107}
+1792594110.968 {"evt":"result","id":107,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594110.971 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 108}
+1792594110.989 {"evt":"result","id":108,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594110.993 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 109}
+1792594111.011 {"evt":"result","id":109,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.015 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 110}
+1792594111.034 {"evt":"result","id":110,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.037 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 111}
+1792594111.056 {"evt":"result","id":111,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.059 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 112}
+1792594111.078 {"evt":"result","id":112,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.081 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 113}
+1792594111.103 {"evt":"result","id":113,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.107 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 114}
+1792594111.126 {"evt":"result","id":114,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.139 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "level": 50, "fade_ms": 0, "id": 115}
+1792594111.159 {"evt":"result","id":115,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.260 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594111.433 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "level": 100, "fade_ms": 2000, "id": 116}
+1792594111.452 {"evt":"result","id":116,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594111.770 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,15,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594112.262 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,40,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594112.773 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,65,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594113.308 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,92,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594113.772 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594113.851 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "H100:1s F100-0:2s H20:0", "id": 117}
+1792594113.889 {"evt":"result","id":117,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594113.931 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": 3, "id": 118}
+1792594113.951 {"evt":"result","id":118,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594113.954 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "id": 119}
+1792594113.971 {"evt":"result","id":119,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594114.325 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,100,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594114.856 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,100,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594115.361 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,82,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594115.906 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,54,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594116.432 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,28,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594116.957 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,1,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594117.492 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,20,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594117.668 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "id": 120}
+1792594117.688 {"evt":"result","id":120,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594117.988 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,100,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594118.454 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,100,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594118.918 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,90,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":4,"n_ch":8,"fw":2}
+1792594119.292 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "id": 121}
+1792594119.309 {"evt":"result","id":121,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594119.449 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594119.977 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594120.128 >>> {"cmd": "identify", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "seconds": 3, "id": 122}
+1792594120.148 {"evt":"result","id":122,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594120.497 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594120.986 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594121.483 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594121.976 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594122.449 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594122.934 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594123.425 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,100,69,0,0,0,0,0],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594123.827 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 30, "fade_ms": 0, "id": 123}
+1792594123.846 {"evt":"result","id":123,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594123.885 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[30,30,30,30,30,30,30,30],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,53325,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594124.137 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "H100:1s F100-0:2s H20:0", "id": 124}
+1792594124.156 {"evt":"result","id":124,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.190 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "H50:1s", "id": 125}
+1792594124.235 {"evt":"result","id":125,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.280 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "level": 101, "fade_ms": 0, "id": 126}
+1792594124.298 {"evt":"result","id":126,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg: level"}
+1792594124.389 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[30,30,30,30,30,30,30,30],"assign":[null,null,3,null,null,null,null,null],"crc":[0,0,3120,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594124.502 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 17, "text": "H100:1s", "id": 127}
+1792594124.520 {"evt":"result","id":127,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg: slot"}
+1792594124.523 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "H100:1x", "id": 128}
+1792594124.544 {"evt":"result","id":128,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_program: junk after step at 'H100:1x'"}
+1792594124.559 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 129}
+1792594124.583 {"evt":"result","id":129,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.585 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 130}
+1792594124.606 {"evt":"result","id":130,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.609 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 131}
+1792594124.628 {"evt":"result","id":131,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.630 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 132}
+1792594124.652 {"evt":"result","id":132,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.655 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 133}
+1792594124.674 {"evt":"result","id":133,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.677 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 134}
+1792594124.696 {"evt":"result","id":134,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.699 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 135}
+1792594124.717 {"evt":"result","id":135,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.721 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 136}
+1792594124.740 {"evt":"result","id":136,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.742 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 137}
+1792594124.762 {"evt":"result","id":137,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.765 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 138}
+1792594124.786 {"evt":"result","id":138,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.790 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 139}
+1792594124.807 {"evt":"result","id":139,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.811 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 140}
+1792594124.833 {"evt":"result","id":140,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.836 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 141}
+1792594124.855 {"evt":"result","id":141,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.857 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 142}
+1792594124.877 {"evt":"result","id":142,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.880 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 143}
+1792594124.901 {"evt":"result","id":143,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.903 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 144}
+1792594124.925 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[0,0,3120,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594124.931 {"evt":"result","id":144,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.934 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 145}
+1792594124.951 {"evt":"result","id":145,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.955 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 146}
+1792594124.975 {"evt":"result","id":146,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594124.977 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 147}
+1792594124.998 {"evt":"result","id":147,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.000 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 148}
+1792594125.022 {"evt":"result","id":148,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.039 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 149}
+1792594125.089 {"evt":"result","id":149,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.123 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": 1, "id": 150}
+1792594125.141 {"evt":"result","id":150,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.147 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H0:300ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 151}
+1792594125.195 {"evt":"result","id":151,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.227 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": 2, "id": 152}
+1792594125.247 {"evt":"result","id":152,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.253 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "H0:600ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 153}
+1792594125.301 {"evt":"result","id":153,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.334 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": 3, "id": 154}
+1792594125.353 {"evt":"result","id":154,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.358 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "H0:900ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 155}
+1792594125.381 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,null,null,null,null,null],"crc":[18196,54783,41489,0,0,0,0,0,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594125.419 {"evt":"result","id":155,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.454 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": 4, "id": 156}
+1792594125.472 {"evt":"result","id":156,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.477 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "H0:1200ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 157}
+1792594125.528 {"evt":"result","id":157,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.562 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": 5, "id": 158}
+1792594125.584 {"evt":"result","id":158,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.590 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 6, "text": "H0:1500ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 159}
+1792594125.641 {"evt":"result","id":159,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.675 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": 6, "id": 160}
+1792594125.694 {"evt":"result","id":160,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.699 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H0:1800ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 161}
+1792594125.750 {"evt":"result","id":161,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.783 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": 7, "id": 162}
+1792594125.807 {"evt":"result","id":162,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.814 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 8, "text": "H0:2100ms F0-100:1000ms H100:3000ms F100-0:1000ms", "id": 163}
+1792594125.868 {"evt":"result","id":163,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.902 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": 8, "id": 164}
+1792594125.905 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,null],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594125.919 {"evt":"result","id":164,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594125.934 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 165}
+1792594125.951 {"evt":"result","id":165,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594126.423 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[45,15,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594126.974 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,71,41,11,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594127.482 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,91,61,31,1,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594127.947 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,78,48,18,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594128.410 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,94,64,34],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594128.942 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,100,100,87],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594129.475 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594130.002 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[98,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594130.474 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,80,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594130.969 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[1,31,61,91,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594131.470 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,11,40,71,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594132.017 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,15,46,76,100],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594132.553 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,23,52],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594133.058 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,1],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594133.563 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594134.034 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594134.545 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594135.018 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594135.567 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594136.073 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594136.587 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594137.082 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594137.581 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594137.953 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 166}
+1792594137.971 {"evt":"result","id":166,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594137.975 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 167}
+1792594137.995 {"evt":"result","id":167,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594137.997 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 168}
+1792594138.021 {"evt":"result","id":168,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.024 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 169}
+1792594138.043 {"evt":"result","id":169,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.046 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 170}
+1792594138.067 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,3,4,5,6,7,8],"crc":[18196,54783,41489,42278,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594138.071 {"evt":"result","id":170,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.075 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 171}
+1792594138.093 {"evt":"result","id":171,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.097 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 172}
+1792594138.117 {"evt":"result","id":172,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.121 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 173}
+1792594138.141 {"evt":"result","id":173,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.144 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 174}
+1792594138.163 {"evt":"result","id":174,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.167 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 175}
+1792594138.186 {"evt":"result","id":175,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.207 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 176}
+1792594138.245 {"evt":"result","id":176,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.279 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": 1, "id": 177}
+1792594138.298 {"evt":"result","id":177,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.307 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 178}
+1792594138.352 {"evt":"result","id":178,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.386 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": 2, "id": 179}
+1792594138.404 {"evt":"result","id":179,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.413 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 180}
+1792594138.457 {"evt":"result","id":180,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.491 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": 3, "id": 181}
+1792594138.510 {"evt":"result","id":181,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.518 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 182}
+1792594138.568 {"evt":"result","id":182,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.601 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": 4, "id": 183}
+1792594138.608 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,null,null,null,null,null],"crc":[9073,9073,9073,9073,19917,20184,24285,12118,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594138.622 {"evt":"result","id":183,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.631 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 184}
+1792594138.681 {"evt":"result","id":184,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.715 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": 5, "id": 185}
+1792594138.734 {"evt":"result","id":185,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.744 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 6, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 186}
+1792594138.794 {"evt":"result","id":186,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.828 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": 6, "id": 187}
+1792594138.846 {"evt":"result","id":187,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.856 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 188}
+1792594138.904 {"evt":"result","id":188,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.938 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": 7, "id": 189}
+1792594138.959 {"evt":"result","id":189,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594138.968 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 8, "text": "F0-100:2000ms H100:10000ms B0-100/800ms:6400ms F100-0:2000ms", "id": 190}
+1792594139.017 {"evt":"result","id":190,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594139.050 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": 8, "id": 191}
+1792594139.069 {"evt":"result","id":191,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594139.084 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 192}
+1792594139.107 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594139.113 {"evt":"result","id":192,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594139.567 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[22,22,22,22,22,22,22,22],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594140.041 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[46,46,46,46,46,46,46,46],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594140.552 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[71,71,71,71,71,71,71,71],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594141.101 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[98,98,98,98,98,98,98,98],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594141.627 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594142.106 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594142.619 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594143.076 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594143.543 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594144.007 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594144.529 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594145.064 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594145.543 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594146.087 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594146.559 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594147.016 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594147.549 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594148.042 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594148.583 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594149.112 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594149.581 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594150.070 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594150.593 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594151.090 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,100,100,100,100,100,100,100],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594151.540 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[99,99,99,99,99,99,99,99],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594152.036 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[26,26,26,26,26,26,26,26],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594152.511 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[57,57,57,57,57,57,57,57],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594152.994 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[66,66,66,66,66,66,66,66],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594153.506 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[7,7,7,7,7,7,7,7],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594153.995 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[84,84,84,84,84,84,84,84],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594154.481 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[36,36,36,36,36,36,36,36],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594155.005 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[32,32,32,32,32,32,32,32],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594155.463 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[83,83,83,83,83,83,83,83],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594155.940 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[3,3,3,3,3,3,3,3],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594156.401 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[84,84,84,84,84,84,84,84],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594156.875 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[36,36,36,36,36,36,36,36],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594157.384 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[37,37,37,37,37,37,37,37],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594157.859 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[84,84,84,84,84,84,84,84],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594158.362 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[59,59,59,59,59,59,59,59],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594158.907 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[31,31,31,31,31,31,31,31],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594159.421 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[6,6,6,6,6,6,6,6],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594159.938 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,4,5,6,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594160.215 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 193}
+1792594160.234 {"evt":"result","id":193,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.237 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 194}
+1792594160.259 {"evt":"result","id":194,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.262 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 195}
+1792594160.281 {"evt":"result","id":195,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.284 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 196}
+1792594160.303 {"evt":"result","id":196,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.306 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 197}
+1792594160.325 {"evt":"result","id":197,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.328 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 198}
+1792594160.347 {"evt":"result","id":198,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.350 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 199}
+1792594160.368 {"evt":"result","id":199,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.372 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 200}
+1792594160.391 {"evt":"result","id":200,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.394 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 201}
+1792594160.413 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,7,8],"crc":[9073,9073,9073,9073,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594160.418 {"evt":"result","id":201,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.421 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 202}
+1792594160.441 {"evt":"result","id":202,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.460 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "loop F0-100:2000ms F100-0:2000ms H0:4000ms", "id": 203}
+1792594160.506 {"evt":"result","id":203,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.539 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": 1, "id": 204}
+1792594160.558 {"evt":"result","id":204,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.563 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "loop H0:4000ms F0-100:2000ms F100-0:2000ms", "id": 205}
+1792594160.614 {"evt":"result","id":205,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.647 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": 2, "id": 206}
+1792594160.670 {"evt":"result","id":206,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.675 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "loop F0-100:2000ms F100-0:2000ms H0:4000ms", "id": 207}
+1792594160.722 {"evt":"result","id":207,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.756 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": 3, "id": 208}
+1792594160.776 {"evt":"result","id":208,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.782 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "loop H0:4000ms F0-100:2000ms F100-0:2000ms", "id": 209}
+1792594160.830 {"evt":"result","id":209,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.863 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": 4, "id": 210}
+1792594160.895 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[1,2,3,null,null,null,null,null],"crc":[34549,1183,34549,1183,9073,9073,9073,9073,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594160.899 {"evt":"result","id":210,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.905 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "loop F0-100:2000ms F100-0:2000ms H0:4000ms", "id": 211}
+1792594160.955 {"evt":"result","id":211,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594160.988 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": 5, "id": 212}
+1792594161.009 {"evt":"result","id":212,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.015 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 6, "text": "loop H0:4000ms F0-100:2000ms F100-0:2000ms", "id": 213}
+1792594161.067 {"evt":"result","id":213,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.100 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": 6, "id": 214}
+1792594161.121 {"evt":"result","id":214,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.127 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "loop F0-100:2000ms F100-0:2000ms H0:4000ms", "id": 215}
+1792594161.180 {"evt":"result","id":215,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.213 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": 7, "id": 216}
+1792594161.230 {"evt":"result","id":216,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.237 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 8, "text": "loop H0:4000ms F0-100:2000ms F100-0:2000ms", "id": 217}
+1792594161.289 {"evt":"result","id":217,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.322 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": 8, "id": 218}
+1792594161.341 {"evt":"result","id":218,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.355 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 219}
+1792594161.373 {"evt":"result","id":219,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594161.418 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[1,0,1,0,1,0,1,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594161.896 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[25,0,25,0,25,0,25,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594162.427 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[51,0,51,0,51,0,51,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594162.908 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[75,0,75,0,75,0,75,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594162.967 >>> {"id": 900, "cmd": "sync", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "t_ms": 2296}
+1792594163.404 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[66,0,66,0,66,0,66,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594163.888 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[41,0,41,0,41,0,41,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594164.425 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[14,0,14,0,14,0,14,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594164.901 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,10,0,10,0,10,0,10],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594165.361 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,33,0,33,0,33,0,33],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594165.865 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,58,0,58,0,58,0,58],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594166.354 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,82,0,82,0,82,0,82],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594166.885 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[0,91,0,91,0,91,0,91],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594167.342 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,68,0,68,0,68,0,68],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594167.857 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,43,0,43,0,43,0,43],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594168.346 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,18,0,18,0,18,0,18],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594168.802 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[5,0,5,0,5,0,5,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594169.266 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[28,0,28,0,28,0,28,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594169.801 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[55,0,55,0,55,0,55,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594170.254 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[77,0,77,0,77,0,77,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594170.767 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[97,0,97,0,97,0,97,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594171.254 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[73,0,73,0,73,0,73,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594171.753 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[48,0,48,0,48,0,48,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594172.257 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[23,0,23,0,23,0,23,0],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594172.731 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,1,0,1,0,1,0,1],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594173.240 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,26,0,26,0,26,0,26],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594173.701 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,49,0,49,0,49,0,49],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594174.202 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,75,0,75,0,75,0,75],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594174.727 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,99,0,99,0,99,0,99],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594175.256 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,73,0,73,0,73,0,73],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594175.765 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,48,0,48,0,48,0,48],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594176.244 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,23,0,23,0,23,0,23],"assign":[1,2,3,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":255,"n_ch":8,"fw":2}
+1792594176.592 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 220}
+1792594176.609 {"evt":"result","id":220,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.612 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 221}
+1792594176.631 {"evt":"result","id":221,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.634 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 222}
+1792594176.653 {"evt":"result","id":222,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.656 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 223}
+1792594176.675 {"evt":"result","id":223,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.678 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 224}
+1792594176.702 {"evt":"result","id":224,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.705 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 225}
+1792594176.743 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,4,5,6,7,8],"crc":[34549,1183,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594176.747 {"evt":"result","id":225,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.750 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 226}
+1792594176.769 {"evt":"result","id":226,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.772 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 227}
+1792594176.791 {"evt":"result","id":227,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.794 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 228}
+1792594176.813 {"evt":"result","id":228,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.816 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 229}
+1792594176.835 {"evt":"result","id":229,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.839 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 230}
+1792594176.857 {"evt":"result","id":230,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.860 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 231}
+1792594176.880 {"evt":"result","id":231,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.883 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 232}
+1792594176.902 {"evt":"result","id":232,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.905 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 233}
+1792594176.930 {"evt":"result","id":233,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.933 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 234}
+1792594176.953 {"evt":"result","id":234,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.956 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 235}
+1792594176.978 {"evt":"result","id":235,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594176.981 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 236}
+1792594176.999 {"evt":"result","id":236,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.002 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 237}
+1792594177.027 {"evt":"result","id":237,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.030 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 238}
+1792594177.050 {"evt":"result","id":238,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.053 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 239}
+1792594177.072 {"evt":"result","id":239,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.087 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 240}
+1792594177.135 {"evt":"result","id":240,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.168 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 241}
+1792594177.216 {"evt":"result","id":241,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.244 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[2655,3603,34549,1183,34549,1183,34549,1183,0,0,0,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594177.250 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 242}
+1792594177.298 {"evt":"result","id":242,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.332 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 243}
+1792594177.381 {"evt":"result","id":243,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.414 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 244}
+1792594177.456 {"evt":"result","id":244,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.489 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 245}
+1792594177.538 {"evt":"result","id":245,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.572 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 246}
+1792594177.621 {"evt":"result","id":246,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.655 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 247}
+1792594177.711 {"evt":"result","id":247,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.739 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[2655,3603,47915,41472,34549,1183,51389,1183,55711,22058,47915,0,0,0,0,0],"playing":0,"n_ch":8,"fw":2}
+1792594177.746 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 248}
+1792594177.800 {"evt":"result","id":248,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594177.861 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 249}
+1792594177.881 {"evt":"result","id":249,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594178.198 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[10,50,58,76,0,0,30,0],"assign":[1,2,3,4,null,null,7,null],"crc":[2655,3603,47915,41472,34549,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":79,"n_ch":8,"fw":2}
+1792594178.730 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[27,50,36,37,0,0,30,0],"assign":[1,2,3,4,null,null,7,null],"crc":[2655,3603,47915,41472,34549,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":79,"n_ch":8,"fw":2}
+1792594179.242 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,50,67,24,0,0,30,0],"assign":[1,2,3,4,null,null,7,null],"crc":[2655,3603,47915,41472,34549,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":79,"n_ch":8,"fw":2}
+1792594179.411 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 250}
+1792594179.433 {"evt":"result","id":250,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594179.543 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 251}
+1792594179.588 {"evt":"result","id":251,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594179.622 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 252}
+1792594179.645 {"evt":"result","id":252,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594179.681 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 253}
+1792594179.726 {"evt":"result","id":253,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594179.759 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 254}
+1792594179.768 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,61,54,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,34549,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594179.811 {"evt":"result","id":254,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594180.229 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,46,72,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594180.713 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,80,52,24,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594181.196 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,52,46,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594181.671 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,43,82,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594182.136 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,63,30,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594182.670 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594183.184 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594183.652 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594184.104 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594184.557 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594185.050 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 255}
+1792594185.073 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,80,0,10,0,0,30,0],"assign":[9,10,11,12,null,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,0,0,0],"playing":15,"n_ch":8,"fw":2}
+1792594185.087 {"evt":"result","id":255,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594185.278 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 256}
+1792594185.333 {"evt":"result","id":256,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594185.366 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 257}
+1792594185.424 {"evt":"result","id":257,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594185.547 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[85,80,88,42,22,0,30,0],"assign":[1,10,3,4,5,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594186.075 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[68,80,10,22,47,0,30,0],"assign":[1,10,3,4,5,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594186.593 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [8], "stop": [1], "t_ms": 0, "id": 258}
+1792594186.614 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[50,80,99,54,75,0,30,0],"assign":[1,10,3,4,5,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594186.637 {"evt":"result","id":258,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg"}
+1792594186.657 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 2, "play": [1], "stop": [], "t_ms": 0, "id": 259}
+1792594186.674 {"evt":"result","id":259,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg: bank"}
+1792594186.680 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1], "stop": [1], "t_ms": 0, "id": 260}
+1792594186.696 {"evt":"result","id":260,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg: masks"}
+1792594186.702 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [], "stop": [], "t_ms": 0, "id": 261}
+1792594186.718 {"evt":"result","id":261,"node":"B0:CB:D8:E9:6F:80","ok":false,"err":"bad_arg: masks"}
+1792594186.737 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 262}
+1792594186.760 {"evt":"result","id":262,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594187.139 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,80,68,19,83,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594187.604 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,80,68,19,83,60,90,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594188.144 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,80,68,19,83,60,90,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594188.565 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 263}
+1792594188.587 {"evt":"result","id":263,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594188.674 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,80,68,19,83,60,90,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594188.953 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 264}
+1792594188.970 {"evt":"result","id":264,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594188.974 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 265}
+1792594188.997 {"evt":"result","id":265,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.000 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 266}
+1792594189.036 {"evt":"result","id":266,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.039 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 267}
+1792594189.068 {"evt":"result","id":267,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.071 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 268}
+1792594189.094 {"evt":"result","id":268,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.097 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 269}
+1792594189.116 {"evt":"result","id":269,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.119 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 270}
+1792594189.143 {"evt":"result","id":270,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.146 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 271}
+1792594189.172 {"evt":"result","id":271,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.175 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 272}
+1792594189.198 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":0,"n_ch":8,"fw":2}
+1792594189.208 {"evt":"result","id":272,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.212 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 273}
+1792594189.235 {"evt":"result","id":273,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.239 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 274}
+1792594189.262 {"evt":"result","id":274,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.265 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 275}
+1792594189.294 {"evt":"result","id":275,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.297 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 276}
+1792594189.340 {"evt":"result","id":276,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.343 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 277}
+1792594189.367 {"evt":"result","id":277,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.370 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 278}
+1792594189.398 {"evt":"result","id":278,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.401 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 279}
+1792594189.422 {"evt":"result","id":279,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.425 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 280}
+1792594189.447 {"evt":"result","id":280,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.450 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 281}
+1792594189.473 {"evt":"result","id":281,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.476 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 282}
+1792594189.502 {"evt":"result","id":282,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.505 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 283}
+1792594189.525 {"evt":"result","id":283,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.531 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "loop F0-100:2s F100-0:2s", "id": 284}
+1792594189.597 {"evt":"result","id":284,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.630 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": 1, "id": 285}
+1792594189.653 {"evt":"result","id":285,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.655 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H33:0", "id": 286}
+1792594189.704 {"evt":"result","id":286,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.735 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":0,"n_ch":8,"fw":2}
+1792594189.736 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "level": 70, "fade_ms": 0, "id": 287}
+1792594189.756 {"evt":"result","id":287,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594189.759 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "id": 288}
+1792594189.779 {"evt":"result","id":288,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594190.201 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[20,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594190.706 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[45,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594191.225 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[71,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594191.682 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[94,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594192.431 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[8,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594192.968 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[35,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594193.445 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[59,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594193.948 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[84,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594194.459 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[91,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594194.971 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[65,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594195.477 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[39,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594195.480 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 289}
+1792594195.497 {"evt":"result","id":289,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.500 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 290}
+1792594195.523 {"evt":"result","id":290,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.526 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 291}
+1792594195.544 {"evt":"result","id":291,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.547 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 292}
+1792594195.569 {"evt":"result","id":292,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.572 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 293}
+1792594195.591 {"evt":"result","id":293,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.594 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 294}
+1792594195.615 {"evt":"result","id":294,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.618 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 295}
+1792594195.637 {"evt":"result","id":295,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.640 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 296}
+1792594195.659 {"evt":"result","id":296,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.662 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 297}
+1792594195.681 {"evt":"result","id":297,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.684 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 298}
+1792594195.703 {"evt":"result","id":298,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.707 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 299}
+1792594195.725 {"evt":"result","id":299,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.728 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 300}
+1792594195.756 {"evt":"result","id":300,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.759 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 301}
+1792594195.778 {"evt":"result","id":301,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.781 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 302}
+1792594195.800 {"evt":"result","id":302,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.803 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 303}
+1792594195.824 {"evt":"result","id":303,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.827 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 304}
+1792594195.846 {"evt":"result","id":304,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.849 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 305}
+1792594195.870 {"evt":"result","id":305,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.873 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 306}
+1792594195.892 {"evt":"result","id":306,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.895 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 307}
+1792594195.914 {"evt":"result","id":307,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.917 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 308}
+1792594195.936 {"evt":"result","id":308,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.942 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "loop F0-100:2s F100-0:2s", "id": 309}
+1792594195.979 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":0,"n_ch":8,"fw":2}
+1792594195.983 {"evt":"result","id":309,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594195.986 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": 1, "id": 310}
+1792594196.006 {"evt":"result","id":310,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594196.009 >>> {"cmd": "play", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "id": 311}
+1792594196.026 {"evt":"result","id":311,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594196.463 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[20,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594196.947 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[45,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594197.151 ets Jul 29 2019 12:21:46
+1792594197.151 
+1792594197.157 rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+1792594197.159 configsip: 0, SPIWP:0xee
+1792594197.165 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+1792594197.168 mode:DIO, clock div:2
+1792594197.171 load:0x3fff0030,len:1184
+1792594197.173 load:0x40078000,len:13232
+1792594197.173 load:0x40080400,len:3028
+1792594197.176 entry 0x400805e4
+1792594197.776 
+1792594197.778 [boot] LED frame control center fw 5, protocol 3
+1792594197.782 @ota boot control part=app1 state=valid
+1792594197.909 [boot] Wi-Fi "LED-Control" password "ledframes" -> open http://192.168.4.1/   (controller MAC 70:4B:CA:25:7C:31)
+1792594197.916 [boot] USB: type 'help' for text commands; the page also speaks JSON lines here.
+1792594197.944 [peer] B0:CB:D8:E9:6F:80 online
+1792594204.324 >>> {"cmd": "hello", "id": 312}
+1792594204.340 {"evt":"hello","id":312,"fw":5,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC","B0:CB:D8:E9:6F:80"]}
+1792594204.363 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[1,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594204.555 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[25,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594205.052 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[50,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594205.511 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[73,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594205.830 >>> {"id": 1, "cmd": "hello"}
+1792594205.848 {"evt":"hello","id":1,"fw":5,"proto":3,"mac":"70:4B:CA:25:7C:31","peers":["70:4B:CA:21:4F:EC","B0:CB:D8:E9:6F:80"]}
+1792594205.850 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "level": 70, "fade_ms": 0, "id": 313}
+1792594205.871 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[73,0,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594205.884 {"evt":"result","id":313,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.026 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[99,70,0,0,0,0,0,0],"assign":[1,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":1,"n_ch":8,"fw":2}
+1792594206.100 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 314}
+1792594206.117 {"evt":"result","id":314,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.120 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 315}
+1792594206.140 {"evt":"result","id":315,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.143 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 316}
+1792594206.166 {"evt":"result","id":316,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.169 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 317}
+1792594206.188 {"evt":"result","id":317,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.191 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 318}
+1792594206.210 {"evt":"result","id":318,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.213 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 319}
+1792594206.232 {"evt":"result","id":319,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.235 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 320}
+1792594206.254 {"evt":"result","id":320,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.257 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 321}
+1792594206.282 {"evt":"result","id":321,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.285 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 322}
+1792594206.306 {"evt":"result","id":322,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.309 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 323}
+1792594206.328 {"evt":"result","id":323,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.332 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 324}
+1792594206.350 {"evt":"result","id":324,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.353 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 325}
+1792594206.375 {"evt":"result","id":325,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.378 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 326}
+1792594206.397 {"evt":"result","id":326,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.400 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 327}
+1792594206.421 {"evt":"result","id":327,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.424 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 328}
+1792594206.443 {"evt":"result","id":328,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.445 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 329}
+1792594206.471 {"evt":"result","id":329,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.474 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 330}
+1792594206.493 {"evt":"result","id":330,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.496 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 331}
+1792594206.519 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-45,"level":[0,0,0,0,0,0,0,0],"assign":[null,null,null,null,null,null,null,null],"crc":[53031,3603,47915,36572,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":0,"n_ch":8,"fw":2}
+1792594206.532 {"evt":"result","id":331,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.535 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 332}
+1792594206.554 {"evt":"result","id":332,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.557 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 333}
+1792594206.576 {"evt":"result","id":333,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.590 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 334}
+1792594206.637 {"evt":"result","id":334,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.640 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 335}
+1792594206.662 {"evt":"result","id":335,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.665 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 336}
+1792594206.687 {"evt":"result","id":336,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.690 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 337}
+1792594206.746 {"evt":"result","id":337,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.749 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 338}
+1792594206.770 {"evt":"result","id":338,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.777 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 339}
+1792594206.799 {"evt":"result","id":339,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594206.952 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 340}
+1792594206.987 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[6,50,33,48,0,0,30,0],"assign":[1,2,3,4,null,null,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,48764,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594207.005 {"evt":"result","id":340,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.009 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 341}
+1792594207.031 {"evt":"result","id":341,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.034 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 342}
+1792594207.055 {"evt":"result","id":342,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.061 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 343}
+1792594207.086 {"evt":"result","id":343,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.092 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 344}
+1792594207.113 {"evt":"result","id":344,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.267 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 345}
+1792594207.310 {"evt":"result","id":345,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.313 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 346}
+1792594207.335 {"evt":"result","id":346,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.341 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 347}
+1792594207.390 {"evt":"result","id":347,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.393 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 348}
+1792594207.415 {"evt":"result","id":348,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.421 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 349}
+1792594207.443 {"evt":"result","id":349,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.517 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[98,50,11,66,3,0,30,0],"assign":[1,10,3,4,5,null,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594207.597 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 350}
+1792594207.620 {"evt":"result","id":350,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.623 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 351}
+1792594207.647 {"evt":"result","id":351,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.653 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 352}
+1792594207.674 {"evt":"result","id":352,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.828 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 353}
+1792594207.873 {"evt":"result","id":353,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.876 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 354}
+1792594207.898 {"evt":"result","id":354,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.901 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 355}
+1792594207.923 {"evt":"result","id":355,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.926 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 356}
+1792594207.974 {"evt":"result","id":356,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594207.977 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 357}
+1792594207.999 {"evt":"result","id":357,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.005 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 358}
+1792594208.029 {"evt":"result","id":358,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.058 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,50,1,11,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594208.182 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 359}
+1792594208.211 {"evt":"result","id":359,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.214 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 360}
+1792594208.236 {"evt":"result","id":360,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.239 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 361}
+1792594208.265 {"evt":"result","id":361,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.271 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 362}
+1792594208.295 {"evt":"result","id":362,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.301 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 363}
+1792594208.323 {"evt":"result","id":363,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.476 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 364}
+1792594208.517 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,33,87,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594208.521 {"evt":"result","id":364,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.525 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 365}
+1792594208.553 {"evt":"result","id":365,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.559 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 366}
+1792594208.610 {"evt":"result","id":366,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.613 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 367}
+1792594208.635 {"evt":"result","id":367,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.641 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 368}
+1792594208.668 {"evt":"result","id":368,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.821 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 369}
+1792594208.843 {"evt":"result","id":369,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.846 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 370}
+1792594208.872 {"evt":"result","id":370,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594208.878 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 371}
+1792594208.900 {"evt":"result","id":371,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.011 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[92,50,45,27,11,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594209.054 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 372}
+1792594209.092 {"evt":"result","id":372,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.095 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 373}
+1792594209.117 {"evt":"result","id":373,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.120 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 374}
+1792594209.142 {"evt":"result","id":374,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.145 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 375}
+1792594209.197 {"evt":"result","id":375,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.200 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 376}
+1792594209.222 {"evt":"result","id":376,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.228 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 377}
+1792594209.253 {"evt":"result","id":377,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.406 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 378}
+1792594209.428 {"evt":"result","id":378,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.431 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 379}
+1792594209.455 {"evt":"result","id":379,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.458 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 380}
+1792594209.482 {"evt":"result","id":380,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.488 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 381}
+1792594209.525 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[8,50,51,68,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594209.532 {"evt":"result","id":381,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.538 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 382}
+1792594209.559 {"evt":"result","id":382,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.713 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 383}
+1792594209.756 {"evt":"result","id":383,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.759 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 384}
+1792594209.781 {"evt":"result","id":384,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.787 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 385}
+1792594209.836 {"evt":"result","id":385,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.839 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 386}
+1792594209.861 {"evt":"result","id":386,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594209.867 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 387}
+1792594209.888 {"evt":"result","id":387,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.023 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[96,50,21,55,5,60,30,0],"assign":[1,10,3,4,5,14,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594210.042 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 388}
+1792594210.066 {"evt":"result","id":388,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.069 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 389}
+1792594210.093 {"evt":"result","id":389,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.099 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 390}
+1792594210.122 {"evt":"result","id":390,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.275 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 391}
+1792594210.317 {"evt":"result","id":391,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.320 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 392}
+1792594210.342 {"evt":"result","id":392,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.345 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 393}
+1792594210.367 {"evt":"result","id":393,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.370 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 394}
+1792594210.418 {"evt":"result","id":394,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.421 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 395}
+1792594210.443 {"evt":"result","id":395,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.449 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 396}
+1792594210.473 {"evt":"result","id":396,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.534 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[1,50,7,18,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594210.627 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 397}
+1792594210.653 {"evt":"result","id":397,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.657 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 398}
+1792594210.680 {"evt":"result","id":398,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.683 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 399}
+1792594210.709 {"evt":"result","id":399,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.715 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 400}
+1792594210.739 {"evt":"result","id":400,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.745 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 401}
+1792594210.767 {"evt":"result","id":401,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.920 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 402}
+1792594210.968 {"evt":"result","id":402,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594210.971 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 403}
+1792594210.995 {"evt":"result","id":403,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.001 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 404}
+1792594211.040 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,50,48,69,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[27645,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594211.047 {"evt":"result","id":404,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.050 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 405}
+1792594211.073 {"evt":"result","id":405,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.079 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 406}
+1792594211.109 {"evt":"result","id":406,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.262 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 407}
+1792594211.284 {"evt":"result","id":407,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.287 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 408}
+1792594211.311 {"evt":"result","id":408,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.317 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 409}
+1792594211.342 {"evt":"result","id":409,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.495 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 410}
+1792594211.523 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[93,50,45,27,11,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594211.560 {"evt":"result","id":410,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.563 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 411}
+1792594211.591 {"evt":"result","id":411,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.594 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 412}
+1792594211.616 {"evt":"result","id":412,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.619 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 413}
+1792594211.669 {"evt":"result","id":413,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.672 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 414}
+1792594211.702 {"evt":"result","id":414,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.708 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 415}
+1792594211.729 {"evt":"result","id":415,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.883 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 416}
+1792594211.906 {"evt":"result","id":416,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.909 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 417}
+1792594211.933 {"evt":"result","id":417,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.936 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 418}
+1792594211.960 {"evt":"result","id":418,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.966 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 419}
+1792594211.990 {"evt":"result","id":419,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594211.996 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 420}
+1792594212.020 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[9,50,55,72,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594212.035 {"evt":"result","id":420,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.188 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 421}
+1792594212.226 {"evt":"result","id":421,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.229 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 422}
+1792594212.252 {"evt":"result","id":422,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.258 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 423}
+1792594212.303 {"evt":"result","id":423,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.306 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 424}
+1792594212.329 {"evt":"result","id":424,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.335 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 425}
+1792594212.355 {"evt":"result","id":425,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.482 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[96,50,21,55,5,60,30,0],"assign":[1,10,3,4,5,14,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594212.509 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 426}
+1792594212.531 {"evt":"result","id":426,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.534 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 427}
+1792594212.560 {"evt":"result","id":427,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.566 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 428}
+1792594212.591 {"evt":"result","id":428,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.744 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 429}
+1792594212.788 {"evt":"result","id":429,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.791 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 430}
+1792594212.813 {"evt":"result","id":430,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.815 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 431}
+1792594212.837 {"evt":"result","id":431,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.840 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 432}
+1792594212.893 {"evt":"result","id":432,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.896 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 433}
+1792594212.918 {"evt":"result","id":433,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.924 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 434}
+1792594212.946 {"evt":"result","id":434,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594212.973 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,50,1,11,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594213.099 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 435}
+1792594213.121 {"evt":"result","id":435,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.124 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 436}
+1792594213.148 {"evt":"result","id":436,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.151 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 437}
+1792594213.173 {"evt":"result","id":437,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.179 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 438}
+1792594213.206 {"evt":"result","id":438,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.213 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 439}
+1792594213.234 {"evt":"result","id":439,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.388 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 440}
+1792594213.434 {"evt":"result","id":440,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.437 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 441}
+1792594213.458 {"evt":"result","id":441,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.464 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 442}
+1792594213.506 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,50,49,68,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[27645,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594213.511 {"evt":"result","id":442,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.514 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 443}
+1792594213.545 {"evt":"result","id":443,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.550 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 444}
+1792594213.573 {"evt":"result","id":444,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.726 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 445}
+1792594213.747 {"evt":"result","id":445,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.750 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 446}
+1792594213.775 {"evt":"result","id":446,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.781 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 447}
+1792594213.801 {"evt":"result","id":447,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594213.955 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 448}
+1792594213.957 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[93,50,45,27,11,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594214.003 {"evt":"result","id":448,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.006 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 449}
+1792594214.028 {"evt":"result","id":449,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.032 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 450}
+1792594214.054 {"evt":"result","id":450,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.057 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 451}
+1792594214.102 {"evt":"result","id":451,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.105 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 452}
+1792594214.128 {"evt":"result","id":452,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.134 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 453}
+1792594214.155 {"evt":"result","id":453,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.309 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 454}
+1792594214.330 {"evt":"result","id":454,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.333 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 455}
+1792594214.356 {"evt":"result","id":455,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.359 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 456}
+1792594214.382 {"evt":"result","id":456,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.388 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 457}
+1792594214.413 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[8,50,48,64,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594214.430 {"evt":"result","id":457,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.435 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 458}
+1792594214.459 {"evt":"result","id":458,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.612 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 459}
+1792594214.655 {"evt":"result","id":459,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.659 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 460}
+1792594214.685 {"evt":"result","id":460,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.691 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 461}
+1792594214.738 {"evt":"result","id":461,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.741 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 462}
+1792594214.764 {"evt":"result","id":462,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.771 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 463}
+1792594214.792 {"evt":"result","id":463,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.945 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 464}
+1792594214.949 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[96,50,27,48,7,60,30,0],"assign":[1,10,3,4,5,14,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594214.969 {"evt":"result","id":464,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594214.972 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 465}
+1792594214.996 {"evt":"result","id":465,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.002 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 466}
+1792594215.024 {"evt":"result","id":466,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.177 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 467}
+1792594215.215 {"evt":"result","id":467,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.218 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 468}
+1792594215.245 {"evt":"result","id":468,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.248 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 469}
+1792594215.270 {"evt":"result","id":469,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.273 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 470}
+1792594215.320 {"evt":"result","id":470,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.323 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 471}
+1792594215.345 {"evt":"result","id":471,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.351 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 472}
+1792594215.373 {"evt":"result","id":472,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.397 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[0,50,1,11,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594215.526 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 473}
+1792594215.551 {"evt":"result","id":473,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.554 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 474}
+1792594215.575 {"evt":"result","id":474,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.578 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 475}
+1792594215.601 {"evt":"result","id":475,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.607 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 476}
+1792594215.630 {"evt":"result","id":476,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.636 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 477}
+1792594215.659 {"evt":"result","id":477,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.812 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 478}
+1792594215.855 {"evt":"result","id":478,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.859 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 479}
+1792594215.889 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,42,76,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[27645,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594215.909 {"evt":"result","id":479,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.915 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 480}
+1792594215.962 {"evt":"result","id":480,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.965 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 481}
+1792594215.988 {"evt":"result","id":481,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594215.994 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 482}
+1792594216.016 {"evt":"result","id":482,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.169 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 483}
+1792594216.191 {"evt":"result","id":483,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.194 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 484}
+1792594216.216 {"evt":"result","id":484,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.222 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 485}
+1792594216.242 {"evt":"result","id":485,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.340 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[93,50,45,28,11,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594216.396 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 486}
+1792594216.442 {"evt":"result","id":486,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.445 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 487}
+1792594216.470 {"evt":"result","id":487,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.473 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 488}
+1792594216.494 {"evt":"result","id":488,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.497 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 489}
+1792594216.545 {"evt":"result","id":489,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.548 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 490}
+1792594216.570 {"evt":"result","id":490,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.576 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 491}
+1792594216.597 {"evt":"result","id":491,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.750 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 492}
+1792594216.772 {"evt":"result","id":492,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.775 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 493}
+1792594216.796 {"evt":"result","id":493,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.799 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 494}
+1792594216.822 {"evt":"result","id":494,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.827 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 495}
+1792594216.854 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[8,50,48,64,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594216.871 {"evt":"result","id":495,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594216.876 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 496}
+1792594216.897 {"evt":"result","id":496,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.050 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 497}
+1792594217.102 {"evt":"result","id":497,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.105 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 498}
+1792594217.126 {"evt":"result","id":498,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.132 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 499}
+1792594217.178 {"evt":"result","id":499,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.181 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 500}
+1792594217.202 {"evt":"result","id":500,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.208 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 501}
+1792594217.229 {"evt":"result","id":501,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.382 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 502}
+1792594217.402 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[95,50,29,45,7,60,30,0],"assign":[1,10,3,4,5,14,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":29,"n_ch":8,"fw":2}
+1792594217.416 {"evt":"result","id":502,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.419 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 503}
+1792594217.445 {"evt":"result","id":503,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.451 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 504}
+1792594217.471 {"evt":"result","id":504,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.625 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 505}
+1792594217.670 {"evt":"result","id":505,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.674 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 506}
+1792594217.695 {"evt":"result","id":506,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.698 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 507}
+1792594217.721 {"evt":"result","id":507,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.724 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 508}
+1792594217.771 {"evt":"result","id":508,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.775 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 509}
+1792594217.800 {"evt":"result","id":509,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.806 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 510}
+1792594217.831 {"evt":"result","id":510,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594217.944 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[3,50,18,31,12,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594217.983 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 511}
+1792594218.007 {"evt":"result","id":511,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.010 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 512}
+1792594218.031 {"evt":"result","id":512,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.035 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 513}
+1792594218.058 {"evt":"result","id":513,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.064 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 514}
+1792594218.088 {"evt":"result","id":514,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.094 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 515}
+1792594218.115 {"evt":"result","id":515,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.268 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F100-0:3s", "id": 516}
+1792594218.306 {"evt":"result","id":516,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.309 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 517}
+1792594218.331 {"evt":"result","id":517,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.336 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "F79-10:300ms B10-90/700ms:2.7s", "id": 518}
+1792594218.384 {"evt":"result","id":518,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.387 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 5, "text": "F0-100:2s", "id": 519}
+1792594218.424 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,56,60,12,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[27645,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594218.429 {"evt":"result","id":519,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.435 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 3, 4, 5], "stop": [2, 6, 7, 8], "t_ms": 0, "id": 520}
+1792594218.455 {"evt":"result","id":520,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.608 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 14, "text": "H60:3s", "id": 521}
+1792594218.631 {"evt":"result","id":521,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.634 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 15, "text": "K:500ms H90:1s", "id": 522}
+1792594218.656 {"evt":"result","id":522,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.662 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [6, 7], "stop": [1, 2, 3, 4, 5, 8], "t_ms": 0, "id": 523}
+1792594218.681 {"evt":"result","id":523,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.835 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 1, "text": "F0-100:3s", "id": 524}
+1792594218.879 {"evt":"result","id":524,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.882 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 2, "text": "H50:2s", "id": 525}
+1792594218.903 {"evt":"result","id":525,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.906 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 3, "text": "B0-100/1s:3s", "id": 526}
+1792594218.933 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[93,50,45,28,11,60,30,0],"assign":[1,10,3,4,5,14,15,null],"crc":[2655,3603,47915,36572,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":96,"n_ch":8,"fw":2}
+1792594218.950 {"evt":"result","id":526,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594218.953 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 4, "text": "B10-90/700ms:3s", "id": 527}
+1792594219.005 {"evt":"result","id":527,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.008 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 7, "text": "H30:1s", "id": 528}
+1792594219.034 {"evt":"result","id":528,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.036 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 9, "text": "H100:3s", "id": 529}
+1792594219.059 {"evt":"result","id":529,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.062 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 10, "text": "K:1s H80:1s", "id": 530}
+1792594219.086 {"evt":"result","id":530,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.089 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 11, "text": "B0-100/1s:3s", "id": 531}
+1792594219.113 {"evt":"result","id":531,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.119 >>> {"cmd": "prog", "node": "B0:CB:D8:E9:6F:80", "slot": 12, "text": "F56-90:150ms F90-10:350ms B10-90/700ms:2.5s", "id": 532}
+1792594219.141 {"evt":"result","id":532,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.147 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 533}
+1792594219.168 {"evt":"result","id":533,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.375 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 534}
+1792594219.397 {"evt":"result","id":534,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.456 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,8,65,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594219.604 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 535}
+1792594219.624 {"evt":"result","id":535,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.830 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 536}
+1792594219.852 {"evt":"result","id":536,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594219.933 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,50,11,68,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594220.058 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 537}
+1792594220.079 {"evt":"result","id":537,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594220.285 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 538}
+1792594220.308 {"evt":"result","id":538,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594220.460 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,26,85,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594220.514 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 539}
+1792594220.535 {"evt":"result","id":539,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594220.741 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 540}
+1792594220.763 {"evt":"result","id":540,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594220.954 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[100,50,33,86,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594220.970 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 541}
+1792594220.992 {"evt":"result","id":541,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594221.199 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 542}
+1792594221.223 {"evt":"result","id":542,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594221.414 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,34,86,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594221.429 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 543}
+1792594221.450 {"evt":"result","id":543,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594221.656 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 544}
+1792594221.682 {"evt":"result","id":544,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594221.889 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 545}
+1792594221.902 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,40,79,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594221.916 {"evt":"result","id":545,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594222.121 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 546}
+1792594222.145 {"evt":"result","id":546,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594222.351 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 547}
+1792594222.371 {"evt":"result","id":547,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594222.403 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,50,2,12,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594222.577 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 548}
+1792594222.601 {"evt":"result","id":548,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594222.807 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 549}
+1792594222.828 {"evt":"result","id":549,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594222.898 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[2,50,9,20,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594223.033 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 550}
+1792594223.055 {"evt":"result","id":550,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594223.260 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 551}
+1792594223.283 {"evt":"result","id":551,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594223.374 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[2,50,14,26,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594223.488 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 552}
+1792594223.510 {"evt":"result","id":552,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594223.716 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 553}
+1792594223.737 {"evt":"result","id":553,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594223.880 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[4,50,23,37,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594223.943 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 554}
+1792594223.964 {"evt":"result","id":554,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594224.169 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 555}
+1792594224.195 {"evt":"result","id":555,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594224.401 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 556}
+1792594224.428 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[7,50,42,58,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594224.444 {"evt":"result","id":556,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594224.650 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 557}
+1792594224.671 {"evt":"result","id":557,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594224.877 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 558}
+1792594224.903 {"evt":"result","id":558,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594224.958 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,7,64,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594225.108 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 559}
+1792594225.130 {"evt":"result","id":559,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594225.336 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 560}
+1792594225.356 {"evt":"result","id":560,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594225.426 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,10,67,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594225.563 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 561}
+1792594225.584 {"evt":"result","id":561,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594225.790 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 562}
+1792594225.811 {"evt":"result","id":562,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594225.922 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[100,50,17,76,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594226.016 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 563}
+1792594226.038 {"evt":"result","id":563,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594226.244 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 564}
+1792594226.265 {"evt":"result","id":564,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594226.440 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-49,"level":[100,50,31,89,11,60,30,0],"assign":[9,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":15,"n_ch":8,"fw":2}
+1792594226.471 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 565}
+1792594226.492 {"evt":"result","id":565,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594226.698 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 566}
+1792594226.719 {"evt":"result","id":566,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594226.925 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 567}
+1792594226.946 {"evt":"result","id":567,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594226.987 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,50,3,13,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594227.152 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 568}
+1792594227.173 {"evt":"result","id":568,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594227.378 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 569}
+1792594227.401 {"evt":"result","id":569,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594227.469 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-47,"level":[1,50,8,19,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594227.608 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 570}
+1792594227.631 {"evt":"result","id":570,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594227.836 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 0, "play": [1, 2, 3, 4, 7], "stop": [5, 6, 8], "t_ms": 0, "id": 571}
+1792594227.857 {"evt":"result","id":571,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594227.959 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[3,50,15,27,11,60,30,0],"assign":[1,2,3,4,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":79,"n_ch":8,"fw":2}
+1792594228.064 >>> {"cmd": "go", "node": "B0:CB:D8:E9:6F:80", "bank": 1, "play": [1, 2, 3, 4], "stop": [5, 6, 7, 8], "t_ms": 0, "id": 572}
+1792594228.085 {"evt":"result","id":572,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.313 >>> {"cmd": "stop", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "id": 573}
+1792594228.331 {"evt":"result","id":573,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.334 >>> {"cmd": "set", "node": "B0:CB:D8:E9:6F:80", "ch": "all", "level": 0, "fade_ms": 0, "id": 574}
+1792594228.354 {"evt":"result","id":574,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.357 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 1, "slot": null, "id": 575}
+1792594228.375 {"evt":"result","id":575,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.378 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 2, "slot": null, "id": 576}
+1792594228.412 {"evt":"status","node":"B0:CB:D8:E9:6F:80","online":true,"rssi":-48,"level":[0,0,0,0,0,0,0,0],"assign":[null,10,11,12,5,14,7,null],"crc":[2655,3603,47915,41472,37645,1183,51389,1183,55711,22058,47915,7435,0,16548,45491,0],"playing":0,"n_ch":8,"fw":2}
+1792594228.419 {"evt":"result","id":576,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.422 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 3, "slot": null, "id": 577}
+1792594228.441 {"evt":"result","id":577,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.444 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 4, "slot": null, "id": 578}
+1792594228.465 {"evt":"result","id":578,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.469 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 5, "slot": null, "id": 579}
+1792594228.488 {"evt":"result","id":579,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.491 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 6, "slot": null, "id": 580}
+1792594228.509 {"evt":"result","id":580,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.512 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 7, "slot": null, "id": 581}
+1792594228.531 {"evt":"result","id":581,"node":"B0:CB:D8:E9:6F:80","ok":true}
+1792594228.534 >>> {"cmd": "assign", "node": "B0:CB:D8:E9:6F:80", "ch": 8, "slot": null, "id": 582}
+1792594228.554 {"evt":"result","id":582,"node":"B0:CB:D8:E9:6F:80","ok":true}

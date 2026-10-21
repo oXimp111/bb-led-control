@@ -65,7 +65,7 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 |---|---|---|---|
 | Each wall node (4 boards) | `node` | `pio run -e node -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame node fw 2` and NO `FULL CAPABILITY NODE TEST` line |
 | Relay (optional, 1 spare board, only if a far wall is out of reach) | `relay` | `pio run -e relay -t upload --upload-port COMx` | serial 115200 prints `[boot] LED frame RELAY fw 1`, then a `[relay] 5 s:` table |
-| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 4, protocol 3` and `open http://192.168.4.1/`; the page opens there (Wi-Fi `LED-Control` / `ledframes`) and shows `● linked` next to the connection box. NOT `control_wstest` (that one says `192.168.10.1`) |
+| Control center (1 board) | `control` | `pio run -e control -t upload --upload-port COMx` | serial prints `[boot] LED frame control center fw 5, protocol 3` and `open http://192.168.4.1/`; the page opens there (Wi-Fi `LED-Control` / `ledframes`) and shows `● linked` next to the connection box. NOT `control_wstest` (that one says `192.168.10.1`) |
 - **Control fw 2 (2026-10-16) fixes "GO lags / needs a second press after a long cue pause"**: a page connection that died without closing (laptop Wi-Fi blip)
   made every status broadcast block the control loop for 5 s. Now such a client is dropped at once (`wsSend()` in `src/control/main.cpp`, `WEBSOCKETS_TCP_TIMEOUT` 300 in `platformio.ini`).
   Bench result (`tools/dead_ws_test.py`): fw 1 = GO no answer within 15 s (3/3), fw 2 = 20/20 ok, worst 170 ms. Only the control board needs reflashing; nodes unchanged.
@@ -83,6 +83,12 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
   Test build `control_wstest` = AP at 192.168.10.1 (a browser on Sean's PC can reach it; his home LAN is also 192.168.4.x) + serial `wszombie`. Never install it.
 - **Control fw 4 (2026-10-19)**: only the embedded page changed (fw number bumped so the installer can see the new page is on the board): choosing a cue-list show starts at section 1 and never changes the lights,
   uploads go to the bank not in use, timeline max 60 min. Zip `LEDframes_2026-10-19.zip` (folder `LEDframes_2026-10-19`, steps in `README_FIRST_CONTROL.txt`) + her show merged into one (`怨种闺蜜_相框灯_v15_one_show.json`). Nodes unchanged.
+- **Control fw 5 (2026-10-21)**, after fw 4 failed on site ("W3-4 needs 25 steps in section 6", "Could not send the section to every node", "reconnecting"):
+  1. Cause of the 25 steps: v15 was loaded while the box still ran fw 3, whose page dropped every cue past its 10-min `MAXT` without a word (13 of 18 cues),
+     and saved the damaged show in the browser. fw 5: `normalizeShow()` never drops cues; `importShows()` refuses a show longer than `MAXT` with a message.
+     A browser that already holds the damaged copy must delete it and import v15 again.
+  2. Cue uploads are paced: one `prog` at a time per node, all nodes in parallel (was 24 lines at once); the failure toast names wall, node and reason.
+  3. Watchdog on the control box (`CTRL_WDT_S` 30 s): a hung box reboots by itself. The cause of the endless "reconnecting" on site is still unknown (no box log yet).
 - **`node_fulltest` is a TEST build. Never leave it on a wall node** (460800 baud, packet log on serial, pad sampling commands). Flash `node` over it.
 - Every node and the control board must run protocol v3 (`LF_PROTO_VER` 3). A node that answers `ACK_BAD_VERSION` or a board that prints a version warning runs old firmware: reflash it, do not retry.
 - The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.

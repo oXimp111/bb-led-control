@@ -1,7 +1,7 @@
 // control_config.h — settings for the control center (plain 30-pin ESP32).
 #pragma once
 
-#define CTRL_FW_VERSION 4
+#define CTRL_FW_VERSION 5
 
 // Wi-Fi access point the operator's laptop joins. Page: http://192.168.4.1/
 // The AP channel IS the ESP-NOW channel, so it must stay LF_WIFI_CHANNEL.
@@ -25,4 +25,5 @@
 #define WS_SLOW_MS       100           // a WebSocket write slower than this = client stopped taking data: drop it
 #define SCAN_MAX_MS      120000          // pairing scan switches itself off after this long
 #define PAIR_JOB_MS      4000            // how long "pair" waits for the node's first heartbeat
+#define CTRL_WDT_S       30              // watchdog: loop() stuck this long = reboot (a page send to a vanished laptop can block ~10 s)
 #define LINE_MAX         2048            // longest JSON line accepted (a 24-step program is ~800)
