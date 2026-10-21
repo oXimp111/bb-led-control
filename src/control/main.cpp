@@ -14,6 +14,7 @@
 #include "protocol.h"
 #include "engine.h"
 #include "control_config.h"
+#include "serial_ota.h"
 #include "web_gz.h"   // generated: WEB_HTML_GZ, WEB_HTML_GZ_LEN, WEB_HTML_RAW_LEN
 
 enum : int { SRC_ALL = -2, SRC_SERIAL = -1 };   // otherwise a WebSocket client number
@@ -657,7 +658,7 @@ static void handleSerialText(const char* s) {
 }
 
 static void pollSerial() {
-  while (Serial.available()) {
+  while (!serialota::active() && Serial.available()) {   // while a firmware image arrives, serialota reads Serial
     char c = Serial.read();
     if (c == '\r') continue;
     if (c == '\n') {
@@ -668,7 +669,8 @@ static void pollSerial() {
         sendDoc(SRC_SERIAL, e);
       } else if (lineLen) {
         lineBuf[lineLen] = 0;
-        if (lineBuf[0] == '{') { serialJson = true; handleLine(lineBuf, SRC_SERIAL); }
+        if (serialota::line(lineBuf)) {}
+        else if (lineBuf[0] == '{') { serialJson = true; handleLine(lineBuf, SRC_SERIAL); }
         else handleSerialText(lineBuf);
       }
       lineLen = 0;
@@ -753,11 +755,17 @@ static void ledTick() {
 }
 
 void setup() {
+  Serial.setRxBufferSize(2048);   // before begin(): a firmware chunk (tools/serial_flash.py) must fit
   Serial.begin(115200);
   pinMode(STATUS_LED_PIN, OUTPUT);
   delay(200);
   Serial.println();
   Serial.printf("[boot] LED frame control center fw %d, protocol %d\n", CTRL_FW_VERSION, LF_PROTO_VER);
+#ifdef LF_WS_TEST
+  serialota::begin("control_wstest");
+#else
+  serialota::begin("control");
+#endif
   prefs.begin("ctrl", false);
   loadPeers();
   txSeq = (uint16_t)esp_random();
@@ -773,6 +781,7 @@ void setup() {
 void loop() {
   http.handleClient();
   wss.loop();
+  serialota::poll();
   pollSerial();
   drainRx();
   processPending();

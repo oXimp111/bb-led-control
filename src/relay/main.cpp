@@ -12,6 +12,7 @@
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include "protocol.h"
+#include "serial_ota.h"
 
 #define STATUS_LED_PIN 2
 #define MAX_FRAME      300
@@ -103,7 +104,19 @@ static void report() {
   cDown = cUp = cDup = cErr = 0;
 }
 
+static void pollSerial() {   // only "@ota" lines (tools/serial_flash.py); the relay has no other commands
+  static char buf[128];
+  static size_t n = 0;
+  while (!serialota::active() && Serial.available()) {
+    char c = Serial.read();
+    if (c == '\r') continue;
+    if (c == '\n') { buf[n] = 0; if (n) serialota::line(buf); n = 0; }
+    else if (n < sizeof(buf) - 1) buf[n++] = c;
+  }
+}
+
 void setup() {
+  Serial.setRxBufferSize(2048);   // before begin(): a firmware chunk (tools/serial_flash.py) must fit
   Serial.begin(115200);
   pinMode(STATUS_LED_PIN, OUTPUT);
   q = xQueueCreate(16, sizeof(Frame));
@@ -119,11 +132,14 @@ void setup() {
   esp_wifi_set_channel(LF_WIFI_CHANNEL, WIFI_SECOND_CHAN_NONE);
   Serial.printf("\n[boot] LED frame RELAY fw 1  protocol v%u  channel %d  MAC %02X:%02X:%02X:%02X:%02X:%02X\n", LF_PROTO_VER, LF_WIFI_CHANNEL,
                 myMac[0], myMac[1], myMac[2], myMac[3], myMac[4], myMac[5]);
+  serialota::begin("relay");
 }
 
 void loop() {
   Frame fr;
   if (xQueueReceive(q, &fr, 10 / portTICK_PERIOD_MS) == pdTRUE) forward(fr);
+  serialota::poll();
+  pollSerial();
   uint32_t now = millis();
   if (ledOffAt && (int32_t)(now - ledOffAt) >= 0) { digitalWrite(STATUS_LED_PIN, LOW); ledOffAt = 0; }
   if (!ledOffAt && (now % 1000) < 50) digitalWrite(STATUS_LED_PIN, HIGH); else if (!ledOffAt) digitalWrite(STATUS_LED_PIN, LOW);

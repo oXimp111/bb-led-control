@@ -34,6 +34,8 @@ lib/protocol/protocol.h   ONLY definition of radio packets (node + control cente
 src/relay/                range-extender firmware (env `relay`, see docs/RELAY.md): repeats frames unchanged, nodes/control need no change
 src/control/              control center firmware (AP + web server + WebSocket/USB JSON <-> ESP-NOW bridge)
 tools/embed_web.py        build step: gzips web/control.html (+ tools/ws_shim.js) into the control firmware
+lib/serialota/            USB self-update while the firmware runs (in node, control, relay): see "Remote flashing of the bench boards"
+tools/serial_flash.py     flashes a bench board through it (no BOOT); tools/serial_flash_test.py + test/serialota_host/ = PC test
 lib/engine/               program player + text format, pure C++ (unit-tested on PC)
 src/node/                 wall node firmware (node_config.h = pins and timings)
 test/engine_test.cpp      PC unit tests for the engine
@@ -42,6 +44,7 @@ web/control.html          control UI + built-in simulator (single file). Bottom 
                           Programs tab = whole-room show editor (shows saved in S.shows, one track per frame,
                           compileShow() is the single compiler). Run `selfTest()` in the browser console.
 ```
+Remote flashing of the bench boards (no BOOT): docs/REMOTE_FLASH.md.
 UI feature/shortcut reference for the manual: docs/UI_FEATURES.md (keep updated when the UI changes).
 User manual (Chinese, for the lighting designer): docs/manual/manual.html -> PDF with `python mkpdf.py`; screenshots with `python shots.py` (both run inside docs/manual, need Playwright + Chrome).
 Changed or new passages are marked with the yellow "更新" / "新增" tags; keep that convention for the next revision and keep the neutral, professional tone (see the manual's existing wording, English button names unchanged).
@@ -85,10 +88,29 @@ Wiring (which pin = which frame, per-frame Identify check): docs/WIRING.md. `CH_
 - The control firmware embeds `web/control.html`. After any change to that file run `pio run -e control -t upload` again, otherwise the board serves the old page.
 - After flashing a node it may show `not paired`: pair it again (hold its BOOT 3 s, then Find nodes in the page).
 - Each ESP32 gets the same `node` image: identity is its MAC. The wall a node belongs to is chosen in the page, not in firmware. Pin-to-frame table: docs/WIRING.md.
-- Boards in this project do not enter download mode by themselves: hold BOOT before the upload starts and keep holding until `Writing` appears, then release and tap EN.
+- Sean's bench boards do not enter download mode by themselves (the installer's do): hold BOOT before the upload starts and keep holding until `Writing` appears, then release and tap EN.
+  For the bench boards use `tools/serial_flash.py` instead (no BOOT, see below).
 - **Sean's boards on this PC are bench/test boards only. They are never shipped or used in the show.** The installer has her own boards on site and flashes them herself
   from the zip Sean sends (she has no git). Whatever test firmware is on Sean's boards does not matter: never remind him to reflash or check them before shipping.
   Only the source and the zip must be right.
+
+## Remote flashing of the bench boards (Sean debugs remotely; nobody can press BOOT)
+- Why: on Sean's CH340 boards the auto-reset loses a race (the Windows driver releases EN before it pulls GPIO0 low; tested 2026-10-21: every
+  esptool reset timing, single-call DTR/RTS, and DTR-low + software `reboot` all boot normally, `boot:0x13`). A software restart does not re-sample GPIO0.
+- So the firmware updates itself: `lib/serialota` (in `node`, `node_fulltest`, `control`, `control_wstest`, `relay`) receives an image over the normal
+  USB serial port while it runs (CRC-checked chunks with their offset, MD5 for the whole image), writes it to the other app slot and restarts into it.
+  The new firmware starts unconfirmed; `tools/serial_flash.py` confirms it only after it booted, passed a test transfer and reported the file's SHA-256.
+  Otherwise the tool resets the board (EN via RTS works) and the bootloader goes back to the previous firmware (`CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE`,
+  `verifyRollbackLater()` returns true in `serial_ota.cpp` so the Arduino core does not confirm by itself).
+- Use: `python tools/serial_flash.py <env> COMx` (builds, flashes, confirms), `--status COMx`, `--reset COMx`. Bench: COM4 = control board, COM3 = node board.
+- Never send an image without lib/serialota (e.g. `mosfet_test`): the Arduino core would confirm it and the board could only be fixed with BOOT. The tool refuses such images.
+- Never start a flash on top of an unconfirmed firmware (both slots could end up rejected = no bootable app): the board refuses, the tool resets first.
+- PC test without hardware: `python tools/serial_flash_test.py` (needs `pip install ziglang`): real serial_ota.cpp + real tool against a simulated board
+  with the IDF rollback rules; 25/25 on 2026-10-21. Real chip, 2026-10-21: both bench boards installed once with BOOT (COM4 `control_wstest`, COM3 `node`);
+  remote flash of `node` OK (780 KB in 127 s, app0 -> app1, confirmed, SHA matches); forced rollback OK (`--bin .pio/build/node_fulltest/firmware.bin`
+  sent as env `node`: not confirmed, tool reset the board, it came back to `node` by itself).
+- The installer's boards get the same code in `node`/`control`/`relay`; it does nothing unless a `@ota` line arrives over USB. A board flashed with
+  esptool has no OTA state, so rollback never applies to it.
 
 ## Build / flash (Windows)
 1. CH340 driver: WCH CH341SER.EXE v3.9+ (https://www.wch-ic.com/downloads/CH341SER_EXE.html). Board shows as COMx in Device Manager.

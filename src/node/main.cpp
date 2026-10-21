@@ -11,6 +11,7 @@
 #include "node_config.h"
 #include "protocol.h"
 #include "engine.h"
+#include "serial_ota.h"
 
 // ------------------------------------------------------------ state
 struct Persist {               // saved to flash as one blob
@@ -541,12 +542,12 @@ static void pollSerial() {
   static char buf[SERIAL_LINE_MAX];
   static size_t n = 0;
   static bool tooLong = false;
-  while (Serial.available()) {
+  while (!serialota::active() && Serial.available()) {   // while a firmware image arrives, serialota reads Serial
     char c = Serial.read();
     if (c == '\r') continue;
     if (c == '\n') {
       if (tooLong) Serial.println("ERR line too long");
-      else if (n) { buf[n] = 0; handleLine(buf); }
+      else if (n) { buf[n] = 0; if (!serialota::line(buf)) handleLine(buf); }
       n = 0;
       tooLong = false;
     }
@@ -625,6 +626,11 @@ void setup() {
   delay(50);
   Serial.printf("\n[boot] LED frame node fw %d, reset reason %d\n", FW_VERSION, (int)esp_reset_reason());
   FT(Serial.println("[boot] FULL CAPABILITY NODE TEST build (LF_FULLTEST): packets and pad levels are logged on serial, 460800 baud"));
+#ifdef LF_FULLTEST
+  serialota::begin("node_fulltest");
+#else
+  serialota::begin("node");
+#endif
 
   // 2) restore saved state BEFORE radio
   loadAll();
@@ -659,6 +665,7 @@ void loop() {
     handlePacket(it);
     FT(ft_post(it));
   }
+  serialota::poll();
   pollSerial();
   pollButton(now);
 
