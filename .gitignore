@@ -3,3 +3,4 @@
 *.exe
 engine_test
 __pycache__/
+LEDframes_*.zip
